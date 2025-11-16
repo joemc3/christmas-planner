@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8080:80"
+    environment:
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+    restart: unless-stopped
+    networks:
+      - christmas-planner-network
+
+  # Optional: Local Supabase for development
+  supabase-db:
+    image: supabase/postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: your-super-secret-password
+      POSTGRES_DB: postgres
+    volumes:
+      - supabase-db-data:/var/lib/postgresql/data
+      - ./supabase/migrations:/docker-entrypoint-initdb.d
+    networks:
+      - christmas-planner-network
+
+  supabase-auth:
+    image: supabase/gotrue:latest
+    depends_on:
+      - supabase-db
+    environment:
+      GOTRUE_DB_DRIVER: postgres
+      GOTRUE_DB_DATABASE_URL: postgres://postgres:your-super-secret-password@supabase-db:5432/postgres?search_path=auth
+      GOTRUE_SITE_URL: http://localhost:8080
+      GOTRUE_JWT_SECRET: your-super-secret-jwt-token-with-at-least-32-characters-long
+    ports:
+      - "9999:9999"
+    networks:
+      - christmas-planner-network
+
+  supabase-rest:
+    image: postgrest/postgrest:latest
+    depends_on:
+      - supabase-db
+    environment:
+      PGRST_DB_URI: postgres://postgres:your-super-secret-password@supabase-db:5432/postgres
+      PGRST_DB_SCHEMA: public
+      PGRST_DB_ANON_ROLE: anon
+      PGRST_JWT_SECRET: your-super-secret-jwt-token-with-at-least-32-characters-long
+    ports:
+      - "3000:3000"
+    networks:
+      - christmas-planner-network
+
+networks:
+  christmas-planner-network:
+    driver: bridge
+
+volumes:
+  supabase-db-data:
