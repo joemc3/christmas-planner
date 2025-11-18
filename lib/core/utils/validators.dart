@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import '../constants/app_constants.dart';
 
 class Validators {
@@ -205,9 +207,8 @@ class Validators {
       return false;
     }
     try {
-      // Try to decode the JSON
-      // This is a simple check, you might want to use dart:convert's jsonDecode
-      return true;
+      final dynamic result = json.decode(value);
+      return result != null;
     } catch (e) {
       return false;
     }
