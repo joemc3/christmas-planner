@@ -17,18 +17,19 @@ class RecipientRepository {
         throw const AuthenticationException(message: 'User not authenticated');
       }
 
-      var query = _supabase
+      // Build filter first, then apply transforms
+      var filterQuery = _supabase
           .from('recipients')
           .select()
-          .eq('user_id', userId)
-          .order('priority', ascending: false)
-          .order('name', ascending: true);
+          .eq('user_id', userId);
 
       if (!includeArchived) {
-        query = query.eq('archived', false);
+        filterQuery = filterQuery.eq('archived', false);
       }
 
-      final response = await query;
+      final response = await filterQuery
+          .order('priority', ascending: false)
+          .order('name', ascending: true);
       final recipients = (response as List)
           .map((json) => RecipientModel.fromJson(json as Map<String, dynamic>))
           .toList();

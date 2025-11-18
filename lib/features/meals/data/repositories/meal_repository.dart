@@ -18,17 +18,18 @@ class MealRepository {
         throw const AuthenticationException(message: 'User not authenticated');
       }
 
-      var query = _supabase
+      // Build filter first, then apply transforms
+      var filterQuery = _supabase
           .from('meals')
           .select()
-          .eq('user_id', userId)
-          .order('type', ascending: true);
+          .eq('user_id', userId);
 
       if (year != null) {
-        query = query.eq('year', year);
+        filterQuery = filterQuery.eq('year', year);
       }
 
-      final response = await query;
+      final response = await filterQuery
+          .order('type', ascending: true);
       final meals = (response as List)
           .map((json) => MealModel.fromJson(json as Map<String, dynamic>))
           .toList();
