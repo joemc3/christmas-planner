@@ -263,6 +263,12 @@ class _BudgetOverviewCard extends StatelessWidget {
         ? (totalSpent / totalBudget).clamp(0.0, 1.0)
         : 0.0;
     final remaining = totalBudget - totalSpent;
+    final hasBudget = totalBudget > 0;
+    final statusColor = !hasBudget
+        ? FrostedHearthColors.iceAccent
+        : remaining >= 0
+        ? FrostedHearthColors.success
+        : FrostedHearthColors.error;
 
     return Container(
       padding: const EdgeInsets.all(24),
@@ -291,18 +297,18 @@ class _BudgetOverviewCard extends StatelessWidget {
                   vertical: 4,
                 ),
                 decoration: BoxDecoration(
-                  color: remaining >= 0
-                      ? FrostedHearthColors.success.withValues(alpha: 0.2)
-                      : FrostedHearthColors.error.withValues(alpha: 0.2),
+                  color: statusColor.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
-                  remaining >= 0 ? 'On Track' : 'Over Budget',
+                  !hasBudget
+                      ? 'Set a budget'
+                      : remaining >= 0
+                      ? 'On Track'
+                      : 'Over Budget',
                   style: GoogleFonts.sourceSerif4(
                     fontSize: 12,
-                    color: remaining >= 0
-                        ? FrostedHearthColors.success
-                        : FrostedHearthColors.error,
+                    color: statusColor,
                   ),
                 ),
               ),
@@ -363,7 +369,7 @@ class _BudgetOverviewCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  AppDateUtils.formatCurrency(remaining.abs()),
+                  '${remaining < 0 ? '-' : ''}${AppDateUtils.formatCurrency(remaining.abs())}',
                   style: GoogleFonts.dmMono(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,

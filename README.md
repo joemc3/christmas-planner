@@ -16,6 +16,22 @@ Product spec and current feature status: [docs/SPEC.md](docs/SPEC.md).
 - Not built yet: last-order-date warnings, shopping list from a meal, manual
   expenses, household sharing. Full list in the spec.
 
+## Screenshots
+
+Taken by the browser smoke test (`tool/e2e/smoke.mjs`) against a local
+Supabase stack, October 2026.
+
+| Dashboard | Gifts | Recipient |
+|---|---|---|
+| ![Dashboard](docs/screenshots/dashboard.png) | ![Gifts](docs/screenshots/gifts.png) | ![Recipient](docs/screenshots/recipient.png) |
+
+| Gift detail | Meal | Budget |
+|---|---|---|
+| ![Gift detail](docs/screenshots/gift-detail.png) | ![Meal](docs/screenshots/meal-detail.png) | ![Budget](docs/screenshots/budget.png) |
+
+More in [docs/screenshots](docs/screenshots): login, recipient form, meals,
+calendar, shopping, settings.
+
 ## Run it locally
 
 Prerequisites: [Flutter](https://docs.flutter.dev/get-started/install)
@@ -73,6 +89,11 @@ dart format lib test
 
 CI (`.github/workflows/ci.yml`) runs format, analyze, tests, a release web
 build, and applies the SQL migrations to a fresh Postgres.
+
+Browser smoke test (needs `supabase start`, a web build and Node):
+`tool/e2e/smoke.mjs` signs up a fresh user, adds a recipient, gifts, a meal
+and menu items through the real UI and screenshots every screen. The header
+comment in the script has the exact commands.
 
 Mobile: the project has no `android/` or `ios/` folders yet. Generate them
 with `flutter create --platforms android,ios .` when you want device builds;

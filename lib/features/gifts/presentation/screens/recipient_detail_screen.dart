@@ -96,7 +96,7 @@ class RecipientDetailScreen extends ConsumerWidget {
             ],
           ),
           body: ListView(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 120),
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 96),
             children: [
               _RecipientHeader(recipient: recipient, gifts: gifts),
               const SizedBox(height: 20),
@@ -144,14 +144,11 @@ class RecipientDetailScreen extends ConsumerWidget {
               ),
             ],
           ),
-          floatingActionButton: Padding(
-            padding: const EdgeInsets.only(bottom: 72),
-            child: FloatingActionButton.extended(
-              onPressed: () =>
-                  GiftFormSheet.show(context, recipientId: recipient.id),
-              icon: const Icon(Icons.add),
-              label: const Text('Gift'),
-            ),
+          floatingActionButton: FloatingActionButton.extended(
+            onPressed: () =>
+                GiftFormSheet.show(context, recipientId: recipient.id),
+            icon: const Icon(Icons.add),
+            label: const Text('Gift'),
           ),
         );
       },

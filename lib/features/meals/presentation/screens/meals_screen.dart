@@ -31,7 +31,7 @@ class MealsScreen extends ConsumerWidget {
           final meals = allMeals.where((m) => m.year == year).toList();
           if (meals.isEmpty) {
             return ListView(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 120),
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
               children: [
                 const EmptyState(
                   icon: Icons.restaurant,
@@ -55,7 +55,7 @@ class MealsScreen extends ConsumerWidget {
             );
           }
           return ListView(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 120),
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
             children: [
               for (final meal in meals)
                 Padding(
@@ -77,13 +77,10 @@ class MealsScreen extends ConsumerWidget {
           onAction: () => ref.invalidate(mealsStreamProvider),
         ),
       ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 72),
-        child: FloatingActionButton.extended(
-          onPressed: () => _addMeal(context),
-          icon: const Icon(Icons.add),
-          label: const Text('Meal'),
-        ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => _addMeal(context),
+        icon: const Icon(Icons.add),
+        label: const Text('Meal'),
       ),
     );
   }

@@ -164,8 +164,9 @@ Design notes:
 
 ## 8. Known gaps and risks
 
-1. No end-to-end test against a real Supabase; CI applies the migrations to a
-   fresh Postgres and runs unit/widget tests only.
+1. The browser smoke test (`tool/e2e/smoke.mjs`) exercises sign-up, gifts
+   and meals against a local Supabase but is run by hand, not in CI; CI
+   applies the migrations to a fresh Postgres and runs unit/widget tests.
 2. `watchAllGifts` streams every gift the user can see and the dashboard
    groups client-side; fine at this scale, but RLS is what scopes it.
 3. Streams do not refetch a single row's `FutureProvider` (recipient by id,

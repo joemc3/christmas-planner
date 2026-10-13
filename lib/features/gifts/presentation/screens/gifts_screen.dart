@@ -48,7 +48,7 @@ class GiftsScreen extends ConsumerWidget {
           }
 
           return ListView(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 120),
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
             children: [
               _GiftsSummaryCard(recipients: recipients, gifts: gifts),
               const SizedBox(height: 16),
@@ -74,13 +74,10 @@ class GiftsScreen extends ConsumerWidget {
           onAction: () => ref.invalidate(recipientsStreamProvider),
         ),
       ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 72),
-        child: FloatingActionButton.extended(
-          onPressed: () => _addRecipient(context, ref),
-          icon: const Icon(Icons.person_add_alt_1),
-          label: const Text('Recipient'),
-        ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => _addRecipient(context, ref),
+        icon: const Icon(Icons.person_add_alt_1),
+        label: const Text('Recipient'),
       ),
     );
   }

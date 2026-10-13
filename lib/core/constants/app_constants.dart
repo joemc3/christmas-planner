@@ -5,8 +5,8 @@ class AppConstants {
 
   // App Info
   static const String appName = 'Christmas Planner';
-  static const String appVersion = '1.0.0';
-  static const String appBuildNumber = '1';
+  static const String appVersion = '0.2.0';
+  static const String appBuildNumber = '2';
 
   // Supabase Configuration
   static const String supabaseUrl = kDebugMode
