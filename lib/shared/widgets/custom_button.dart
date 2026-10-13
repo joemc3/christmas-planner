@@ -52,10 +52,7 @@ class PrimaryButton extends StatelessWidget {
               mainAxisSize: fullWidth ? MainAxisSize.max : MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                if (icon != null) ...[
-                  Icon(icon),
-                  const SizedBox(width: 8),
-                ],
+                if (icon != null) ...[Icon(icon), const SizedBox(width: 8)],
                 Text(text),
               ],
             ),
@@ -105,17 +102,16 @@ class SecondaryButton extends StatelessWidget {
               width: 20,
               child: CircularProgressIndicator(
                 strokeWidth: 2,
-                valueColor: AlwaysStoppedAnimation<Color>(color ?? AppTheme.christmasRed),
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  color ?? AppTheme.christmasRed,
+                ),
               ),
             )
           : Row(
               mainAxisSize: fullWidth ? MainAxisSize.max : MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                if (icon != null) ...[
-                  Icon(icon),
-                  const SizedBox(width: 8),
-                ],
+                if (icon != null) ...[Icon(icon), const SizedBox(width: 8)],
                 Text(text),
               ],
             ),
@@ -260,16 +256,14 @@ class ChipButton extends StatelessWidget {
       label: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (icon != null) ...[
-            Icon(icon, size: 16),
-            const SizedBox(width: 4),
-          ],
+          if (icon != null) ...[Icon(icon, size: 16), const SizedBox(width: 4)],
           Text(label),
         ],
       ),
       selected: isSelected,
       onSelected: onTap != null ? (_) => onTap!() : null,
-      selectedColor: selectedColor ?? AppTheme.christmasRed.withValues(alpha: 0.2),
+      selectedColor:
+          selectedColor ?? AppTheme.christmasRed.withValues(alpha: 0.2),
       checkmarkColor: selectedColor ?? AppTheme.christmasRed,
       backgroundColor: AppTheme.lightGrey,
       deleteIcon: onDelete != null ? const Icon(Icons.close, size: 18) : null,
@@ -368,7 +362,8 @@ class AnimatedButton extends StatefulWidget {
   State<AnimatedButton> createState() => _AnimatedButtonState();
 }
 
-class _AnimatedButtonState extends State<AnimatedButton> with SingleTickerProviderStateMixin {
+class _AnimatedButtonState extends State<AnimatedButton>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
 
@@ -379,9 +374,10 @@ class _AnimatedButtonState extends State<AnimatedButton> with SingleTickerProvid
       duration: widget.animationDuration,
       vsync: this,
     );
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+    _scaleAnimation = Tween<double>(
+      begin: 1.0,
+      end: 0.95,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override

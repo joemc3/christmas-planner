@@ -9,12 +9,8 @@ class MealDetailScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Meal Details'),
-      ),
-      body: const Center(
-        child: Text('Meal detail view'),
-      ),
+      appBar: AppBar(title: const Text('Meal Details')),
+      body: const Center(child: Text('Meal detail view')),
     );
   }
 }

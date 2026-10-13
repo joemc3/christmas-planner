@@ -6,11 +6,7 @@ import 'package:christmas_planner/features/auth/presentation/screens/login_scree
 void main() {
   testWidgets('LoginScreen displays correctly', (WidgetTester tester) async {
     await tester.pumpWidget(
-      const ProviderScope(
-        child: MaterialApp(
-          home: LoginScreen(),
-        ),
-      ),
+      const ProviderScope(child: MaterialApp(home: LoginScreen())),
     );
 
     expect(find.text('Welcome Back!'), findsOneWidget);
@@ -18,13 +14,11 @@ void main() {
     expect(find.text('Sign In'), findsOneWidget);
   });
 
-  testWidgets('LoginScreen has email and password fields', (WidgetTester tester) async {
+  testWidgets('LoginScreen has email and password fields', (
+    WidgetTester tester,
+  ) async {
     await tester.pumpWidget(
-      const ProviderScope(
-        child: MaterialApp(
-          home: LoginScreen(),
-        ),
-      ),
+      const ProviderScope(child: MaterialApp(home: LoginScreen())),
     );
 
     expect(find.widgetWithText(TextFormField, 'Email'), findsOneWidget);

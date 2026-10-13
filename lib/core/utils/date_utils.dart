@@ -13,12 +13,20 @@ class AppDateUtils {
 
   static DateTime get christmasDay {
     final year = now.year;
-    return DateTime(year, AppConstants.christmasMonth, AppConstants.christmasDay);
+    return DateTime(
+      year,
+      AppConstants.christmasMonth,
+      AppConstants.christmasDay,
+    );
   }
 
   static DateTime get preparationTargetDate {
     final year = now.year;
-    return DateTime(year, AppConstants.christmasMonth, AppConstants.preparationTargetDay);
+    return DateTime(
+      year,
+      AppConstants.christmasMonth,
+      AppConstants.preparationTargetDay,
+    );
   }
 
   static DateTime calculateStartOrderingDate({int? customShippingDays}) {
@@ -129,7 +137,11 @@ class AppDateUtils {
     final end = endOfMonth(date);
     final days = <DateTime>[];
 
-    for (var day = start; day.isBefore(end) || day.isAtSameMomentAs(end); day = day.add(const Duration(days: 1))) {
+    for (
+      var day = start;
+      day.isBefore(end) || day.isAtSameMomentAs(end);
+      day = day.add(const Duration(days: 1))
+    ) {
       days.add(day);
     }
 

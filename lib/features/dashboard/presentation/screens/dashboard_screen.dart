@@ -52,14 +52,10 @@ class DashboardScreen extends ConsumerWidget {
                   name: profile?.fullName ?? 'User',
                   daysUntilChristmas: daysUntilChristmas,
                 ),
-                loading: () => const _WelcomeCard(
-                  name: 'User',
-                  daysUntilChristmas: 0,
-                ),
-                error: (_, _) => const _WelcomeCard(
-                  name: 'User',
-                  daysUntilChristmas: 0,
-                ),
+                loading: () =>
+                    const _WelcomeCard(name: 'User', daysUntilChristmas: 0),
+                error: (_, _) =>
+                    const _WelcomeCard(name: 'User', daysUntilChristmas: 0),
               ),
               const SizedBox(height: 24),
 
@@ -126,9 +122,8 @@ class DashboardScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 16),
               giftsStream.when(
-                data: (gifts) => _RecentGiftsList(
-                  gifts: gifts.take(5).toList(),
-                ),
+                data: (gifts) =>
+                    _RecentGiftsList(gifts: gifts.take(5).toList()),
                 loading: () => const Center(child: CircularProgressIndicator()),
                 error: (_, _) => const Text('Failed to load recent gifts'),
               ),
@@ -166,10 +161,7 @@ class DashboardScreen extends ConsumerWidget {
             icon: Icon(Icons.card_giftcard),
             label: 'Gifts',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.restaurant),
-            label: 'Meals',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.restaurant), label: 'Meals'),
           BottomNavigationBarItem(
             icon: Icon(Icons.shopping_cart),
             label: 'Shopping',
@@ -188,10 +180,7 @@ class _WelcomeCard extends StatelessWidget {
   final String name;
   final int daysUntilChristmas;
 
-  const _WelcomeCard({
-    required this.name,
-    required this.daysUntilChristmas,
-  });
+  const _WelcomeCard({required this.name, required this.daysUntilChristmas});
 
   @override
   Widget build(BuildContext context) {
@@ -208,18 +197,18 @@ class _WelcomeCard extends StatelessWidget {
           Text(
             'Hello, $name!',
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           const SizedBox(height: 8),
           Text(
             daysUntilChristmas > 0
                 ? 'Christmas is $daysUntilChristmas days away!'
                 : 'Merry Christmas!',
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: Colors.white70,
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyLarge?.copyWith(color: Colors.white70),
           ),
         ],
       ),
@@ -252,9 +241,9 @@ class _CountdownCard extends StatelessWidget {
             Text(
               count.toString(),
               style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: color,
-                  ),
+                fontWeight: FontWeight.bold,
+                color: color,
+              ),
             ),
             const SizedBox(height: 4),
             Text(
@@ -280,7 +269,9 @@ class _BudgetOverviewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final percentage = totalPlanned > 0 ? (totalSpent / totalPlanned) * 100 : 0.0;
+    final percentage = totalPlanned > 0
+        ? (totalSpent / totalPlanned) * 100
+        : 0.0;
 
     return Card(
       child: Padding(
@@ -288,10 +279,7 @@ class _BudgetOverviewCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Gift Budget',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
+            Text('Gift Budget', style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -299,16 +287,13 @@ class _BudgetOverviewCard extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Spent',
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
+                    Text('Spent', style: Theme.of(context).textTheme.bodySmall),
                     Text(
                       AppDateUtils.formatCurrency(totalSpent),
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            color: AppTheme.christmasRed,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        color: AppTheme.christmasRed,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ],
                 ),
@@ -322,8 +307,8 @@ class _BudgetOverviewCard extends StatelessWidget {
                     Text(
                       AppDateUtils.formatCurrency(totalPlanned),
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ],
                 ),
@@ -428,10 +413,7 @@ class _QuickActionCard extends StatelessWidget {
             children: [
               Icon(icon, size: 48, color: color),
               const SizedBox(height: 8),
-              Text(
-                title,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
+              Text(title, style: Theme.of(context).textTheme.titleMedium),
             ],
           ),
         ),
@@ -453,13 +435,17 @@ class _RecentGiftsList extends StatelessWidget {
           padding: const EdgeInsets.all(32),
           child: Column(
             children: [
-              const Icon(Icons.card_giftcard, size: 48, color: AppTheme.lightGrey),
+              const Icon(
+                Icons.card_giftcard,
+                size: 48,
+                color: AppTheme.lightGrey,
+              ),
               const SizedBox(height: 16),
               Text(
                 'No gifts yet',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: AppTheme.textSecondary,
-                    ),
+                  color: AppTheme.textSecondary,
+                ),
               ),
               const SizedBox(height: 8),
               const Text('Start adding gifts to your list'),

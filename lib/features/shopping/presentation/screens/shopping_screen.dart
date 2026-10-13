@@ -19,7 +19,9 @@ final shoppingListsProvider = StreamProvider<List<ShoppingListModel>>((ref) {
 });
 
 final selectedListIdProvider =
-    NotifierProvider<SelectedListIdNotifier, String?>(SelectedListIdNotifier.new);
+    NotifierProvider<SelectedListIdNotifier, String?>(
+      SelectedListIdNotifier.new,
+    );
 
 class SelectedListIdNotifier extends Notifier<String?> {
   @override
@@ -28,15 +30,17 @@ class SelectedListIdNotifier extends Notifier<String?> {
   void select(String? id) => state = id;
 }
 
-final shoppingItemsProvider = StreamProvider.family<List<ShoppingListItemModel>, String>((ref, listId) {
-  final repository = ref.watch(shoppingRepositoryProvider);
-  return repository.watchShoppingListItems(listId);
-});
+final shoppingItemsProvider =
+    StreamProvider.family<List<ShoppingListItemModel>, String>((ref, listId) {
+      final repository = ref.watch(shoppingRepositoryProvider);
+      return repository.watchShoppingListItems(listId);
+    });
 
-final shoppingListStatsProvider = FutureProvider.family<Map<String, dynamic>, String>((ref, listId) async {
-  final repository = ref.watch(shoppingRepositoryProvider);
-  return repository.getShoppingListStats(listId);
-});
+final shoppingListStatsProvider =
+    FutureProvider.family<Map<String, dynamic>, String>((ref, listId) async {
+      final repository = ref.watch(shoppingRepositoryProvider);
+      return repository.getShoppingListStats(listId);
+    });
 
 class ShoppingScreen extends ConsumerWidget {
   const ShoppingScreen({super.key});
@@ -90,7 +94,9 @@ class ShoppingScreen extends ConsumerWidget {
                       padding: const EdgeInsets.only(right: 8),
                       child: GestureDetector(
                         onTap: () {
-                          ref.read(selectedListIdProvider.notifier).select(list.id);
+                          ref
+                              .read(selectedListIdProvider.notifier)
+                              .select(list.id);
                         },
                         child: AnimatedContainer(
                           duration: FrostedHearthTiming.quick,
@@ -111,7 +117,9 @@ class ShoppingScreen extends ConsumerWidget {
                               list.name,
                               style: GoogleFonts.sourceSerif4(
                                 fontSize: 14,
-                                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                                fontWeight: isSelected
+                                    ? FontWeight.w600
+                                    : FontWeight.w400,
                                 color: isSelected
                                     ? FrostedHearthColors.frostGold
                                     : FrostedHearthColors.inkMedium,
@@ -130,7 +138,8 @@ class ShoppingScreen extends ConsumerWidget {
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (_, _) => const Center(child: Text('Failed to load shopping lists')),
+        error: (_, _) =>
+            const Center(child: Text('Failed to load shopping lists')),
       ),
       floatingActionButton: selectedListId != null
           ? FloatingActionButton(
@@ -147,14 +156,23 @@ class ShoppingScreen extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Create Shopping List', style: GoogleFonts.fraunces(fontWeight: FontWeight.w600)),
+        title: Text(
+          'Create Shopping List',
+          style: GoogleFonts.fraunces(fontWeight: FontWeight.w600),
+        ),
         content: TextField(
           controller: nameController,
-          decoration: const InputDecoration(labelText: 'List Name', hintText: 'e.g., Christmas Gifts'),
+          decoration: const InputDecoration(
+            labelText: 'List Name',
+            hintText: 'e.g., Christmas Gifts',
+          ),
           autofocus: true,
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
           ElevatedButton(
             onPressed: () async {
               if (nameController.text.isEmpty) {
@@ -206,31 +224,46 @@ class ShoppingScreen extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Add Item', style: GoogleFonts.fraunces(fontWeight: FontWeight.w600)),
+        title: Text(
+          'Add Item',
+          style: GoogleFonts.fraunces(fontWeight: FontWeight.w600),
+        ),
         content: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
                 controller: nameController,
-                decoration: const InputDecoration(labelText: 'Item Name', prefixIcon: Icon(Icons.shopping_bag)),
+                decoration: const InputDecoration(
+                  labelText: 'Item Name',
+                  prefixIcon: Icon(Icons.shopping_bag),
+                ),
               ),
               const SizedBox(height: 16),
               TextField(
                 controller: costController,
                 keyboardType: TextInputType.number,
-                decoration: const InputDecoration(labelText: 'Estimated Cost', prefixIcon: Icon(Icons.attach_money)),
+                decoration: const InputDecoration(
+                  labelText: 'Estimated Cost',
+                  prefixIcon: Icon(Icons.attach_money),
+                ),
               ),
               const SizedBox(height: 16),
               TextField(
                 controller: categoryController,
-                decoration: const InputDecoration(labelText: 'Category', prefixIcon: Icon(Icons.category)),
+                decoration: const InputDecoration(
+                  labelText: 'Category',
+                  prefixIcon: Icon(Icons.category),
+                ),
               ),
             ],
           ),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
           ElevatedButton(
             onPressed: () async {
               if (nameController.text.isEmpty) {
@@ -245,7 +278,9 @@ class ShoppingScreen extends ConsumerWidget {
                 shoppingListId: listId,
                 itemName: nameController.text,
                 estimatedCost: double.tryParse(costController.text),
-                category: categoryController.text.isNotEmpty ? categoryController.text : null,
+                category: categoryController.text.isNotEmpty
+                    ? categoryController.text
+                    : null,
                 purchased: false,
                 createdAt: DateTime.now(),
                 updatedAt: DateTime.now(),
@@ -256,11 +291,15 @@ class ShoppingScreen extends ConsumerWidget {
                 await repository.createShoppingListItem(item);
                 if (context.mounted) {
                   Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Item added')));
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(const SnackBar(content: Text('Item added')));
                 }
               } catch (e) {
                 if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed: $e')));
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text('Failed: $e')));
                 }
               }
             },
@@ -307,9 +346,18 @@ class _ShoppingListContent extends ConsumerWidget {
                       padding: const EdgeInsets.all(32),
                       child: Column(
                         children: [
-                          const Icon(Icons.check_circle_outline, size: 64, color: FrostedHearthColors.inkLight),
+                          const Icon(
+                            Icons.check_circle_outline,
+                            size: 64,
+                            color: FrostedHearthColors.inkLight,
+                          ),
                           const SizedBox(height: 16),
-                          Text('No items yet', style: GoogleFonts.sourceSerif4(color: FrostedHearthColors.inkLight)),
+                          Text(
+                            'No items yet',
+                            style: GoogleFonts.sourceSerif4(
+                              color: FrostedHearthColors.inkLight,
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -333,9 +381,14 @@ class _ShoppingListContent extends ConsumerWidget {
                           child: Row(
                             children: [
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 4,
+                                ),
                                 decoration: BoxDecoration(
-                                  color: FrostedHearthColors.spruce.withValues(alpha: 0.1),
+                                  color: FrostedHearthColors.spruce.withValues(
+                                    alpha: 0.1,
+                                  ),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: Text(
@@ -350,23 +403,37 @@ class _ShoppingListContent extends ConsumerWidget {
                               const SizedBox(width: 8),
                               Text(
                                 '${entry.value.length} items',
-                                style: GoogleFonts.dmMono(fontSize: 12, color: FrostedHearthColors.inkLight),
+                                style: GoogleFonts.dmMono(
+                                  fontSize: 12,
+                                  color: FrostedHearthColors.inkLight,
+                                ),
                               ),
                             ],
                           ),
                         ),
-                        ...entry.value.map((item) => Padding(
-                          padding: const EdgeInsets.only(bottom: 8),
-                          child: EnchantedShoppingItem(
-                            name: item.itemName,
-                            isChecked: item.purchased,
-                            price: item.estimatedCost != null ? AppDateUtils.formatCurrency(item.estimatedCost!) : null,
-                            onToggle: () async {
-                              final repository = ref.read(shoppingRepositoryProvider);
-                              await repository.toggleItemPurchased(item.id, !item.purchased);
-                            },
+                        ...entry.value.map(
+                          (item) => Padding(
+                            padding: const EdgeInsets.only(bottom: 8),
+                            child: EnchantedShoppingItem(
+                              name: item.itemName,
+                              isChecked: item.purchased,
+                              price: item.estimatedCost != null
+                                  ? AppDateUtils.formatCurrency(
+                                      item.estimatedCost!,
+                                    )
+                                  : null,
+                              onToggle: () async {
+                                final repository = ref.read(
+                                  shoppingRepositoryProvider,
+                                );
+                                await repository.toggleItemPurchased(
+                                  item.id,
+                                  !item.purchased,
+                                );
+                              },
+                            ),
                           ),
-                        )),
+                        ),
                         const SizedBox(height: 8),
                       ],
                     );
@@ -374,7 +441,8 @@ class _ShoppingListContent extends ConsumerWidget {
                 );
               },
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (_, _) => const Center(child: Text('Failed to load items')),
+              error: (_, _) =>
+                  const Center(child: Text('Failed to load items')),
             ),
             const SizedBox(height: 80),
           ],
@@ -394,7 +462,8 @@ class _StatsCard extends StatelessWidget {
     final totalItems = (stats['totalItems'] as int?) ?? 0;
     final purchasedItems = (stats['purchasedItems'] as int?) ?? 0;
     final remainingItems = (stats['remainingItems'] as int?) ?? 0;
-    final completionPercentage = (stats['completionPercentage'] as double?) ?? 0.0;
+    final completionPercentage =
+        (stats['completionPercentage'] as double?) ?? 0.0;
     final estimatedTotal = (stats['estimatedTotal'] as double?) ?? 0.0;
     final actualTotal = (stats['actualTotal'] as double?) ?? 0.0;
 
@@ -435,7 +504,9 @@ class _StatsCard extends StatelessWidget {
                       'items purchased',
                       style: GoogleFonts.sourceSerif4(
                         fontSize: 13,
-                        color: FrostedHearthColors.frostGold.withValues(alpha: 0.7),
+                        color: FrostedHearthColors.frostGold.withValues(
+                          alpha: 0.7,
+                        ),
                       ),
                     ),
                   ],
@@ -461,22 +532,67 @@ class _StatsCard extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Estimated', style: GoogleFonts.sourceSerif4(fontSize: 11, color: FrostedHearthColors.frostGold.withValues(alpha: 0.7))),
-                    Text(AppDateUtils.formatCurrency(estimatedTotal), style: GoogleFonts.dmMono(fontSize: 14, fontWeight: FontWeight.w600, color: FrostedHearthColors.frostGold)),
+                    Text(
+                      'Estimated',
+                      style: GoogleFonts.sourceSerif4(
+                        fontSize: 11,
+                        color: FrostedHearthColors.frostGold.withValues(
+                          alpha: 0.7,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      AppDateUtils.formatCurrency(estimatedTotal),
+                      style: GoogleFonts.dmMono(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: FrostedHearthColors.frostGold,
+                      ),
+                    ),
                   ],
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Text('Spent', style: GoogleFonts.sourceSerif4(fontSize: 11, color: FrostedHearthColors.frostGold.withValues(alpha: 0.7))),
-                    Text(AppDateUtils.formatCurrency(actualTotal), style: GoogleFonts.dmMono(fontSize: 14, fontWeight: FontWeight.w600, color: FrostedHearthColors.success)),
+                    Text(
+                      'Spent',
+                      style: GoogleFonts.sourceSerif4(
+                        fontSize: 11,
+                        color: FrostedHearthColors.frostGold.withValues(
+                          alpha: 0.7,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      AppDateUtils.formatCurrency(actualTotal),
+                      style: GoogleFonts.dmMono(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: FrostedHearthColors.success,
+                      ),
+                    ),
                   ],
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Text('Left', style: GoogleFonts.sourceSerif4(fontSize: 11, color: FrostedHearthColors.frostGold.withValues(alpha: 0.7))),
-                    Text('$remainingItems', style: GoogleFonts.dmMono(fontSize: 14, fontWeight: FontWeight.w600, color: FrostedHearthColors.frostGold)),
+                    Text(
+                      'Left',
+                      style: GoogleFonts.sourceSerif4(
+                        fontSize: 11,
+                        color: FrostedHearthColors.frostGold.withValues(
+                          alpha: 0.7,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      '$remainingItems',
+                      style: GoogleFonts.dmMono(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: FrostedHearthColors.frostGold,
+                      ),
+                    ),
                   ],
                 ),
               ],

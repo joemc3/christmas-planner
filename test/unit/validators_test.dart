@@ -74,12 +74,17 @@ void main() {
       });
 
       test('should keep ordinary text containing SQL-like words', () {
-        expect(Validators.sanitizeInput('Select a gift to update'), 'Select a gift to update');
+        expect(
+          Validators.sanitizeInput('Select a gift to update'),
+          'Select a gift to update',
+        );
       });
 
       test('should strip script content but keep surrounding text', () {
         expect(
-          Validators.sanitizeInput('Hi <b>there</b><script>evil()</script> friend'),
+          Validators.sanitizeInput(
+            'Hi <b>there</b><script>evil()</script> friend',
+          ),
           'Hi there friend',
         );
       });

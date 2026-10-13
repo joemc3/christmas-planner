@@ -72,15 +72,25 @@ class GiftModel extends Equatable {
       name: json['name'] as String,
       description: json['description'] as String?,
       price: (json['price'] as num).toDouble(),
-      actualPrice: json['actual_price'] != null ? (json['actual_price'] as num).toDouble() : null,
+      actualPrice: json['actual_price'] != null
+          ? (json['actual_price'] as num).toDouble()
+          : null,
       status: GiftStatus.fromString(json['status'] as String),
       orderLink: json['order_link'] as String?,
       storeName: json['store_name'] as String?,
       trackingNumber: json['tracking_number'] as String?,
-      orderDate: json['order_date'] != null ? DateTime.parse(json['order_date'] as String) : null,
-      expectedDeliveryDate: json['expected_delivery_date'] != null ? DateTime.parse(json['expected_delivery_date'] as String) : null,
-      actualDeliveryDate: json['actual_delivery_date'] != null ? DateTime.parse(json['actual_delivery_date'] as String) : null,
-      wrappedDate: json['wrapped_date'] != null ? DateTime.parse(json['wrapped_date'] as String) : null,
+      orderDate: json['order_date'] != null
+          ? DateTime.parse(json['order_date'] as String)
+          : null,
+      expectedDeliveryDate: json['expected_delivery_date'] != null
+          ? DateTime.parse(json['expected_delivery_date'] as String)
+          : null,
+      actualDeliveryDate: json['actual_delivery_date'] != null
+          ? DateTime.parse(json['actual_delivery_date'] as String)
+          : null,
+      wrappedDate: json['wrapped_date'] != null
+          ? DateTime.parse(json['wrapped_date'] as String)
+          : null,
       category: json['category'] as String?,
       imageUrl: json['image_url'] as String?,
       priority: json['priority'] as int? ?? 0,
@@ -192,26 +202,26 @@ class GiftModel extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        recipientId,
-        name,
-        description,
-        price,
-        actualPrice,
-        status,
-        orderLink,
-        storeName,
-        trackingNumber,
-        orderDate,
-        expectedDeliveryDate,
-        actualDeliveryDate,
-        wrappedDate,
-        category,
-        imageUrl,
-        priority,
-        notes,
-        isSurprise,
-        createdAt,
-        updatedAt,
-      ];
+    id,
+    recipientId,
+    name,
+    description,
+    price,
+    actualPrice,
+    status,
+    orderLink,
+    storeName,
+    trackingNumber,
+    orderDate,
+    expectedDeliveryDate,
+    actualDeliveryDate,
+    wrappedDate,
+    category,
+    imageUrl,
+    priority,
+    notes,
+    isSurprise,
+    createdAt,
+    updatedAt,
+  ];
 }

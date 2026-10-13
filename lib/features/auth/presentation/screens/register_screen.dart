@@ -50,7 +50,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     });
 
     try {
-      await ref.read(authControllerProvider).signUp(
+      await ref
+          .read(authControllerProvider)
+          .signUp(
             email: _emailController.text.trim(),
             password: _passwordController.text,
             fullName: _fullNameController.text.trim(),
@@ -115,7 +117,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     const SizedBox(height: 32),
                     Text(
                       'Create Account',
-                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                      style: Theme.of(context).textTheme.headlineMedium
+                          ?.copyWith(
                             fontWeight: FontWeight.bold,
                             color: AppTheme.christmasGreen,
                           ),
@@ -125,8 +128,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     Text(
                       'Start planning your perfect Christmas',
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                            color: AppTheme.textSecondary,
-                          ),
+                        color: AppTheme.textSecondary,
+                      ),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 48),
@@ -141,7 +144,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         ),
                         child: Row(
                           children: [
-                            const Icon(Icons.error_outline, color: AppTheme.error),
+                            const Icon(
+                              Icons.error_outline,
+                              color: AppTheme.error,
+                            ),
                             const SizedBox(width: 8),
                             Expanded(
                               child: Text(
@@ -159,7 +165,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         hintText: 'Enter your full name',
                         prefixIcon: Icon(Icons.person_outlined),
                       ),
-                      validator: (value) => Validators.validateName(value, fieldName: 'Full name'),
+                      validator: (value) => Validators.validateName(
+                        value,
+                        fieldName: 'Full name',
+                      ),
                       textInputAction: TextInputAction.next,
                     ),
                     const SizedBox(height: 16),
@@ -214,7 +223,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           ),
                           onPressed: () {
                             setState(() {
-                              _obscureConfirmPassword = !_obscureConfirmPassword;
+                              _obscureConfirmPassword =
+                                  !_obscureConfirmPassword;
                             });
                           },
                         ),
@@ -274,7 +284,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                               width: 20,
                               child: CircularProgressIndicator(
                                 strokeWidth: 2,
-                                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  Colors.white,
+                                ),
                               ),
                             )
                           : const Text('Create Account'),

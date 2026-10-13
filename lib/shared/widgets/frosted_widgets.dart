@@ -160,13 +160,7 @@ class _ArcPainter extends CustomPainter {
       paint.color = color;
     }
 
-    canvas.drawArc(
-      rect,
-      -pi / 2,
-      2 * pi * progress,
-      false,
-      paint,
-    );
+    canvas.drawArc(rect, -pi / 2, 2 * pi * progress, false, paint);
   }
 
   @override
@@ -200,11 +194,7 @@ class MagicalCountdown extends StatelessWidget {
       child: Stack(
         children: [
           // Star field background
-          Positioned.fill(
-            child: CustomPaint(
-              painter: _StarFieldPainter(),
-            ),
-          ),
+          Positioned.fill(child: CustomPaint(painter: _StarFieldPainter())),
           // Content
           Padding(
             padding: const EdgeInsets.all(24),
@@ -334,16 +324,16 @@ class BudgetStackedBar extends StatelessWidget {
           child: ClipRRect(
             borderRadius: BorderRadius.circular(16),
             child: Row(
-              children: categories.entries.toList().asMap().entries.map((entry) {
+              children: categories.entries.toList().asMap().entries.map((
+                entry,
+              ) {
                 final index = entry.key;
                 final category = entry.value;
                 final percentage = category.value / total;
 
                 return Expanded(
                   flex: (percentage * 1000).toInt().clamp(1, 1000),
-                  child: Container(
-                    color: colors[index % colors.length],
-                  ),
+                  child: Container(color: colors[index % colors.length]),
                 );
               }).toList(),
             ),
@@ -442,11 +432,7 @@ class EnchantedShoppingItem extends StatelessWidget {
                 ),
               ),
               child: isChecked
-                  ? const Icon(
-                      Icons.check,
-                      size: 14,
-                      color: Colors.white,
-                    )
+                  ? const Icon(Icons.check, size: 14, color: Colors.white)
                   : null,
             ),
             const SizedBox(width: 14),
@@ -479,10 +465,7 @@ class EnchantedShoppingItem extends StatelessWidget {
             // Category tag
             if (category != null)
               Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                  vertical: 4,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
                   color: FrostedHearthColors.spruce.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(6),
@@ -641,10 +624,7 @@ class SectionHeader extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            title,
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
+          Text(title, style: Theme.of(context).textTheme.titleLarge),
           if (actionText != null)
             TextButton(
               onPressed: onAction,
@@ -693,18 +673,14 @@ class EmptyState extends StatelessWidget {
                 color: FrostedHearthColors.parchmentWarm,
                 shape: BoxShape.circle,
               ),
-              child: Icon(
-                icon,
-                size: 48,
-                color: FrostedHearthColors.inkLight,
-              ),
+              child: Icon(icon, size: 48, color: FrostedHearthColors.inkLight),
             ),
             const SizedBox(height: 24),
             Text(
               title,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: FrostedHearthColors.inkMedium,
-                  ),
+                color: FrostedHearthColors.inkMedium,
+              ),
               textAlign: TextAlign.center,
             ),
             if (subtitle != null) ...[
@@ -717,10 +693,7 @@ class EmptyState extends StatelessWidget {
             ],
             if (actionText != null && onAction != null) ...[
               const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: onAction,
-                child: Text(actionText!),
-              ),
+              ElevatedButton(onPressed: onAction, child: Text(actionText!)),
             ],
           ],
         ),

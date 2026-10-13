@@ -31,7 +31,11 @@ final userProfileProvider = FutureProvider<UserProfile?>((ref) async {
     final authRepo = ref.watch(authRepositoryProvider);
     return await authRepo.getUserProfile();
   } catch (e, stackTrace) {
-    AppLogger.error('Failed to load user profile', error: e, stackTrace: stackTrace);
+    AppLogger.error(
+      'Failed to load user profile',
+      error: e,
+      stackTrace: stackTrace,
+    );
     return null;
   }
 });
@@ -58,14 +62,8 @@ class AuthController {
     );
   }
 
-  Future<void> signIn({
-    required String email,
-    required String password,
-  }) async {
-    await _authRepository.signIn(
-      email: email,
-      password: password,
-    );
+  Future<void> signIn({required String email, required String password}) async {
+    await _authRepository.signIn(email: email, password: password);
   }
 
   Future<void> signOut() async {

@@ -43,13 +43,15 @@ Future<void> main() async {
       realtimeClientOptions: const RealtimeClientOptions(
         logLevel: RealtimeLogLevel.info,
       ),
-      storageOptions: const StorageClientOptions(
-        retryAttempts: 3,
-      ),
+      storageOptions: const StorageClientOptions(retryAttempts: 3),
     );
     AppLogger.info('Supabase initialized successfully');
   } catch (e, stackTrace) {
-    AppLogger.error('Failed to initialize Supabase', error: e, stackTrace: stackTrace);
+    AppLogger.error(
+      'Failed to initialize Supabase',
+      error: e,
+      stackTrace: stackTrace,
+    );
   }
 
   // Initialize local notifications (mobile only; the plugin has no web implementation)
@@ -68,9 +70,5 @@ Future<void> main() async {
     ),
   );
 
-  runApp(
-    const ProviderScope(
-      child: ChristmasPlannerApp(),
-    ),
-  );
+  runApp(const ProviderScope(child: ChristmasPlannerApp()));
 }

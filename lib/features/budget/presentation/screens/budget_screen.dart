@@ -37,7 +37,8 @@ class BudgetScreen extends ConsumerWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.edit_outlined),
-            onPressed: () => _showEditBudgetDialog(context, ref, budgetAsync.value),
+            onPressed: () =>
+                _showEditBudgetDialog(context, ref, budgetAsync.value),
           ),
         ],
       ),
@@ -55,15 +56,15 @@ class BudgetScreen extends ConsumerWidget {
               // Total Budget Overview
               budgetAsync.when(
                 data: (budget) => statsAsync.when(
-                  data: (stats) => _BudgetOverviewCard(
-                    budget: budget,
-                    stats: stats,
-                  ),
+                  data: (stats) =>
+                      _BudgetOverviewCard(budget: budget, stats: stats),
                   loading: () => const _LoadingCard(),
-                  error: (_, _) => const _ErrorCard(message: 'Failed to load stats'),
+                  error: (_, _) =>
+                      const _ErrorCard(message: 'Failed to load stats'),
                 ),
                 loading: () => const _LoadingCard(),
-                error: (_, _) => const _ErrorCard(message: 'Failed to load budget'),
+                error: (_, _) =>
+                    const _ErrorCard(message: 'Failed to load budget'),
               ),
               const SizedBox(height: 24),
 
@@ -72,15 +73,15 @@ class BudgetScreen extends ConsumerWidget {
               const SizedBox(height: 16),
               statsAsync.when(
                 data: (stats) => budgetAsync.when(
-                  data: (budget) => _SpendingBreakdownCard(
-                    stats: stats,
-                    budget: budget,
-                  ),
+                  data: (budget) =>
+                      _SpendingBreakdownCard(stats: stats, budget: budget),
                   loading: () => const _LoadingCard(),
-                  error: (_, _) => const _ErrorCard(message: 'Failed to load budget'),
+                  error: (_, _) =>
+                      const _ErrorCard(message: 'Failed to load budget'),
                 ),
                 loading: () => const _LoadingCard(),
-                error: (_, _) => const _ErrorCard(message: 'Failed to load stats'),
+                error: (_, _) =>
+                    const _ErrorCard(message: 'Failed to load stats'),
               ),
               const SizedBox(height: 24),
 
@@ -89,15 +90,15 @@ class BudgetScreen extends ConsumerWidget {
               const SizedBox(height: 16),
               budgetAsync.when(
                 data: (budget) => statsAsync.when(
-                  data: (stats) => _CategoryDetailsGrid(
-                    budget: budget,
-                    stats: stats,
-                  ),
+                  data: (stats) =>
+                      _CategoryDetailsGrid(budget: budget, stats: stats),
                   loading: () => const _LoadingCard(),
-                  error: (_, _) => const _ErrorCard(message: 'Failed to load stats'),
+                  error: (_, _) =>
+                      const _ErrorCard(message: 'Failed to load stats'),
                 ),
                 loading: () => const _LoadingCard(),
-                error: (_, _) => const _ErrorCard(message: 'Failed to load budget'),
+                error: (_, _) =>
+                    const _ErrorCard(message: 'Failed to load budget'),
               ),
               const SizedBox(height: 32),
             ],
@@ -107,14 +108,28 @@ class BudgetScreen extends ConsumerWidget {
     );
   }
 
-  void _showEditBudgetDialog(BuildContext context, WidgetRef ref, FamilyBudgetModel? budget) {
+  void _showEditBudgetDialog(
+    BuildContext context,
+    WidgetRef ref,
+    FamilyBudgetModel? budget,
+  ) {
     if (budget == null) return;
 
-    final giftController = TextEditingController(text: budget.giftBudgetTotal.toStringAsFixed(0));
-    final mealEveController = TextEditingController(text: budget.mealBudgetEve.toStringAsFixed(0));
-    final mealDayController = TextEditingController(text: budget.mealBudgetDay.toStringAsFixed(0));
-    final decorationsController = TextEditingController(text: budget.decorationsBudget.toStringAsFixed(0));
-    final activitiesController = TextEditingController(text: budget.activitiesBudget.toStringAsFixed(0));
+    final giftController = TextEditingController(
+      text: budget.giftBudgetTotal.toStringAsFixed(0),
+    );
+    final mealEveController = TextEditingController(
+      text: budget.mealBudgetEve.toStringAsFixed(0),
+    );
+    final mealDayController = TextEditingController(
+      text: budget.mealBudgetDay.toStringAsFixed(0),
+    );
+    final decorationsController = TextEditingController(
+      text: budget.decorationsBudget.toStringAsFixed(0),
+    );
+    final activitiesController = TextEditingController(
+      text: budget.activitiesBudget.toStringAsFixed(0),
+    );
 
     showDialog(
       context: context,
@@ -167,9 +182,15 @@ class BudgetScreen extends ConsumerWidget {
           ElevatedButton(
             onPressed: () async {
               final updatedBudget = budget.copyWith(
-                giftBudgetTotal: double.tryParse(giftController.text) ?? budget.giftBudgetTotal,
-                mealBudgetEve: double.tryParse(mealEveController.text) ?? budget.mealBudgetEve,
-                mealBudgetDay: double.tryParse(mealDayController.text) ?? budget.mealBudgetDay,
+                giftBudgetTotal:
+                    double.tryParse(giftController.text) ??
+                    budget.giftBudgetTotal,
+                mealBudgetEve:
+                    double.tryParse(mealEveController.text) ??
+                    budget.mealBudgetEve,
+                mealBudgetDay:
+                    double.tryParse(mealDayController.text) ??
+                    budget.mealBudgetDay,
                 decorationsBudget: double.tryParse(decorationsController.text),
                 activitiesBudget: double.tryParse(activitiesController.text),
               );
@@ -182,7 +203,9 @@ class BudgetScreen extends ConsumerWidget {
                 if (context.mounted) {
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Budget updated successfully')),
+                    const SnackBar(
+                      content: Text('Budget updated successfully'),
+                    ),
                   );
                 }
               } catch (e) {
@@ -230,16 +253,15 @@ class _BudgetOverviewCard extends StatelessWidget {
   final FamilyBudgetModel? budget;
   final Map<String, dynamic> stats;
 
-  const _BudgetOverviewCard({
-    required this.budget,
-    required this.stats,
-  });
+  const _BudgetOverviewCard({required this.budget, required this.stats});
 
   @override
   Widget build(BuildContext context) {
     final totalBudget = budget?.totalBudget ?? 0.0;
     final totalSpent = (stats['totalSpent'] as double?) ?? 0.0;
-    final percentage = totalBudget > 0 ? (totalSpent / totalBudget).clamp(0.0, 1.0) : 0.0;
+    final percentage = totalBudget > 0
+        ? (totalSpent / totalBudget).clamp(0.0, 1.0)
+        : 0.0;
     final remaining = totalBudget - totalSpent;
 
     return Container(
@@ -264,7 +286,10 @@ class _BudgetOverviewCard extends StatelessWidget {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   color: remaining >= 0
                       ? FrostedHearthColors.success.withValues(alpha: 0.2)
@@ -303,7 +328,9 @@ class _BudgetOverviewCard extends StatelessWidget {
                       'of ${AppDateUtils.formatCurrency(totalBudget)}',
                       style: GoogleFonts.sourceSerif4(
                         fontSize: 14,
-                        color: FrostedHearthColors.frostGold.withValues(alpha: 0.7),
+                        color: FrostedHearthColors.frostGold.withValues(
+                          alpha: 0.7,
+                        ),
                       ),
                     ),
                   ],
@@ -358,10 +385,7 @@ class _SpendingBreakdownCard extends StatelessWidget {
   final Map<String, dynamic> stats;
   final FamilyBudgetModel? budget;
 
-  const _SpendingBreakdownCard({
-    required this.stats,
-    required this.budget,
-  });
+  const _SpendingBreakdownCard({required this.stats, required this.budget});
 
   @override
   Widget build(BuildContext context) {
@@ -388,10 +412,7 @@ class _SpendingBreakdownCard extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           if (total > 0)
-            BudgetStackedBar(
-              categories: categories,
-              total: total,
-            )
+            BudgetStackedBar(categories: categories, total: total)
           else
             Center(
               child: Padding(
@@ -424,10 +445,7 @@ class _CategoryDetailsGrid extends StatelessWidget {
   final FamilyBudgetModel? budget;
   final Map<String, dynamic> stats;
 
-  const _CategoryDetailsGrid({
-    required this.budget,
-    required this.stats,
-  });
+  const _CategoryDetailsGrid({required this.budget, required this.stats});
 
   @override
   Widget build(BuildContext context) {
@@ -605,9 +623,16 @@ class _ErrorCard extends StatelessWidget {
           padding: const EdgeInsets.all(32),
           child: Column(
             children: [
-              const Icon(Icons.error_outline, size: 48, color: FrostedHearthColors.error),
+              const Icon(
+                Icons.error_outline,
+                size: 48,
+                color: FrostedHearthColors.error,
+              ),
               const SizedBox(height: 16),
-              Text(message, style: const TextStyle(color: FrostedHearthColors.error)),
+              Text(
+                message,
+                style: const TextStyle(color: FrostedHearthColors.error),
+              ),
             ],
           ),
         ),

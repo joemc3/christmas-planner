@@ -22,7 +22,10 @@ final recipientsStreamProvider = StreamProvider<List<RecipientModel>>((ref) {
 });
 
 // Recipient by ID Provider
-final recipientByIdProvider = FutureProvider.family<RecipientModel?, String>((ref, id) async {
+final recipientByIdProvider = FutureProvider.family<RecipientModel?, String>((
+  ref,
+  id,
+) async {
   final repo = ref.watch(recipientRepositoryProvider);
   return await repo.getRecipientById(id);
 });
@@ -34,19 +37,26 @@ final giftsStreamProvider = StreamProvider<List<GiftModel>>((ref) {
 });
 
 // Gifts by Recipient Provider
-final giftsByRecipientProvider = StreamProvider.family<List<GiftModel>, String>((ref, recipientId) {
-  final repo = ref.watch(giftRepositoryProvider);
-  return repo.watchGiftsByRecipient(recipientId);
-});
+final giftsByRecipientProvider = StreamProvider.family<List<GiftModel>, String>(
+  (ref, recipientId) {
+    final repo = ref.watch(giftRepositoryProvider);
+    return repo.watchGiftsByRecipient(recipientId);
+  },
+);
 
 // Gift by ID Provider
-final giftByIdProvider = FutureProvider.family<GiftModel?, String>((ref, id) async {
+final giftByIdProvider = FutureProvider.family<GiftModel?, String>((
+  ref,
+  id,
+) async {
   final repo = ref.watch(giftRepositoryProvider);
   return await repo.getGiftById(id);
 });
 
 // Gift Budget Stats Provider
-final giftBudgetStatsProvider = FutureProvider<Map<String, double>>((ref) async {
+final giftBudgetStatsProvider = FutureProvider<Map<String, double>>((
+  ref,
+) async {
   final repo = ref.watch(giftRepositoryProvider);
   return await repo.calculateGiftBudgetStats();
 });
@@ -65,7 +75,11 @@ class RecipientController {
     try {
       return await _repository.createRecipient(recipient);
     } catch (e, stackTrace) {
-      AppLogger.error('Failed to create recipient', error: e, stackTrace: stackTrace);
+      AppLogger.error(
+        'Failed to create recipient',
+        error: e,
+        stackTrace: stackTrace,
+      );
       rethrow;
     }
   }
@@ -74,7 +88,11 @@ class RecipientController {
     try {
       return await _repository.updateRecipient(recipient);
     } catch (e, stackTrace) {
-      AppLogger.error('Failed to update recipient', error: e, stackTrace: stackTrace);
+      AppLogger.error(
+        'Failed to update recipient',
+        error: e,
+        stackTrace: stackTrace,
+      );
       rethrow;
     }
   }
@@ -83,7 +101,11 @@ class RecipientController {
     try {
       await _repository.deleteRecipient(id);
     } catch (e, stackTrace) {
-      AppLogger.error('Failed to delete recipient', error: e, stackTrace: stackTrace);
+      AppLogger.error(
+        'Failed to delete recipient',
+        error: e,
+        stackTrace: stackTrace,
+      );
       rethrow;
     }
   }
@@ -92,7 +114,11 @@ class RecipientController {
     try {
       await _repository.archiveRecipient(id, archive);
     } catch (e, stackTrace) {
-      AppLogger.error('Failed to archive recipient', error: e, stackTrace: stackTrace);
+      AppLogger.error(
+        'Failed to archive recipient',
+        error: e,
+        stackTrace: stackTrace,
+      );
       rethrow;
     }
   }
@@ -112,7 +138,11 @@ class GiftController {
     try {
       return await _repository.createGift(gift);
     } catch (e, stackTrace) {
-      AppLogger.error('Failed to create gift', error: e, stackTrace: stackTrace);
+      AppLogger.error(
+        'Failed to create gift',
+        error: e,
+        stackTrace: stackTrace,
+      );
       rethrow;
     }
   }
@@ -121,7 +151,11 @@ class GiftController {
     try {
       return await _repository.updateGift(gift);
     } catch (e, stackTrace) {
-      AppLogger.error('Failed to update gift', error: e, stackTrace: stackTrace);
+      AppLogger.error(
+        'Failed to update gift',
+        error: e,
+        stackTrace: stackTrace,
+      );
       rethrow;
     }
   }
@@ -130,7 +164,11 @@ class GiftController {
     try {
       await _repository.deleteGift(id);
     } catch (e, stackTrace) {
-      AppLogger.error('Failed to delete gift', error: e, stackTrace: stackTrace);
+      AppLogger.error(
+        'Failed to delete gift',
+        error: e,
+        stackTrace: stackTrace,
+      );
       rethrow;
     }
   }
@@ -139,7 +177,11 @@ class GiftController {
     try {
       await _repository.updateGiftStatus(id, status);
     } catch (e, stackTrace) {
-      AppLogger.error('Failed to update gift status', error: e, stackTrace: stackTrace);
+      AppLogger.error(
+        'Failed to update gift status',
+        error: e,
+        stackTrace: stackTrace,
+      );
       rethrow;
     }
   }

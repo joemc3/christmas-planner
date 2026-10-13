@@ -38,11 +38,9 @@ class UserProfile extends Equatable {
       timezone: json['timezone'] as String? ?? 'UTC',
       currency: json['currency'] as String? ?? 'USD',
       defaultShippingDays: json['default_shipping_days'] as int? ?? 7,
-      notificationPreferences: json['notification_preferences'] as Map<String, dynamic>? ?? const {
-        'email': true,
-        'push': true,
-        'reminders': true,
-      },
+      notificationPreferences:
+          json['notification_preferences'] as Map<String, dynamic>? ??
+          const {'email': true, 'push': true, 'reminders': true},
       createdAt: DateTime.parse(json['created_at'] as String),
       updatedAt: DateTime.parse(json['updated_at'] as String),
     );
@@ -83,7 +81,8 @@ class UserProfile extends Equatable {
       timezone: timezone ?? this.timezone,
       currency: currency ?? this.currency,
       defaultShippingDays: defaultShippingDays ?? this.defaultShippingDays,
-      notificationPreferences: notificationPreferences ?? this.notificationPreferences,
+      notificationPreferences:
+          notificationPreferences ?? this.notificationPreferences,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -91,15 +90,15 @@ class UserProfile extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        email,
-        fullName,
-        avatarUrl,
-        timezone,
-        currency,
-        defaultShippingDays,
-        notificationPreferences,
-        createdAt,
-        updatedAt,
-      ];
+    id,
+    email,
+    fullName,
+    avatarUrl,
+    timezone,
+    currency,
+    defaultShippingDays,
+    notificationPreferences,
+    createdAt,
+    updatedAt,
+  ];
 }

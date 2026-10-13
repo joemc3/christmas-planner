@@ -15,12 +15,7 @@ class GiftsScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Gift Planning'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () {},
-          ),
-        ],
+        actions: [IconButton(icon: const Icon(Icons.search), onPressed: () {})],
       ),
       body: recipientsAsync.when(
         data: (recipients) {
@@ -29,7 +24,11 @@ class GiftsScreen extends ConsumerWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.card_giftcard, size: 64, color: AppTheme.lightGrey),
+                  const Icon(
+                    Icons.card_giftcard,
+                    size: 64,
+                    color: AppTheme.lightGrey,
+                  ),
                   const SizedBox(height: 16),
                   const Text('No recipients yet'),
                   const SizedBox(height: 8),
@@ -58,7 +57,9 @@ class GiftsScreen extends ConsumerWidget {
                     ),
                   ),
                   title: Text(recipient.name),
-                  subtitle: Text('Budget: \$${recipient.budgetLimit.toStringAsFixed(2)}'),
+                  subtitle: Text(
+                    'Budget: \$${recipient.budgetLimit.toStringAsFixed(2)}',
+                  ),
                   trailing: const Icon(Icons.arrow_forward_ios),
                   onTap: () => context.push('/gifts/recipient/${recipient.id}'),
                 ),

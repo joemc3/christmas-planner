@@ -8,7 +8,7 @@ class BudgetRepository {
   final SupabaseClient _supabase;
 
   BudgetRepository({SupabaseClient? supabaseClient})
-      : _supabase = supabaseClient ?? Supabase.instance.client;
+    : _supabase = supabaseClient ?? Supabase.instance.client;
 
   Future<FamilyBudgetModel?> getCurrentYearBudget() async {
     try {
@@ -28,16 +28,18 @@ class BudgetRepository {
 
       if (response == null) {
         // Create default budget for current year
-        return await createBudget(FamilyBudgetModel(
-          id: '',
-          userId: userId,
-          giftBudgetTotal: 1000.0,
-          mealBudgetEve: 300.0,
-          mealBudgetDay: 500.0,
-          year: currentYear,
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now(),
-        ));
+        return await createBudget(
+          FamilyBudgetModel(
+            id: '',
+            userId: userId,
+            giftBudgetTotal: 1000.0,
+            mealBudgetEve: 300.0,
+            mealBudgetDay: 500.0,
+            year: currentYear,
+            createdAt: DateTime.now(),
+            updatedAt: DateTime.now(),
+          ),
+        );
       }
 
       final budget = FamilyBudgetModel.fromJson(response);
@@ -47,7 +49,11 @@ class BudgetRepository {
       AppLogger.error('Failed to fetch budget', error: e);
       throw DatabaseException(message: e.message, error: e);
     } catch (e, stackTrace) {
-      AppLogger.error('Unexpected error fetching budget', error: e, stackTrace: stackTrace);
+      AppLogger.error(
+        'Unexpected error fetching budget',
+        error: e,
+        stackTrace: stackTrace,
+      );
       throw DatabaseException(message: 'Failed to fetch budget', error: e);
     }
   }
@@ -66,7 +72,9 @@ class BudgetRepository {
           .order('year', ascending: false);
 
       final budgets = (response as List)
-          .map((json) => FamilyBudgetModel.fromJson(json as Map<String, dynamic>))
+          .map(
+            (json) => FamilyBudgetModel.fromJson(json as Map<String, dynamic>),
+          )
           .toList();
 
       AppLogger.info('Fetched ${budgets.length} budgets');
@@ -75,7 +83,11 @@ class BudgetRepository {
       AppLogger.error('Failed to fetch budgets', error: e);
       throw DatabaseException(message: e.message, error: e);
     } catch (e, stackTrace) {
-      AppLogger.error('Unexpected error fetching budgets', error: e, stackTrace: stackTrace);
+      AppLogger.error(
+        'Unexpected error fetching budgets',
+        error: e,
+        stackTrace: stackTrace,
+      );
       throw DatabaseException(message: 'Failed to fetch budgets', error: e);
     }
   }
@@ -103,7 +115,11 @@ class BudgetRepository {
       AppLogger.error('Failed to create budget', error: e);
       throw DatabaseException(message: e.message, error: e);
     } catch (e, stackTrace) {
-      AppLogger.error('Unexpected error creating budget', error: e, stackTrace: stackTrace);
+      AppLogger.error(
+        'Unexpected error creating budget',
+        error: e,
+        stackTrace: stackTrace,
+      );
       throw DatabaseException(message: 'Failed to create budget', error: e);
     }
   }
@@ -130,7 +146,11 @@ class BudgetRepository {
       AppLogger.error('Failed to update budget', error: e);
       throw DatabaseException(message: e.message, error: e);
     } catch (e, stackTrace) {
-      AppLogger.error('Unexpected error updating budget', error: e, stackTrace: stackTrace);
+      AppLogger.error(
+        'Unexpected error updating budget',
+        error: e,
+        stackTrace: stackTrace,
+      );
       throw DatabaseException(message: 'Failed to update budget', error: e);
     }
   }
@@ -153,7 +173,11 @@ class BudgetRepository {
       AppLogger.error('Failed to delete budget', error: e);
       throw DatabaseException(message: e.message, error: e);
     } catch (e, stackTrace) {
-      AppLogger.error('Unexpected error deleting budget', error: e, stackTrace: stackTrace);
+      AppLogger.error(
+        'Unexpected error deleting budget',
+        error: e,
+        stackTrace: stackTrace,
+      );
       throw DatabaseException(message: 'Failed to delete budget', error: e);
     }
   }
@@ -161,7 +185,9 @@ class BudgetRepository {
   Stream<FamilyBudgetModel?> watchCurrentYearBudget() {
     final userId = _supabase.auth.currentUser?.id;
     if (userId == null) {
-      return Stream.error(const AuthenticationException(message: 'User not authenticated'));
+      return Stream.error(
+        const AuthenticationException(message: 'User not authenticated'),
+      );
     }
 
     final currentYear = DateTime.now().year;
@@ -193,7 +219,10 @@ class BudgetRepository {
       double giftSpent = 0.0;
       for (final gift in (giftsResponse as List).cast<Map<String, dynamic>>()) {
         final status = gift['status'] as String;
-        if (status == 'Ordered' || status == 'Purchased' || status == 'Wrapped' || status == 'Delivered') {
+        if (status == 'Ordered' ||
+            status == 'Purchased' ||
+            status == 'Wrapped' ||
+            status == 'Delivered') {
           final actualPrice = (gift['actual_price'] as num?)?.toDouble();
           final price = (gift['price'] as num).toDouble();
           giftSpent += actualPrice ?? price;
@@ -226,7 +255,8 @@ class BudgetRepository {
       double activitiesSpent = 0.0;
       double miscellaneousSpent = 0.0;
 
-      for (final expense in (expensesResponse as List).cast<Map<String, dynamic>>()) {
+      for (final expense
+          in (expensesResponse as List).cast<Map<String, dynamic>>()) {
         final amount = (expense['amount'] as num).toDouble();
         final category = expense['category'] as String;
 
@@ -248,10 +278,19 @@ class BudgetRepository {
         'decorationsSpent': decorationsSpent,
         'activitiesSpent': activitiesSpent,
         'miscellaneousSpent': miscellaneousSpent,
-        'totalSpent': giftSpent + mealSpent + decorationsSpent + activitiesSpent + miscellaneousSpent,
+        'totalSpent':
+            giftSpent +
+            mealSpent +
+            decorationsSpent +
+            activitiesSpent +
+            miscellaneousSpent,
       };
     } catch (e, stackTrace) {
-      AppLogger.error('Failed to calculate budget stats', error: e, stackTrace: stackTrace);
+      AppLogger.error(
+        'Failed to calculate budget stats',
+        error: e,
+        stackTrace: stackTrace,
+      );
       return {
         'giftSpent': 0.0,
         'mealSpent': 0.0,

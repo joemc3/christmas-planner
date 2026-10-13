@@ -19,7 +19,8 @@ class AppConstants {
   static const String supabaseAnonKey = kDebugMode
       ? String.fromEnvironment(
           'SUPABASE_ANON_KEY',
-          defaultValue: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0',
+          defaultValue:
+              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0',
         )
       : String.fromEnvironment('SUPABASE_ANON_KEY');
 
@@ -138,12 +139,7 @@ class AppConstants {
     'Other',
   ];
 
-  static const List<String> priorities = [
-    'Low',
-    'Medium',
-    'High',
-    'Critical',
-  ];
+  static const List<String> priorities = ['Low', 'Medium', 'High', 'Critical'];
 
   static const List<String> paymentMethods = [
     'Cash',
@@ -177,10 +173,12 @@ class AppConstants {
 
   // Error Messages
   static const String errorGeneric = 'Something went wrong. Please try again.';
-  static const String errorNetwork = 'Network error. Please check your connection.';
+  static const String errorNetwork =
+      'Network error. Please check your connection.';
   static const String errorUnauthorized = 'Unauthorized. Please sign in again.';
   static const String errorNotFound = 'Resource not found.';
-  static const String errorValidation = 'Please check your input and try again.';
+  static const String errorValidation =
+      'Please check your input and try again.';
   static const String errorTimeout = 'Request timed out. Please try again.';
 
   // Success Messages
@@ -196,10 +194,6 @@ class AppConstants {
   static final RegExp urlRegex = RegExp(
     r'^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)$',
   );
-  static final RegExp phoneRegex = RegExp(
-    r'^\+?[\d\s\-\(\)]+$',
-  );
-  static final RegExp priceRegex = RegExp(
-    r'^\d+(\.\d{1,2})?$',
-  );
+  static final RegExp phoneRegex = RegExp(r'^\+?[\d\s\-\(\)]+$');
+  static final RegExp priceRegex = RegExp(r'^\d+(\.\d{1,2})?$');
 }

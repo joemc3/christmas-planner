@@ -118,16 +118,16 @@ class FamilyBudgetModel extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        userId,
-        giftBudgetTotal,
-        mealBudgetEve,
-        mealBudgetDay,
-        decorationsBudget,
-        activitiesBudget,
-        miscellaneousBudget,
-        year,
-        createdAt,
-        updatedAt,
-      ];
+    id,
+    userId,
+    giftBudgetTotal,
+    mealBudgetEve,
+    mealBudgetDay,
+    decorationsBudget,
+    activitiesBudget,
+    miscellaneousBudget,
+    year,
+    createdAt,
+    updatedAt,
+  ];
 }

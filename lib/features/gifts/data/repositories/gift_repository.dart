@@ -8,7 +8,7 @@ class GiftRepository {
   final SupabaseClient _supabase;
 
   GiftRepository({SupabaseClient? supabaseClient})
-      : _supabase = supabaseClient ?? Supabase.instance.client;
+    : _supabase = supabaseClient ?? Supabase.instance.client;
 
   Future<List<GiftModel>> getGifts() async {
     try {
@@ -24,13 +24,11 @@ class GiftRepository {
           .order('priority', ascending: false)
           .order('created_at', ascending: false);
 
-      final gifts = (response as List)
-          .map((json) {
-            final giftJson = Map<String, dynamic>.from(json as Map);
-            giftJson.remove('recipients');
-            return GiftModel.fromJson(giftJson);
-          })
-          .toList();
+      final gifts = (response as List).map((json) {
+        final giftJson = Map<String, dynamic>.from(json as Map);
+        giftJson.remove('recipients');
+        return GiftModel.fromJson(giftJson);
+      }).toList();
 
       AppLogger.info('Fetched ${gifts.length} gifts');
       return gifts;
@@ -38,7 +36,11 @@ class GiftRepository {
       AppLogger.error('Failed to fetch gifts', error: e);
       throw DatabaseException(message: e.message, error: e);
     } catch (e, stackTrace) {
-      AppLogger.error('Unexpected error fetching gifts', error: e, stackTrace: stackTrace);
+      AppLogger.error(
+        'Unexpected error fetching gifts',
+        error: e,
+        stackTrace: stackTrace,
+      );
       throw DatabaseException(message: 'Failed to fetch gifts', error: e);
     }
   }
@@ -56,14 +58,23 @@ class GiftRepository {
           .map((json) => GiftModel.fromJson(json as Map<String, dynamic>))
           .toList();
 
-      AppLogger.info('Fetched ${gifts.length} gifts for recipient $recipientId');
+      AppLogger.info(
+        'Fetched ${gifts.length} gifts for recipient $recipientId',
+      );
       return gifts;
     } on PostgrestException catch (e) {
       AppLogger.error('Failed to fetch gifts by recipient', error: e);
       throw DatabaseException(message: e.message, error: e);
     } catch (e, stackTrace) {
-      AppLogger.error('Unexpected error fetching gifts by recipient', error: e, stackTrace: stackTrace);
-      throw DatabaseException(message: 'Failed to fetch gifts by recipient', error: e);
+      AppLogger.error(
+        'Unexpected error fetching gifts by recipient',
+        error: e,
+        stackTrace: stackTrace,
+      );
+      throw DatabaseException(
+        message: 'Failed to fetch gifts by recipient',
+        error: e,
+      );
     }
   }
 
@@ -84,7 +95,11 @@ class GiftRepository {
       AppLogger.error('Failed to fetch gift', error: e);
       throw DatabaseException(message: e.message, error: e);
     } catch (e, stackTrace) {
-      AppLogger.error('Unexpected error fetching gift', error: e, stackTrace: stackTrace);
+      AppLogger.error(
+        'Unexpected error fetching gift',
+        error: e,
+        stackTrace: stackTrace,
+      );
       throw DatabaseException(message: 'Failed to fetch gift', error: e);
     }
   }
@@ -104,7 +119,11 @@ class GiftRepository {
       AppLogger.error('Failed to create gift', error: e);
       throw DatabaseException(message: e.message, error: e);
     } catch (e, stackTrace) {
-      AppLogger.error('Unexpected error creating gift', error: e, stackTrace: stackTrace);
+      AppLogger.error(
+        'Unexpected error creating gift',
+        error: e,
+        stackTrace: stackTrace,
+      );
       throw DatabaseException(message: 'Failed to create gift', error: e);
     }
   }
@@ -125,24 +144,29 @@ class GiftRepository {
       AppLogger.error('Failed to update gift', error: e);
       throw DatabaseException(message: e.message, error: e);
     } catch (e, stackTrace) {
-      AppLogger.error('Unexpected error updating gift', error: e, stackTrace: stackTrace);
+      AppLogger.error(
+        'Unexpected error updating gift',
+        error: e,
+        stackTrace: stackTrace,
+      );
       throw DatabaseException(message: 'Failed to update gift', error: e);
     }
   }
 
   Future<void> deleteGift(String id) async {
     try {
-      await _supabase
-          .from('gifts')
-          .delete()
-          .eq('id', id);
+      await _supabase.from('gifts').delete().eq('id', id);
 
       AppLogger.info('Deleted gift: $id');
     } on PostgrestException catch (e) {
       AppLogger.error('Failed to delete gift', error: e);
       throw DatabaseException(message: e.message, error: e);
     } catch (e, stackTrace) {
-      AppLogger.error('Unexpected error deleting gift', error: e, stackTrace: stackTrace);
+      AppLogger.error(
+        'Unexpected error deleting gift',
+        error: e,
+        stackTrace: stackTrace,
+      );
       throw DatabaseException(message: 'Failed to delete gift', error: e);
     }
   }
@@ -159,8 +183,15 @@ class GiftRepository {
       AppLogger.error('Failed to update gift status', error: e);
       throw DatabaseException(message: e.message, error: e);
     } catch (e, stackTrace) {
-      AppLogger.error('Unexpected error updating gift status', error: e, stackTrace: stackTrace);
-      throw DatabaseException(message: 'Failed to update gift status', error: e);
+      AppLogger.error(
+        'Unexpected error updating gift status',
+        error: e,
+        stackTrace: stackTrace,
+      );
+      throw DatabaseException(
+        message: 'Failed to update gift status',
+        error: e,
+      );
     }
   }
 
@@ -177,7 +208,9 @@ class GiftRepository {
   Stream<List<GiftModel>> watchAllGifts() {
     final userId = _supabase.auth.currentUser?.id;
     if (userId == null) {
-      return Stream.error(const AuthenticationException(message: 'User not authenticated'));
+      return Stream.error(
+        const AuthenticationException(message: 'User not authenticated'),
+      );
     }
 
     // Note: Streaming with joins is limited in Supabase, so we fetch all gifts
@@ -212,16 +245,14 @@ class GiftRepository {
         }
       }
 
-      return {
-        'totalSpent': totalSpent,
-        'totalPlanned': totalPlanned,
-      };
+      return {'totalSpent': totalSpent, 'totalPlanned': totalPlanned};
     } catch (e, stackTrace) {
-      AppLogger.error('Failed to calculate gift budget stats', error: e, stackTrace: stackTrace);
-      return {
-        'totalSpent': 0.0,
-        'totalPlanned': 0.0,
-      };
+      AppLogger.error(
+        'Failed to calculate gift budget stats',
+        error: e,
+        stackTrace: stackTrace,
+      );
+      return {'totalSpent': 0.0, 'totalPlanned': 0.0};
     }
   }
 }

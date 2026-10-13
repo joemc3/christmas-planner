@@ -9,12 +9,8 @@ class GiftDetailScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Gift Details'),
-      ),
-      body: const Center(
-        child: Text('Gift detail view'),
-      ),
+      appBar: AppBar(title: const Text('Gift Details')),
+      body: const Center(child: Text('Gift detail view')),
     );
   }
 }

@@ -14,7 +14,9 @@ final calendarRepositoryProvider = Provider<CalendarRepository>((ref) {
   return CalendarRepository();
 });
 
-final calendarEventsProvider = FutureProvider<List<CalendarEventModel>>((ref) async {
+final calendarEventsProvider = FutureProvider<List<CalendarEventModel>>((
+  ref,
+) async {
   final repository = ref.watch(calendarRepositoryProvider);
   final now = DateTime.now();
   final startDate = DateTime(now.year, now.month - 3, 1);
@@ -22,7 +24,9 @@ final calendarEventsProvider = FutureProvider<List<CalendarEventModel>>((ref) as
   return repository.getEvents(startDate: startDate, endDate: endDate);
 });
 
-final upcomingEventsProvider = FutureProvider<List<CalendarEventModel>>((ref) async {
+final upcomingEventsProvider = FutureProvider<List<CalendarEventModel>>((
+  ref,
+) async {
   final repository = ref.watch(calendarRepositoryProvider);
   return repository.getUpcomingEvents(limit: 5);
 });
@@ -106,11 +110,14 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                       const SizedBox(height: 12),
                       eventsAsync.when(
                         data: (events) {
-                          final dayEvents = events.where((e) =>
-                            e.eventDate.year == _selectedDay!.year &&
-                            e.eventDate.month == _selectedDay!.month &&
-                            e.eventDate.day == _selectedDay!.day
-                          ).toList();
+                          final dayEvents = events
+                              .where(
+                                (e) =>
+                                    e.eventDate.year == _selectedDay!.year &&
+                                    e.eventDate.month == _selectedDay!.month &&
+                                    e.eventDate.day == _selectedDay!.day,
+                              )
+                              .toList();
 
                           if (dayEvents.isEmpty) {
                             return FrostedCard(
@@ -139,12 +146,19 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                           }
 
                           return Column(
-                            children: dayEvents.map((event) =>
-                              _EventCard(event: event, onTap: () => _showEventDetails(context, event))
-                            ).toList(),
+                            children: dayEvents
+                                .map(
+                                  (event) => _EventCard(
+                                    event: event,
+                                    onTap: () =>
+                                        _showEventDetails(context, event),
+                                  ),
+                                )
+                                .toList(),
                           );
                         },
-                        loading: () => const Center(child: CircularProgressIndicator()),
+                        loading: () =>
+                            const Center(child: CircularProgressIndicator()),
                         error: (_, _) => const Text('Failed to load events'),
                       ),
                     ],
@@ -165,7 +179,8 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                           return EmptyState(
                             icon: Icons.calendar_today,
                             title: 'No upcoming events',
-                            subtitle: 'Add events to keep track of your holiday plans',
+                            subtitle:
+                                'Add events to keep track of your holiday plans',
                             actionText: 'Add Event',
                             onAction: () => _showAddEventDialog(context, ref),
                           );
@@ -200,11 +215,14 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
 
   Widget _buildCalendarCard(List<CalendarEventModel> events) {
     List<CalendarEventModel> getEventsForDay(DateTime day) {
-      return events.where((e) =>
-        e.eventDate.year == day.year &&
-        e.eventDate.month == day.month &&
-        e.eventDate.day == day.day
-      ).toList();
+      return events
+          .where(
+            (e) =>
+                e.eventDate.year == day.year &&
+                e.eventDate.month == day.month &&
+                e.eventDate.day == day.day,
+          )
+          .toList();
     }
 
     return Container(
@@ -225,7 +243,9 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
         startingDayOfWeek: StartingDayOfWeek.sunday,
         calendarStyle: CalendarStyle(
           outsideDaysVisible: false,
-          weekendTextStyle: GoogleFonts.dmMono(color: FrostedHearthColors.winterBerry),
+          weekendTextStyle: GoogleFonts.dmMono(
+            color: FrostedHearthColors.winterBerry,
+          ),
           todayDecoration: BoxDecoration(
             color: FrostedHearthColors.ember.withValues(alpha: 0.3),
             shape: BoxShape.circle,
@@ -268,8 +288,14 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
             fontWeight: FontWeight.w600,
             color: FrostedHearthColors.inkDark,
           ),
-          leftChevronIcon: const Icon(Icons.chevron_left, color: FrostedHearthColors.spruce),
-          rightChevronIcon: const Icon(Icons.chevron_right, color: FrostedHearthColors.spruce),
+          leftChevronIcon: const Icon(
+            Icons.chevron_left,
+            color: FrostedHearthColors.spruce,
+          ),
+          rightChevronIcon: const Icon(
+            Icons.chevron_right,
+            color: FrostedHearthColors.spruce,
+          ),
         ),
         daysOfWeekStyle: DaysOfWeekStyle(
           weekdayStyle: GoogleFonts.dmMono(
@@ -335,16 +361,24 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                     color: FrostedHearthColors.ember.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: const Icon(Icons.event, color: FrostedHearthColors.ember),
+                  child: const Icon(
+                    Icons.event,
+                    color: FrostedHearthColors.ember,
+                  ),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(event.title, style: Theme.of(context).textTheme.titleLarge),
                       Text(
-                        DateFormat('EEEE, MMMM d, yyyy').format(event.eventDate),
+                        event.title,
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                      Text(
+                        DateFormat(
+                          'EEEE, MMMM d, yyyy',
+                        ).format(event.eventDate),
                         style: GoogleFonts.dmMono(
                           fontSize: 12,
                           color: FrostedHearthColors.inkMedium,
@@ -404,7 +438,10 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setState) => AlertDialog(
-          title: Text('Add Event', style: GoogleFonts.fraunces(fontWeight: FontWeight.w600)),
+          title: Text(
+            'Add Event',
+            style: GoogleFonts.fraunces(fontWeight: FontWeight.w600),
+          ),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -454,7 +491,9 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
               onPressed: () async {
                 if (titleController.text.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Please enter an event title')),
+                    const SnackBar(
+                      content: Text('Please enter an event title'),
+                    ),
                   );
                   return;
                 }
@@ -463,7 +502,9 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                   id: '',
                   userId: '',
                   title: titleController.text,
-                  description: descriptionController.text.isNotEmpty ? descriptionController.text : null,
+                  description: descriptionController.text.isNotEmpty
+                      ? descriptionController.text
+                      : null,
                   eventDate: selectedDate,
                   createdAt: DateTime.now(),
                   updatedAt: DateTime.now(),
@@ -527,17 +568,26 @@ class _EventCard extends StatelessWidget {
                 children: [
                   Text(
                     event.title,
-                    style: GoogleFonts.fraunces(fontSize: 16, fontWeight: FontWeight.w600),
+                    style: GoogleFonts.fraunces(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                   if (event.eventTime != null)
                     Text(
                       DateFormat.jm().format(event.eventTime!),
-                      style: GoogleFonts.dmMono(fontSize: 12, color: FrostedHearthColors.inkLight),
+                      style: GoogleFonts.dmMono(
+                        fontSize: 12,
+                        color: FrostedHearthColors.inkLight,
+                      ),
                     ),
                 ],
               ),
             ),
-            const Icon(Icons.chevron_right, color: FrostedHearthColors.inkLight),
+            const Icon(
+              Icons.chevron_right,
+              color: FrostedHearthColors.inkLight,
+            ),
           ],
         ),
       ),
@@ -558,7 +608,8 @@ class _TimelineView extends StatelessWidget {
       itemCount: events.length,
       itemBuilder: (context, index) {
         final event = events[index];
-        final isToday = event.eventDate.year == DateTime.now().year &&
+        final isToday =
+            event.eventDate.year == DateTime.now().year &&
             event.eventDate.month == DateTime.now().month &&
             event.eventDate.day == DateTime.now().day;
 
@@ -570,7 +621,10 @@ class _TimelineView extends StatelessWidget {
                 child: Column(
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 6,
+                      ),
                       decoration: BoxDecoration(
                         color: isToday
                             ? FrostedHearthColors.ember
@@ -594,7 +648,9 @@ class _TimelineView extends StatelessWidget {
                             style: GoogleFonts.sourceSerif4(
                               fontSize: 9,
                               color: isToday
-                                  ? FrostedHearthColors.frostGold.withValues(alpha: 0.8)
+                                  ? FrostedHearthColors.frostGold.withValues(
+                                      alpha: 0.8,
+                                    )
                                   : FrostedHearthColors.inkLight,
                             ),
                           ),
@@ -606,7 +662,9 @@ class _TimelineView extends StatelessWidget {
                         child: Container(
                           width: 2,
                           margin: const EdgeInsets.symmetric(vertical: 8),
-                          color: FrostedHearthColors.ember.withValues(alpha: 0.2),
+                          color: FrostedHearthColors.ember.withValues(
+                            alpha: 0.2,
+                          ),
                         ),
                       ),
                   ],

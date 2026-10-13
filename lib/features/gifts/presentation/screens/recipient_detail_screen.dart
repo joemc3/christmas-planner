@@ -17,12 +17,7 @@ class RecipientDetailScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Recipient Details'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.edit),
-            onPressed: () {},
-          ),
-        ],
+        actions: [IconButton(icon: const Icon(Icons.edit), onPressed: () {})],
       ),
       body: recipientAsync.when(
         data: (recipient) {
@@ -112,10 +107,10 @@ class RecipientDetailScreen extends ConsumerWidget {
                         return Card(
                           child: ListTile(
                             title: Text(gift.name),
-                            subtitle: Text('\$${gift.price.toStringAsFixed(2)}'),
-                            trailing: Chip(
-                              label: Text(gift.status.value),
+                            subtitle: Text(
+                              '\$${gift.price.toStringAsFixed(2)}',
                             ),
+                            trailing: Chip(label: Text(gift.status.value)),
                           ),
                         );
                       },

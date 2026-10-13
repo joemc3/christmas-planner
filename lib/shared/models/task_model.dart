@@ -132,19 +132,19 @@ class TaskModel extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        userId,
-        title,
-        description,
-        dueDate,
-        completed,
-        completedDate,
-        priority,
-        category,
-        assignedTo,
-        giftId,
-        mealId,
-        createdAt,
-        updatedAt,
-      ];
+    id,
+    userId,
+    title,
+    description,
+    dueDate,
+    completed,
+    completedDate,
+    priority,
+    category,
+    assignedTo,
+    giftId,
+    mealId,
+    createdAt,
+    updatedAt,
+  ];
 }
