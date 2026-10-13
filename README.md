@@ -1,167 +1,95 @@
 # Christmas Planner
 
-A comprehensive Christmas planning application for managing gifts, meals, budgets, and holiday timelines.
+Plan the whole Christmas in one place: who you are buying for and how much,
+what you are cooking and what it costs, one budget that rolls it all up, and a
+calendar that works back from 25 December.
 
-## Features
+Flutter web (mobile-capable) on a Supabase backend.
+Product spec and current feature status: [docs/SPEC.md](docs/SPEC.md).
 
-- **Gift Planning**: Track gifts for all recipients with budgets and purchase status
-- **Meal Planning**: Organize Christmas Eve and Christmas Day meals with guest counts and menus
-- **Budget Management**: Monitor spending across all categories with real-time updates
-- **Calendar**: Schedule important dates and deadlines
-- **Shopping Lists**: Consolidated shopping lists for all gifts and meals
-- **Timeline Calculator**: Automatic calculation of ordering deadlines based on shipping times
+## Status
 
-## Tech Stack
+- Compiles, analyzer clean, tests pass, builds for web (see CI).
+- Working today: accounts, recipients and gifts with status tracking and
+  per-person budgets, meals with menus and costs, yearly budget overview,
+  calendar events, shopping lists.
+- Not built yet: last-order-date warnings, shopping list from a meal, manual
+  expenses, household sharing. Full list in the spec.
 
-- **Frontend**: Flutter (Dart) - Cross-platform support for iOS, Android, and Web
-- **Backend**: Supabase (PostgreSQL) - Real-time database with authentication
-- **State Management**: Riverpod - Reactive state management
-- **Deployment**: Docker - Containerized deployment
+## Run it locally
 
-## Getting Started
+Prerequisites: [Flutter](https://docs.flutter.dev/get-started/install)
+(stable), [Docker](https://docs.docker.com/get-docker/), and the
+[Supabase CLI](https://supabase.com/docs/guides/local-development).
 
-### Prerequisites
-
-- Flutter SDK 3.2.0 or higher
-- Docker and Docker Compose (for local development)
-- Supabase account (or use local Supabase via Docker)
-
-### Installation
-
-1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/christmas-planner.git
-cd christmas-planner
-```
+# 1. Start the local Supabase stack (first run pulls ~3 GB of images)
+supabase start
+supabase status          # note "API URL" and "anon key"
 
-2. Install dependencies:
-```bash
+# 2. Run the app against it
 flutter pub get
+flutter run -d chrome \
+  --dart-define=SUPABASE_URL=http://127.0.0.1:54321 \
+  --dart-define=SUPABASE_ANON_KEY=<anon key from supabase status>
 ```
 
-3. Configure environment variables:
-Create a `.env` file in the root directory:
-```env
-SUPABASE_URL=your_supabase_url
-SUPABASE_ANON_KEY=your_supabase_anon_key
-```
+The migrations in `supabase/migrations/` are applied automatically by
+`supabase start`. Email confirmation is off in local config, so you can sign
+up with any address and sign in immediately.
 
-4. Run database migrations:
-Execute the SQL files in `supabase/migrations/` in your Supabase project.
+The values in `.env.example` are the standard local-development defaults and
+are also compiled in as fallbacks for debug builds, so for local work the two
+`--dart-define`s can be omitted.
 
-### Running the Application
+## Hosted Supabase
 
-#### Web
+1. Create a project at supabase.com.
+2. Link and push the schema: `supabase link --project-ref <ref>` then
+   `supabase db push`.
+3. In Authentication settings, enable the Email provider.
+4. Build with your project's URL and anon (publishable) key:
+
 ```bash
-flutter run -d chrome --dart-define=SUPABASE_URL=$SUPABASE_URL --dart-define=SUPABASE_ANON_KEY=$SUPABASE_ANON_KEY
+flutter build web --release \
+  --dart-define=SUPABASE_URL=https://<ref>.supabase.co \
+  --dart-define=SUPABASE_ANON_KEY=<anon key>
 ```
 
-#### Mobile
+Deploy `build/web/` to any static host, or build the Docker image:
+
 ```bash
-flutter run
+cp .env.example .env     # edit with the hosted values
+docker compose up --build   # serves on http://localhost:8080
 ```
 
-#### Docker
+## Development
+
 ```bash
-docker-compose up --build
-```
-
-The application will be available at `http://localhost:8080`
-
-## Testing
-
-Run unit tests:
-```bash
+flutter analyze --fatal-infos
 flutter test
+dart format lib test
 ```
 
-Run integration tests:
-```bash
-flutter test integration_test
-```
+CI (`.github/workflows/ci.yml`) runs format, analyze, tests, a release web
+build, and applies the SQL migrations to a fresh Postgres.
 
-## Project Structure
+Mobile: the project has no `android/` or `ios/` folders yet. Generate them
+with `flutter create --platforms android,ios .` when you want device builds;
+the Dart code is platform-neutral.
+
+## Layout
 
 ```
 lib/
-├── core/                 # Core utilities, constants, theme
-│   ├── constants/
-│   ├── errors/
-│   ├── theme/
-│   └── utils/
-├── features/            # Feature modules
-│   ├── auth/           # Authentication
-│   ├── dashboard/      # Main dashboard
-│   ├── gifts/          # Gift planning
-│   ├── meals/          # Meal planning
-│   ├── budget/         # Budget management
-│   ├── calendar/       # Calendar events
-│   ├── shopping/       # Shopping lists
-│   └── settings/       # App settings
-└── shared/             # Shared models and services
+  core/        constants, theme (Frosted Hearth design system), errors, utils, router
+  features/    auth, dashboard, gifts, meals, budget, calendar, shopping, settings
+               each with data/{models,repositories} and presentation/{providers,screens,widgets}
+  shared/      models, services, widgets (FormSheet, Frosted* widgets, dialogs)
+supabase/      config.toml, migrations/
+docs/          SPEC.md
 ```
-
-## Database Schema
-
-The application uses the following main tables:
-- `user_profiles` - User information and preferences
-- `recipients` - Gift recipients
-- `gifts` - Gift items
-- `meals` - Meal planning
-- `meal_items` - Meal ingredients and items
-- `family_budgets` - Overall budget configuration
-- `shopping_lists` - Shopping list management
-- `calendar_events` - Calendar and events
-- `tasks` - Task management
-- `notifications` - User notifications
-
-All tables include Row Level Security (RLS) policies to ensure data privacy.
-
-## Security
-
-- All user data is protected with Supabase Row Level Security (RLS)
-- Input validation and sanitization on all forms
-- Secure password requirements (min 8 chars, uppercase, lowercase, number, special character)
-- XSS and SQL injection protection
-- HTTPS encryption for all communications
-- Content Security Policy headers in production
-
-## Deployment
-
-### Docker Production Build
-
-```bash
-docker build -t christmas-planner:latest .
-docker run -p 8080:80 -e SUPABASE_URL=$SUPABASE_URL -e SUPABASE_ANON_KEY=$SUPABASE_ANON_KEY christmas-planner:latest
-```
-
-### Web Hosting
-
-Build for web:
-```bash
-flutter build web --release
-```
-
-Deploy the `build/web` directory to your hosting provider.
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
 
 ## License
 
-This project is licensed under the MIT License.
-
-## Support
-
-For support, email support@christmasplanner.app or open an issue on GitHub.
-
-## Acknowledgments
-
-- Flutter team for the amazing framework
-- Supabase team for the backend infrastructure
-- All contributors who help improve this project
+MIT
