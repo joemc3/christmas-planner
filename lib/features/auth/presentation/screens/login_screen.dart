@@ -21,6 +21,31 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   bool _obscurePassword = true;
   String? _errorMessage;
 
+  Future<void> _forgotPassword() async {
+    final email = _emailController.text.trim();
+    if (Validators.validateEmail(email) != null) {
+      setState(() {
+        _errorMessage = 'Enter your email above and we will send a reset link.';
+      });
+      return;
+    }
+    try {
+      await ref.read(authControllerProvider).resetPassword(email);
+      if (mounted) {
+        setState(() => _errorMessage = null);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Password reset email sent to $email')),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _errorMessage = e.toString().replaceAll('Exception: ', '');
+        });
+      }
+    }
+  }
+
   @override
   void dispose() {
     _emailController.dispose();
@@ -174,9 +199,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     Align(
                       alignment: Alignment.centerRight,
                       child: TextButton(
-                        onPressed: () {
-                          // TODO: Implement forgot password
-                        },
+                        onPressed: _isLoading ? null : _forgotPassword,
                         child: const Text('Forgot Password?'),
                       ),
                     ),

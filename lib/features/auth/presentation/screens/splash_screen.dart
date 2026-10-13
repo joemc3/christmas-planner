@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../../../core/theme/app_theme.dart';
-import '../providers/auth_provider.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
@@ -37,21 +35,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutBack));
 
     _controller.forward();
-
-    _checkAuthAndNavigate();
-  }
-
-  Future<void> _checkAuthAndNavigate() async {
-    await Future<void>.delayed(const Duration(seconds: 2));
-
-    if (!mounted) return;
-
-    final authState = ref.read(authStateProvider);
-    final isAuthenticated = authState.asData?.value != null;
-
-    if (mounted) {
-      context.go(isAuthenticated ? '/dashboard' : '/login');
-    }
+    // Navigation happens in the router's redirect as soon as the first auth
+    // event arrives; this screen only covers that gap.
   }
 
   @override

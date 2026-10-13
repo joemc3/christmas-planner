@@ -6,37 +6,58 @@ import '../../features/auth/presentation/providers/auth_provider.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/register_screen.dart';
 import '../../features/auth/presentation/screens/splash_screen.dart';
-import '../../features/dashboard/presentation/screens/dashboard_screen.dart';
-import '../../features/gifts/presentation/screens/gifts_screen.dart';
-import '../../features/gifts/presentation/screens/recipient_detail_screen.dart';
-import '../../features/gifts/presentation/screens/gift_detail_screen.dart';
-import '../../features/meals/presentation/screens/meals_screen.dart';
-import '../../features/meals/presentation/screens/meal_detail_screen.dart';
 import '../../features/budget/presentation/screens/budget_screen.dart';
 import '../../features/calendar/presentation/screens/calendar_screen.dart';
-import '../../features/shopping/presentation/screens/shopping_screen.dart';
+import '../../features/dashboard/presentation/screens/dashboard_screen.dart';
+import '../../features/gifts/presentation/screens/gift_detail_screen.dart';
+import '../../features/gifts/presentation/screens/gifts_screen.dart';
+import '../../features/gifts/presentation/screens/recipient_detail_screen.dart';
+import '../../features/meals/presentation/screens/meal_detail_screen.dart';
+import '../../features/meals/presentation/screens/meals_screen.dart';
 import '../../features/settings/presentation/screens/settings_screen.dart';
+import '../../features/shopping/presentation/screens/shopping_screen.dart';
+import '../../shared/widgets/main_shell.dart';
+
+final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
+
+/// Re-runs the router's redirect only when the signed-in user actually
+/// changes (login / logout), not on every token refresh.
+class _AuthRefreshNotifier extends ChangeNotifier {
+  void refresh() => notifyListeners();
+}
 
 final routerProvider = Provider<GoRouter>((ref) {
-  final authState = ref.watch(authStateProvider);
+  final refreshNotifier = _AuthRefreshNotifier();
+  ref.listen(
+    authStateProvider.select((s) => s.isLoading ? null : s.value?.id),
+    (previous, next) => refreshNotifier.refresh(),
+  );
+  ref.onDispose(refreshNotifier.dispose);
 
   return GoRouter(
+    navigatorKey: _rootNavigatorKey,
     initialLocation: '/',
-    debugLogDiagnostics: true,
+    refreshListenable: refreshNotifier,
     redirect: (context, state) {
-      final isAuthenticated = authState.asData?.value != null;
-      final isAuthRoute =
-          state.matchedLocation == '/login' ||
-          state.matchedLocation == '/register';
-
-      if (!isAuthenticated && !isAuthRoute && state.matchedLocation != '/') {
-        return '/login';
+      final authState = ref.read(authStateProvider);
+      // While the first auth event is still loading, stay on the splash.
+      if (authState.isLoading) {
+        return state.matchedLocation == '/' ? null : '/';
       }
 
+      final isAuthenticated = authState.value != null;
+      final location = state.matchedLocation;
+      final isAuthRoute = location == '/login' || location == '/register';
+
+      if (location == '/') {
+        return isAuthenticated ? '/dashboard' : '/login';
+      }
+      if (!isAuthenticated && !isAuthRoute) {
+        return '/login';
+      }
       if (isAuthenticated && isAuthRoute) {
         return '/dashboard';
       }
-
       return null;
     },
     routes: [
@@ -46,58 +67,85 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/register',
         builder: (context, state) => const RegisterScreen(),
       ),
+
+      // Screens that open on top of the tab bar.
       GoRoute(
-        path: '/dashboard',
-        builder: (context, state) => const DashboardScreen(),
-      ),
-      GoRoute(
-        path: '/gifts',
-        builder: (context, state) => const GiftsScreen(),
-        routes: [
-          GoRoute(
-            path: 'recipient/:id',
-            builder: (context, state) {
-              final recipientId = state.pathParameters['id']!;
-              return RecipientDetailScreen(recipientId: recipientId);
-            },
-          ),
-          GoRoute(
-            path: 'gift/:id',
-            builder: (context, state) {
-              final giftId = state.pathParameters['id']!;
-              return GiftDetailScreen(giftId: giftId);
-            },
-          ),
-        ],
-      ),
-      GoRoute(
-        path: '/meals',
-        builder: (context, state) => const MealsScreen(),
-        routes: [
-          GoRoute(
-            path: ':id',
-            builder: (context, state) {
-              final mealId = state.pathParameters['id']!;
-              return MealDetailScreen(mealId: mealId);
-            },
-          ),
-        ],
+        path: '/settings',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const SettingsScreen(),
       ),
       GoRoute(
         path: '/budget',
+        parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) => const BudgetScreen(),
       ),
-      GoRoute(
-        path: '/calendar',
-        builder: (context, state) => const CalendarScreen(),
-      ),
-      GoRoute(
-        path: '/shopping',
-        builder: (context, state) => const ShoppingScreen(),
-      ),
-      GoRoute(
-        path: '/settings',
-        builder: (context, state) => const SettingsScreen(),
+
+      // Tabbed area.
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) =>
+            MainShell(navigationShell: navigationShell),
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/dashboard',
+                builder: (context, state) => const DashboardScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/gifts',
+                builder: (context, state) => const GiftsScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'recipient/:id',
+                    builder: (context, state) => RecipientDetailScreen(
+                      recipientId: state.pathParameters['id']!,
+                    ),
+                  ),
+                  GoRoute(
+                    path: 'gift/:id',
+                    builder: (context, state) =>
+                        GiftDetailScreen(giftId: state.pathParameters['id']!),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/meals',
+                builder: (context, state) => const MealsScreen(),
+                routes: [
+                  GoRoute(
+                    path: ':id',
+                    builder: (context, state) =>
+                        MealDetailScreen(mealId: state.pathParameters['id']!),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/shopping',
+                builder: (context, state) => const ShoppingScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/calendar',
+                builder: (context, state) => const CalendarScreen(),
+              ),
+            ],
+          ),
+        ],
       ),
     ],
     errorBuilder: (context, state) => Scaffold(
