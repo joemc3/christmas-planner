@@ -22,7 +22,7 @@ jobs:
       - run: dart format --output=none --set-exit-if-changed lib test
       - run: flutter analyze --fatal-infos
       - run: flutter test
-      - run: flutter build web --release --dart-define=SUPABASE_URL=https://example.supabase.co --dart-define=SUPABASE_ANON_KEY=ci-placeholder
+      - run: flutter build web --release --no-web-resources-cdn --dart-define=SUPABASE_URL=https://example.supabase.co --dart-define=SUPABASE_ANON_KEY=ci-placeholder
 
   migrations:
     name: Apply Supabase migrations to a fresh database

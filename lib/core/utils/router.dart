@@ -29,7 +29,8 @@ class _AuthRefreshNotifier extends ChangeNotifier {
 final routerProvider = Provider<GoRouter>((ref) {
   final refreshNotifier = _AuthRefreshNotifier();
   ref.listen(
-    authStateProvider.select((s) => s.isLoading ? null : s.value?.id),
+    // A record so that "loading" -> "loaded, nobody signed in" is a change.
+    authStateProvider.select((s) => (s.isLoading, s.value?.id)),
     (previous, next) => refreshNotifier.refresh(),
   );
   ref.onDispose(refreshNotifier.dispose);

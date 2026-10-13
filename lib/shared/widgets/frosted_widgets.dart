@@ -560,44 +560,50 @@ class _NavItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      behavior: HitTestBehavior.opaque,
-      child: AnimatedContainer(
-        duration: FrostedHearthTiming.quick,
-        curve: FrostedHearthCurves.playful,
-        padding: EdgeInsets.symmetric(
-          horizontal: isSelected ? 16 : 12,
-          vertical: 8,
-        ),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? FrostedHearthColors.ember.withValues(alpha: 0.2)
-              : Colors.transparent,
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              icon,
-              size: 22,
-              color: isSelected
-                  ? FrostedHearthColors.frostGoldBright
-                  : FrostedHearthColors.frostGold.withValues(alpha: 0.6),
-            ),
-            if (isSelected) ...[
-              const SizedBox(width: 8),
-              Text(
-                label,
-                style: GoogleFonts.fraunces(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                  color: FrostedHearthColors.frostGoldBright,
-                ),
+    return Semantics(
+      button: true,
+      selected: isSelected,
+      label: label,
+      excludeSemantics: true,
+      child: GestureDetector(
+        onTap: onTap,
+        behavior: HitTestBehavior.opaque,
+        child: AnimatedContainer(
+          duration: FrostedHearthTiming.quick,
+          curve: FrostedHearthCurves.playful,
+          padding: EdgeInsets.symmetric(
+            horizontal: isSelected ? 16 : 12,
+            vertical: 8,
+          ),
+          decoration: BoxDecoration(
+            color: isSelected
+                ? FrostedHearthColors.ember.withValues(alpha: 0.2)
+                : Colors.transparent,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                icon,
+                size: 22,
+                color: isSelected
+                    ? FrostedHearthColors.frostGoldBright
+                    : FrostedHearthColors.frostGold.withValues(alpha: 0.6),
               ),
+              if (isSelected) ...[
+                const SizedBox(width: 8),
+                Text(
+                  label,
+                  style: GoogleFonts.fraunces(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: FrostedHearthColors.frostGoldBright,
+                  ),
+                ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );

@@ -11,7 +11,7 @@ COPY pubspec.yaml pubspec.lock ./
 RUN flutter pub get
 
 COPY . .
-RUN flutter build web --release \
+RUN flutter build web --release --no-web-resources-cdn \
       --dart-define=SUPABASE_URL=${SUPABASE_URL} \
       --dart-define=SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
 
