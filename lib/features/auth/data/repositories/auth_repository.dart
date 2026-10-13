@@ -160,7 +160,7 @@ class AuthRepository {
           .eq('id', userId)
           .single();
 
-      final profile = UserProfile.fromJson(response as Map<String, dynamic>);
+      final profile = UserProfile.fromJson(response);
       AppLogger.info('Fetched user profile for: ${profile.email}');
       return profile;
     } on PostgrestException catch (e) {
@@ -193,7 +193,7 @@ class AuthRepository {
           .select()
           .single();
 
-      final updated = UserProfile.fromJson(response as Map<String, dynamic>);
+      final updated = UserProfile.fromJson(response);
       AppLogger.info('Updated user profile for: ${updated.email}');
       return updated;
     } on PostgrestException catch (e) {

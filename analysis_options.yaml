@@ -1,31 +1,22 @@
-include: package:very_good_analysis/analysis_options.yaml
+# Standard Flutter lints plus a few correctness/style rules the codebase follows.
+include: package:flutter_lints/flutter.yaml
 
 analyzer:
   exclude:
     - "**/*.g.dart"
     - "**/*.freezed.dart"
-    - "build/**"
-  errors:
-    invalid_annotation_target: ignore
+    - build/**
+    - web/**
   language:
     strict-casts: true
-    strict-inference: true
     strict-raw-types: true
 
 linter:
   rules:
-    # Error rules
     avoid_dynamic_calls: true
-    avoid_type_to_string: true
     cancel_subscriptions: true
     close_sinks: true
-    comment_references: true
-
-    # Style rules
-    always_use_package_imports: true
-    avoid_print: true
     avoid_web_libraries_in_flutter: true
-    no_logic_in_create_state: true
     prefer_const_constructors: true
     prefer_const_declarations: true
     prefer_const_literals_to_create_immutables: true
@@ -36,3 +27,4 @@ linter:
     sort_child_properties_last: true
     use_key_in_widget_constructors: true
     use_super_parameters: true
+    unawaited_futures: true

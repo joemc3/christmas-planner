@@ -63,7 +63,7 @@ class RecipientRepository {
         return null;
       }
 
-      return RecipientModel.fromJson(response as Map<String, dynamic>);
+      return RecipientModel.fromJson(response);
     } on PostgrestException catch (e) {
       AppLogger.error('Failed to fetch recipient', error: e);
       throw DatabaseException(message: e.message, error: e);
@@ -89,7 +89,7 @@ class RecipientRepository {
           .select()
           .single();
 
-      final created = RecipientModel.fromJson(response as Map<String, dynamic>);
+      final created = RecipientModel.fromJson(response);
       AppLogger.info('Created recipient: ${created.name}');
       return created;
     } on PostgrestException catch (e) {
@@ -116,7 +116,7 @@ class RecipientRepository {
           .select()
           .single();
 
-      final updated = RecipientModel.fromJson(response as Map<String, dynamic>);
+      final updated = RecipientModel.fromJson(response);
       AppLogger.info('Updated recipient: ${updated.name}');
       return updated;
     } on PostgrestException catch (e) {

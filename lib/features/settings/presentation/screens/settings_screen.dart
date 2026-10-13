@@ -40,7 +40,7 @@ class SettingsScreen extends ConsumerWidget {
                 gradient: AppTheme.christmasGradient,
               ),
             ),
-            error: (_, __) => const SizedBox.shrink(),
+            error: (_, _) => const SizedBox.shrink(),
           ),
           ListTile(
             leading: const Icon(Icons.person),

@@ -86,7 +86,7 @@ class AppDateUtils {
   }
 
   static String formatCurrency(double? amount, {String symbol = '\$'}) {
-    if (amount == null) return '$symbol 0.00';
+    if (amount == null) return '${symbol}0.00';
     final formatter = NumberFormat.currency(symbol: symbol, decimalDigits: 2);
     return formatter.format(amount);
   }

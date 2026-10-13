@@ -27,7 +27,7 @@ void main() {
       ),
     );
 
-    expect(find.widgetWithText(TextFormField, 'Email'), findsNothing);
-    expect(find.byType(TextFormField), findsNWidgets(2));
+    expect(find.widgetWithText(TextFormField, 'Email'), findsOneWidget);
+    expect(find.widgetWithText(TextFormField, 'Password'), findsOneWidget);
   });
 }

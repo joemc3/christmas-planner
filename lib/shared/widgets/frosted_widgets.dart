@@ -1,5 +1,4 @@
 import 'dart:math';
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -27,10 +26,10 @@ class FrostedCard extends StatelessWidget {
       child: Container(
         padding: padding ?? const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: FrostedHearthColors.snow.withOpacity(0.85),
+          color: FrostedHearthColors.snow.withValues(alpha: 0.85),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: FrostedHearthColors.frostGold.withOpacity(0.3),
+            color: FrostedHearthColors.frostGold.withValues(alpha: 0.3),
             width: 1,
           ),
           boxShadow: AppTheme.cardShadow,
@@ -148,7 +147,7 @@ class _ArcPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round;
 
     if (gradient) {
-      paint.shader = SweepGradient(
+      paint.shader = const SweepGradient(
         startAngle: -pi / 2,
         endAngle: pi * 1.5,
         colors: [
@@ -243,7 +242,7 @@ class MagicalCountdown extends StatelessWidget {
                   style: GoogleFonts.sourceSerif4(
                     fontSize: 16,
                     fontStyle: FontStyle.italic,
-                    color: FrostedHearthColors.frostGold.withOpacity(0.8),
+                    color: FrostedHearthColors.frostGold.withValues(alpha: 0.8),
                   ),
                 ),
                 const Spacer(),
@@ -255,7 +254,7 @@ class MagicalCountdown extends StatelessWidget {
                     gradient: LinearGradient(
                       colors: [
                         FrostedHearthColors.ember,
-                        FrostedHearthColors.emberGlow.withOpacity(0),
+                        FrostedHearthColors.emberGlow.withValues(alpha: 0),
                       ],
                     ),
                   ),
@@ -281,7 +280,7 @@ class _StarFieldPainter extends CustomPainter {
       final radius = random.nextDouble() * 1.5 + 0.5;
       final opacity = random.nextDouble() * 0.5 + 0.2;
 
-      paint.color = FrostedHearthColors.frostGold.withOpacity(opacity);
+      paint.color = FrostedHearthColors.frostGold.withValues(alpha: opacity);
       canvas.drawCircle(Offset(x, y), radius, paint);
     }
   }
@@ -414,12 +413,12 @@ class EnchantedShoppingItem extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
           color: isChecked
-              ? FrostedHearthColors.success.withOpacity(0.08)
+              ? FrostedHearthColors.success.withValues(alpha: 0.08)
               : FrostedHearthColors.snow,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: isChecked
-                ? FrostedHearthColors.success.withOpacity(0.3)
+                ? FrostedHearthColors.success.withValues(alpha: 0.3)
                 : FrostedHearthColors.parchmentWarm,
           ),
         ),
@@ -485,7 +484,7 @@ class EnchantedShoppingItem extends StatelessWidget {
                   vertical: 4,
                 ),
                 decoration: BoxDecoration(
-                  color: FrostedHearthColors.spruce.withOpacity(0.1),
+                  color: FrostedHearthColors.spruce.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
@@ -590,7 +589,7 @@ class _NavItem extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           color: isSelected
-              ? FrostedHearthColors.ember.withOpacity(0.2)
+              ? FrostedHearthColors.ember.withValues(alpha: 0.2)
               : Colors.transparent,
           borderRadius: BorderRadius.circular(16),
         ),
@@ -602,7 +601,7 @@ class _NavItem extends StatelessWidget {
               size: 22,
               color: isSelected
                   ? FrostedHearthColors.frostGoldBright
-                  : FrostedHearthColors.frostGold.withOpacity(0.6),
+                  : FrostedHearthColors.frostGold.withValues(alpha: 0.6),
             ),
             if (isSelected) ...[
               const SizedBox(width: 8),
@@ -690,7 +689,7 @@ class EmptyState extends StatelessWidget {
           children: [
             Container(
               padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: FrostedHearthColors.parchmentWarm,
                 shape: BoxShape.circle,
               ),

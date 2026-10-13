@@ -5,8 +5,8 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/date_utils.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
+import '../../../gifts/data/models/gift_model.dart';
 import '../../../gifts/presentation/providers/gift_providers.dart';
-import '../../../meals/presentation/providers/meal_providers.dart';
 
 class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
@@ -15,7 +15,6 @@ class DashboardScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final userProfile = ref.watch(userProfileProvider);
     final giftsStream = ref.watch(giftsStreamProvider);
-    final mealsStream = ref.watch(mealsStreamProvider);
     final giftStats = ref.watch(giftBudgetStatsProvider);
 
     final daysUntilChristmas = AppDateUtils.daysUntilChristmas();
@@ -40,7 +39,6 @@ class DashboardScreen extends ConsumerWidget {
       body: RefreshIndicator(
         onRefresh: () async {
           ref.invalidate(giftsStreamProvider);
-          ref.invalidate(mealsStreamProvider);
           ref.invalidate(giftBudgetStatsProvider);
         },
         child: SingleChildScrollView(
@@ -58,7 +56,7 @@ class DashboardScreen extends ConsumerWidget {
                   name: 'User',
                   daysUntilChristmas: 0,
                 ),
-                error: (_, __) => const _WelcomeCard(
+                error: (_, _) => const _WelcomeCard(
                   name: 'User',
                   daysUntilChristmas: 0,
                 ),
@@ -99,7 +97,7 @@ class DashboardScreen extends ConsumerWidget {
                   totalSpent: 0.0,
                   totalPlanned: 0.0,
                 ),
-                error: (_, __) => const _BudgetOverviewCard(
+                error: (_, _) => const _BudgetOverviewCard(
                   totalSpent: 0.0,
                   totalPlanned: 0.0,
                 ),
@@ -132,7 +130,7 @@ class DashboardScreen extends ConsumerWidget {
                   gifts: gifts.take(5).toList(),
                 ),
                 loading: () => const Center(child: CircularProgressIndicator()),
-                error: (_, __) => const Text('Failed to load recent gifts'),
+                error: (_, _) => const Text('Failed to load recent gifts'),
               ),
             ],
           ),
@@ -443,7 +441,7 @@ class _QuickActionCard extends StatelessWidget {
 }
 
 class _RecentGiftsList extends StatelessWidget {
-  final List gifts;
+  final List<GiftModel> gifts;
 
   const _RecentGiftsList({required this.gifts});
 
@@ -481,10 +479,10 @@ class _RecentGiftsList extends StatelessWidget {
           final gift = gifts[index];
           return ListTile(
             leading: const Icon(Icons.card_giftcard),
-            title: Text(gift.name ?? 'Gift'),
-            subtitle: Text(AppDateUtils.formatCurrency(gift.price ?? 0.0)),
+            title: Text(gift.name),
+            subtitle: Text(AppDateUtils.formatCurrency(gift.price)),
             trailing: Chip(
-              label: Text(gift.status?.toString() ?? 'To Buy'),
+              label: Text(gift.status.value),
               backgroundColor: AppTheme.lightGrey,
             ),
           );

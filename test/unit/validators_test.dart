@@ -73,9 +73,15 @@ void main() {
         );
       });
 
-      test('should remove SQL keywords', () {
-        final result = Validators.sanitizeInput('SELECT * FROM users');
-        expect(result, isNot(contains('SELECT')));
+      test('should keep ordinary text containing SQL-like words', () {
+        expect(Validators.sanitizeInput('Select a gift to update'), 'Select a gift to update');
+      });
+
+      test('should strip script content but keep surrounding text', () {
+        expect(
+          Validators.sanitizeInput('Hi <b>there</b><script>evil()</script> friend'),
+          'Hi there friend',
+        );
       });
 
       test('should trim whitespace', () {

@@ -1,5 +1,3 @@
-import 'dart:math';
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -204,7 +202,7 @@ class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(14),
           ),
-          side: BorderSide(color: FrostedHearthColors.spruce.withOpacity(0.3), width: 1.5),
+          side: BorderSide(color: FrostedHearthColors.spruce.withValues(alpha: 0.3), width: 1.5),
           textStyle: GoogleFonts.fraunces(
             fontSize: 16,
             fontWeight: FontWeight.w600,
@@ -226,19 +224,19 @@ class AppTheme {
         contentPadding: const EdgeInsets.all(18),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(color: FrostedHearthColors.parchmentWarm),
+          borderSide: const BorderSide(color: FrostedHearthColors.parchmentWarm),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(color: FrostedHearthColors.parchmentWarm),
+          borderSide: const BorderSide(color: FrostedHearthColors.parchmentWarm),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(color: FrostedHearthColors.ember, width: 2),
+          borderSide: const BorderSide(color: FrostedHearthColors.ember, width: 2),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(color: FrostedHearthColors.error, width: 2),
+          borderSide: const BorderSide(color: FrostedHearthColors.error, width: 2),
         ),
         labelStyle: GoogleFonts.sourceSerif4(
           fontSize: 14,
@@ -269,7 +267,7 @@ class AppTheme {
           borderRadius: BorderRadius.circular(18),
         ),
       ),
-      dialogTheme: DialogTheme(
+      dialogTheme: DialogThemeData(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(24),
         ),
@@ -283,7 +281,7 @@ class AppTheme {
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         backgroundColor: FrostedHearthColors.spruce,
         selectedItemColor: FrostedHearthColors.frostGoldBright,
-        unselectedItemColor: FrostedHearthColors.frostGold.withOpacity(0.6),
+        unselectedItemColor: FrostedHearthColors.frostGold.withValues(alpha: 0.6),
         type: BottomNavigationBarType.fixed,
         elevation: 0,
       ),
@@ -372,7 +370,7 @@ class AppTheme {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(color: FrostedHearthColors.ember, width: 2),
+          borderSide: const BorderSide(color: FrostedHearthColors.ember, width: 2),
         ),
         labelStyle: GoogleFonts.sourceSerif4(
           fontSize: 14,
@@ -476,12 +474,12 @@ class AppTheme {
   // Custom Shadows
   static List<BoxShadow> get cardShadow => [
         BoxShadow(
-          color: FrostedHearthColors.spruce.withOpacity(0.08),
+          color: FrostedHearthColors.spruce.withValues(alpha: 0.08),
           blurRadius: 20,
           offset: const Offset(0, 8),
         ),
         BoxShadow(
-          color: FrostedHearthColors.ember.withOpacity(0.03),
+          color: FrostedHearthColors.ember.withValues(alpha: 0.03),
           blurRadius: 40,
           offset: const Offset(0, 16),
         ),
@@ -489,7 +487,7 @@ class AppTheme {
 
   static List<BoxShadow> get buttonShadow => [
         BoxShadow(
-          color: FrostedHearthColors.ember.withOpacity(0.25),
+          color: FrostedHearthColors.ember.withValues(alpha: 0.25),
           blurRadius: 12,
           offset: const Offset(0, 4),
         ),
@@ -497,7 +495,7 @@ class AppTheme {
 
   static List<BoxShadow> get elevatedShadow => [
         BoxShadow(
-          color: FrostedHearthColors.spruce.withOpacity(0.15),
+          color: FrostedHearthColors.spruce.withValues(alpha: 0.15),
           blurRadius: 24,
           offset: const Offset(0, 12),
         ),

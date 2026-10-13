@@ -18,7 +18,15 @@ final shoppingListsProvider = StreamProvider<List<ShoppingListModel>>((ref) {
   return repository.watchShoppingLists();
 });
 
-final selectedListIdProvider = StateProvider<String?>((ref) => null);
+final selectedListIdProvider =
+    NotifierProvider<SelectedListIdNotifier, String?>(SelectedListIdNotifier.new);
+
+class SelectedListIdNotifier extends Notifier<String?> {
+  @override
+  String? build() => null;
+
+  void select(String? id) => state = id;
+}
 
 final shoppingItemsProvider = StreamProvider.family<List<ShoppingListItemModel>, String>((ref, listId) {
   final repository = ref.watch(shoppingRepositoryProvider);
@@ -62,7 +70,7 @@ class ShoppingScreen extends ConsumerWidget {
 
           if (selectedListId == null && lists.isNotEmpty) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              ref.read(selectedListIdProvider.notifier).state = lists.first.id;
+              ref.read(selectedListIdProvider.notifier).select(lists.first.id);
             });
           }
 
@@ -82,7 +90,7 @@ class ShoppingScreen extends ConsumerWidget {
                       padding: const EdgeInsets.only(right: 8),
                       child: GestureDetector(
                         onTap: () {
-                          ref.read(selectedListIdProvider.notifier).state = list.id;
+                          ref.read(selectedListIdProvider.notifier).select(list.id);
                         },
                         child: AnimatedContainer(
                           duration: FrostedHearthTiming.quick,
@@ -122,7 +130,7 @@ class ShoppingScreen extends ConsumerWidget {
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (_, __) => const Center(child: Text('Failed to load shopping lists')),
+        error: (_, _) => const Center(child: Text('Failed to load shopping lists')),
       ),
       floatingActionButton: selectedListId != null
           ? FloatingActionButton(
@@ -168,7 +176,7 @@ class ShoppingScreen extends ConsumerWidget {
               try {
                 final repository = ref.read(shoppingRepositoryProvider);
                 final created = await repository.createShoppingList(list);
-                ref.read(selectedListIdProvider.notifier).state = created.id;
+                ref.read(selectedListIdProvider.notifier).select(created.id);
                 if (context.mounted) {
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -288,7 +296,7 @@ class _ShoppingListContent extends ConsumerWidget {
             statsAsync.when(
               data: (stats) => _StatsCard(stats: stats),
               loading: () => const SizedBox.shrink(),
-              error: (_, __) => const SizedBox.shrink(),
+              error: (_, _) => const SizedBox.shrink(),
             ),
             const SizedBox(height: 24),
             itemsAsync.when(
@@ -299,7 +307,7 @@ class _ShoppingListContent extends ConsumerWidget {
                       padding: const EdgeInsets.all(32),
                       child: Column(
                         children: [
-                          Icon(Icons.check_circle_outline, size: 64, color: FrostedHearthColors.inkLight),
+                          const Icon(Icons.check_circle_outline, size: 64, color: FrostedHearthColors.inkLight),
                           const SizedBox(height: 16),
                           Text('No items yet', style: GoogleFonts.sourceSerif4(color: FrostedHearthColors.inkLight)),
                         ],
@@ -327,7 +335,7 @@ class _ShoppingListContent extends ConsumerWidget {
                               Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                                 decoration: BoxDecoration(
-                                  color: FrostedHearthColors.spruce.withOpacity(0.1),
+                                  color: FrostedHearthColors.spruce.withValues(alpha: 0.1),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: Text(
@@ -366,7 +374,7 @@ class _ShoppingListContent extends ConsumerWidget {
                 );
               },
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (_, __) => const Center(child: Text('Failed to load items')),
+              error: (_, _) => const Center(child: Text('Failed to load items')),
             ),
             const SizedBox(height: 80),
           ],
@@ -427,7 +435,7 @@ class _StatsCard extends StatelessWidget {
                       'items purchased',
                       style: GoogleFonts.sourceSerif4(
                         fontSize: 13,
-                        color: FrostedHearthColors.frostGold.withOpacity(0.7),
+                        color: FrostedHearthColors.frostGold.withValues(alpha: 0.7),
                       ),
                     ),
                   ],
@@ -444,7 +452,7 @@ class _StatsCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: FrostedHearthColors.spruceDark.withOpacity(0.5),
+              color: FrostedHearthColors.spruceDark.withValues(alpha: 0.5),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Row(
@@ -453,21 +461,21 @@ class _StatsCard extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Estimated', style: GoogleFonts.sourceSerif4(fontSize: 11, color: FrostedHearthColors.frostGold.withOpacity(0.7))),
+                    Text('Estimated', style: GoogleFonts.sourceSerif4(fontSize: 11, color: FrostedHearthColors.frostGold.withValues(alpha: 0.7))),
                     Text(AppDateUtils.formatCurrency(estimatedTotal), style: GoogleFonts.dmMono(fontSize: 14, fontWeight: FontWeight.w600, color: FrostedHearthColors.frostGold)),
                   ],
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Text('Spent', style: GoogleFonts.sourceSerif4(fontSize: 11, color: FrostedHearthColors.frostGold.withOpacity(0.7))),
+                    Text('Spent', style: GoogleFonts.sourceSerif4(fontSize: 11, color: FrostedHearthColors.frostGold.withValues(alpha: 0.7))),
                     Text(AppDateUtils.formatCurrency(actualTotal), style: GoogleFonts.dmMono(fontSize: 14, fontWeight: FontWeight.w600, color: FrostedHearthColors.success)),
                   ],
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Text('Left', style: GoogleFonts.sourceSerif4(fontSize: 11, color: FrostedHearthColors.frostGold.withOpacity(0.7))),
+                    Text('Left', style: GoogleFonts.sourceSerif4(fontSize: 11, color: FrostedHearthColors.frostGold.withValues(alpha: 0.7))),
                     Text('$remainingItems', style: GoogleFonts.dmMono(fontSize: 14, fontWeight: FontWeight.w600, color: FrostedHearthColors.frostGold)),
                   ],
                 ),

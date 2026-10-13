@@ -84,15 +84,15 @@ class GlassCard extends StatelessWidget {
     return Container(
       margin: margin ?? EdgeInsets.zero,
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(opacity),
+        color: Colors.white.withValues(alpha: opacity),
         borderRadius: borderRadius ?? BorderRadius.circular(16),
         border: Border.all(
-          color: Colors.white.withOpacity(0.2),
+          color: Colors.white.withValues(alpha: 0.2),
           width: 1.5,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: blur,
             offset: const Offset(0, 4),
           ),
@@ -137,10 +137,10 @@ class StatCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               CircleAvatar(
-                backgroundColor: color.withOpacity(0.1),
+                backgroundColor: color.withValues(alpha: 0.1),
                 child: Icon(icon, color: color),
               ),
-              if (trailing != null) trailing!,
+              ?trailing,
             ],
           ),
           const SizedBox(height: 16),
@@ -198,9 +198,9 @@ class InfoCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -421,7 +421,7 @@ class ProgressCard extends StatelessWidget {
                   ],
                 ),
               ),
-              if (trailing != null) trailing!,
+              ?trailing,
             ],
           ),
           const SizedBox(height: 16),

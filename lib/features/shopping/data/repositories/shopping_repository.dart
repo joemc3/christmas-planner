@@ -57,7 +57,7 @@ class ShoppingRepository {
         return null;
       }
 
-      return ShoppingListModel.fromJson(response as Map<String, dynamic>);
+      return ShoppingListModel.fromJson(response);
     } on PostgrestException catch (e) {
       AppLogger.error('Failed to fetch default shopping list', error: e);
       throw DatabaseException(message: e.message, error: e);
@@ -83,7 +83,7 @@ class ShoppingRepository {
           .select()
           .single();
 
-      final created = ShoppingListModel.fromJson(response as Map<String, dynamic>);
+      final created = ShoppingListModel.fromJson(response);
       AppLogger.info('Created shopping list: ${created.name}');
       return created;
     } on PostgrestException catch (e) {
@@ -104,7 +104,7 @@ class ShoppingRepository {
           .select()
           .single();
 
-      final updated = ShoppingListModel.fromJson(response as Map<String, dynamic>);
+      final updated = ShoppingListModel.fromJson(response);
       AppLogger.info('Updated shopping list: ${updated.name}');
       return updated;
     } on PostgrestException catch (e) {
@@ -166,7 +166,7 @@ class ShoppingRepository {
           .select()
           .single();
 
-      final created = ShoppingListItemModel.fromJson(response as Map<String, dynamic>);
+      final created = ShoppingListItemModel.fromJson(response);
       AppLogger.info('Created shopping list item: ${created.itemName}');
       return created;
     } on PostgrestException catch (e) {
@@ -187,7 +187,7 @@ class ShoppingRepository {
           .select()
           .single();
 
-      final updated = ShoppingListItemModel.fromJson(response as Map<String, dynamic>);
+      final updated = ShoppingListItemModel.fromJson(response);
       AppLogger.info('Updated shopping list item: ${updated.itemName}');
       return updated;
     } on PostgrestException catch (e) {

@@ -40,7 +40,7 @@ class BudgetRepository {
         ));
       }
 
-      final budget = FamilyBudgetModel.fromJson(response as Map<String, dynamic>);
+      final budget = FamilyBudgetModel.fromJson(response);
       AppLogger.info('Fetched budget for year $currentYear');
       return budget;
     } on PostgrestException catch (e) {
@@ -96,7 +96,7 @@ class BudgetRepository {
           .select()
           .single();
 
-      final created = FamilyBudgetModel.fromJson(response as Map<String, dynamic>);
+      final created = FamilyBudgetModel.fromJson(response);
       AppLogger.info('Created budget for year ${created.year}');
       return created;
     } on PostgrestException catch (e) {
@@ -123,7 +123,7 @@ class BudgetRepository {
           .select()
           .single();
 
-      final updated = FamilyBudgetModel.fromJson(response as Map<String, dynamic>);
+      final updated = FamilyBudgetModel.fromJson(response);
       AppLogger.info('Updated budget for year ${updated.year}');
       return updated;
     } on PostgrestException catch (e) {
@@ -170,10 +170,10 @@ class BudgetRepository {
         .from('family_budgets')
         .stream(primaryKey: ['id'])
         .eq('user_id', userId)
-        .eq('year', currentYear)
         .map((data) {
-          if (data.isEmpty) return null;
-          return FamilyBudgetModel.fromJson(data.first);
+          final rows = data.where((row) => row['year'] == currentYear);
+          if (rows.isEmpty) return null;
+          return FamilyBudgetModel.fromJson(rows.first);
         });
   }
 
@@ -191,11 +191,11 @@ class BudgetRepository {
           .eq('recipients.user_id', userId);
 
       double giftSpent = 0.0;
-      for (final gift in giftsResponse as List) {
+      for (final gift in (giftsResponse as List).cast<Map<String, dynamic>>()) {
         final status = gift['status'] as String;
         if (status == 'Ordered' || status == 'Purchased' || status == 'Wrapped' || status == 'Delivered') {
-          final actualPrice = gift['actual_price'] as double?;
-          final price = gift['price'] as double;
+          final actualPrice = (gift['actual_price'] as num?)?.toDouble();
+          final price = (gift['price'] as num).toDouble();
           giftSpent += actualPrice ?? price;
         }
       }
@@ -207,11 +207,11 @@ class BudgetRepository {
           .eq('meals.user_id', userId);
 
       double mealSpent = 0.0;
-      for (final item in mealsResponse as List) {
+      for (final item in (mealsResponse as List).cast<Map<String, dynamic>>()) {
         final status = item['status'] as String;
         if (status == 'Purchased' || status == 'Prepared') {
-          final actualCost = item['actual_cost'] as double?;
-          final cost = item['cost'] as double;
+          final actualCost = (item['actual_cost'] as num?)?.toDouble();
+          final cost = (item['cost'] as num).toDouble();
           mealSpent += actualCost ?? cost;
         }
       }
@@ -226,8 +226,8 @@ class BudgetRepository {
       double activitiesSpent = 0.0;
       double miscellaneousSpent = 0.0;
 
-      for (final expense in expensesResponse as List) {
-        final amount = expense['amount'] as double;
+      for (final expense in (expensesResponse as List).cast<Map<String, dynamic>>()) {
+        final amount = (expense['amount'] as num).toDouble();
         final category = expense['category'] as String;
 
         switch (category.toLowerCase()) {

@@ -93,7 +93,13 @@ class Validators {
       return null;
     }
 
-    final cleanValue = value.replaceAll(RegExp(r'[^\d.]'), '');
+    final trimmed = value.trim();
+    if (trimmed.startsWith('-')) {
+      return 'Price cannot be negative';
+    }
+
+    // Allow a currency symbol and thousands separators, e.g. "$1,299.99".
+    final cleanValue = trimmed.replaceAll(RegExp(r'[^\d.]'), '');
     if (!AppConstants.priceRegex.hasMatch(cleanValue)) {
       return 'Please enter a valid price';
     }
@@ -179,27 +185,21 @@ class Validators {
     );
   }
 
+  /// Strips HTML (including script blocks and their content) and trims
+  /// whitespace. Data is sent to Supabase through parameterised requests, so
+  /// no SQL "sanitising" is needed and user text like "Select a gift" is kept.
   static String? sanitizeInput(String? input) {
     if (input == null || input.isEmpty) {
       return input;
     }
 
-    // Remove potentially dangerous characters
     var sanitized = input.trim();
-
-    // Remove HTML tags
+    sanitized = sanitized.replaceAll(
+      RegExp(r'<script[^>]*>.*?</script>', caseSensitive: false, dotAll: true),
+      '',
+    );
     sanitized = sanitized.replaceAll(RegExp(r'<[^>]*>'), '');
-
-    // Remove script tags and their content
-    sanitized = sanitized.replaceAll(RegExp(r'<script[^>]*>.*?</script>', caseSensitive: false), '');
-
-    // Remove SQL injection attempts
-    final sqlKeywords = ['SELECT', 'INSERT', 'UPDATE', 'DELETE', 'DROP', 'CREATE', 'ALTER', 'EXEC', 'EXECUTE'];
-    for (final keyword in sqlKeywords) {
-      sanitized = sanitized.replaceAll(RegExp(keyword, caseSensitive: false), '');
-    }
-
-    return sanitized;
+    return sanitized.trim();
   }
 
   static bool isValidJson(String? value) {

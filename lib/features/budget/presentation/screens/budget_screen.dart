@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/date_utils.dart';
@@ -38,7 +37,7 @@ class BudgetScreen extends ConsumerWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.edit_outlined),
-            onPressed: () => _showEditBudgetDialog(context, ref, budgetAsync.valueOrNull),
+            onPressed: () => _showEditBudgetDialog(context, ref, budgetAsync.value),
           ),
         ],
       ),
@@ -61,10 +60,10 @@ class BudgetScreen extends ConsumerWidget {
                     stats: stats,
                   ),
                   loading: () => const _LoadingCard(),
-                  error: (_, __) => const _ErrorCard(message: 'Failed to load stats'),
+                  error: (_, _) => const _ErrorCard(message: 'Failed to load stats'),
                 ),
                 loading: () => const _LoadingCard(),
-                error: (_, __) => const _ErrorCard(message: 'Failed to load budget'),
+                error: (_, _) => const _ErrorCard(message: 'Failed to load budget'),
               ),
               const SizedBox(height: 24),
 
@@ -78,10 +77,10 @@ class BudgetScreen extends ConsumerWidget {
                     budget: budget,
                   ),
                   loading: () => const _LoadingCard(),
-                  error: (_, __) => const _ErrorCard(message: 'Failed to load budget'),
+                  error: (_, _) => const _ErrorCard(message: 'Failed to load budget'),
                 ),
                 loading: () => const _LoadingCard(),
-                error: (_, __) => const _ErrorCard(message: 'Failed to load stats'),
+                error: (_, _) => const _ErrorCard(message: 'Failed to load stats'),
               ),
               const SizedBox(height: 24),
 
@@ -95,10 +94,10 @@ class BudgetScreen extends ConsumerWidget {
                     stats: stats,
                   ),
                   loading: () => const _LoadingCard(),
-                  error: (_, __) => const _ErrorCard(message: 'Failed to load stats'),
+                  error: (_, _) => const _ErrorCard(message: 'Failed to load stats'),
                 ),
                 loading: () => const _LoadingCard(),
-                error: (_, __) => const _ErrorCard(message: 'Failed to load budget'),
+                error: (_, _) => const _ErrorCard(message: 'Failed to load budget'),
               ),
               const SizedBox(height: 32),
             ],
@@ -114,8 +113,8 @@ class BudgetScreen extends ConsumerWidget {
     final giftController = TextEditingController(text: budget.giftBudgetTotal.toStringAsFixed(0));
     final mealEveController = TextEditingController(text: budget.mealBudgetEve.toStringAsFixed(0));
     final mealDayController = TextEditingController(text: budget.mealBudgetDay.toStringAsFixed(0));
-    final decorationsController = TextEditingController(text: (budget.decorationsBudget ?? 0).toStringAsFixed(0));
-    final activitiesController = TextEditingController(text: (budget.activitiesBudget ?? 0).toStringAsFixed(0));
+    final decorationsController = TextEditingController(text: budget.decorationsBudget.toStringAsFixed(0));
+    final activitiesController = TextEditingController(text: budget.activitiesBudget.toStringAsFixed(0));
 
     showDialog(
       context: context,
@@ -268,8 +267,8 @@ class _BudgetOverviewCard extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
                   color: remaining >= 0
-                      ? FrostedHearthColors.success.withOpacity(0.2)
-                      : FrostedHearthColors.error.withOpacity(0.2),
+                      ? FrostedHearthColors.success.withValues(alpha: 0.2)
+                      : FrostedHearthColors.error.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
@@ -304,7 +303,7 @@ class _BudgetOverviewCard extends StatelessWidget {
                       'of ${AppDateUtils.formatCurrency(totalBudget)}',
                       style: GoogleFonts.sourceSerif4(
                         fontSize: 14,
-                        color: FrostedHearthColors.frostGold.withOpacity(0.7),
+                        color: FrostedHearthColors.frostGold.withValues(alpha: 0.7),
                       ),
                     ),
                   ],
@@ -323,7 +322,7 @@ class _BudgetOverviewCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              color: FrostedHearthColors.spruceDark.withOpacity(0.5),
+              color: FrostedHearthColors.spruceDark.withValues(alpha: 0.5),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Row(
@@ -333,7 +332,7 @@ class _BudgetOverviewCard extends StatelessWidget {
                   'Remaining',
                   style: GoogleFonts.sourceSerif4(
                     fontSize: 14,
-                    color: FrostedHearthColors.frostGold.withOpacity(0.8),
+                    color: FrostedHearthColors.frostGold.withValues(alpha: 0.8),
                   ),
                 ),
                 Text(
@@ -399,7 +398,7 @@ class _SpendingBreakdownCard extends StatelessWidget {
                 padding: const EdgeInsets.all(24),
                 child: Column(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.savings_outlined,
                       size: 48,
                       color: FrostedHearthColors.inkLight,
@@ -452,14 +451,14 @@ class _CategoryDetailsGrid extends StatelessWidget {
       _CategoryData(
         name: 'Decorations',
         icon: Icons.park,
-        budget: budget!.decorationsBudget ?? 0,
+        budget: budget!.decorationsBudget,
         spent: (stats['decorationsSpent'] as double?) ?? 0.0,
         color: FrostedHearthColors.spruce,
       ),
       _CategoryData(
         name: 'Activities',
         icon: Icons.celebration,
-        budget: budget!.activitiesBudget ?? 0,
+        budget: budget!.activitiesBudget,
         spent: (stats['activitiesSpent'] as double?) ?? 0.0,
         color: FrostedHearthColors.info,
       ),
@@ -519,7 +518,7 @@ class _CategoryCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: data.color.withOpacity(0.1),
+                  color: data.color.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(data.icon, size: 18, color: data.color),
@@ -582,8 +581,8 @@ class _LoadingCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FrostedCard(
-      child: const Center(
+    return const FrostedCard(
+      child: Center(
         child: Padding(
           padding: EdgeInsets.all(32),
           child: CircularProgressIndicator(),
@@ -606,9 +605,9 @@ class _ErrorCard extends StatelessWidget {
           padding: const EdgeInsets.all(32),
           child: Column(
             children: [
-              Icon(Icons.error_outline, size: 48, color: FrostedHearthColors.error),
+              const Icon(Icons.error_outline, size: 48, color: FrostedHearthColors.error),
               const SizedBox(height: 16),
-              Text(message, style: TextStyle(color: FrostedHearthColors.error)),
+              Text(message, style: const TextStyle(color: FrostedHearthColors.error)),
             ],
           ),
         ),

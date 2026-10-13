@@ -183,7 +183,7 @@ class IconButtonWithBackground extends StatelessWidget {
     final button = Container(
       padding: padding ?? const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: backgroundColor ?? AppTheme.christmasRed.withOpacity(0.1),
+        color: backgroundColor ?? AppTheme.christmasRed.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Icon(
@@ -269,7 +269,7 @@ class ChipButton extends StatelessWidget {
       ),
       selected: isSelected,
       onSelected: onTap != null ? (_) => onTap!() : null,
-      selectedColor: selectedColor ?? AppTheme.christmasRed.withOpacity(0.2),
+      selectedColor: selectedColor ?? AppTheme.christmasRed.withValues(alpha: 0.2),
       checkmarkColor: selectedColor ?? AppTheme.christmasRed,
       backgroundColor: AppTheme.lightGrey,
       deleteIcon: onDelete != null ? const Icon(Icons.close, size: 18) : null,

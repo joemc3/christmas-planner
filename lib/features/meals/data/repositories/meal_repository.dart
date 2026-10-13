@@ -57,7 +57,7 @@ class MealRepository {
         return null;
       }
 
-      return MealModel.fromJson(response as Map<String, dynamic>);
+      return MealModel.fromJson(response);
     } on PostgrestException catch (e) {
       AppLogger.error('Failed to fetch meal', error: e);
       throw DatabaseException(message: e.message, error: e);
@@ -83,7 +83,7 @@ class MealRepository {
           .select()
           .single();
 
-      final created = MealModel.fromJson(response as Map<String, dynamic>);
+      final created = MealModel.fromJson(response);
       AppLogger.info('Created meal: ${created.name}');
       return created;
     } on PostgrestException catch (e) {
@@ -104,7 +104,7 @@ class MealRepository {
           .select()
           .single();
 
-      final updated = MealModel.fromJson(response as Map<String, dynamic>);
+      final updated = MealModel.fromJson(response);
       AppLogger.info('Updated meal: ${updated.name}');
       return updated;
     } on PostgrestException catch (e) {
@@ -165,7 +165,7 @@ class MealRepository {
           .select()
           .single();
 
-      final created = MealItemModel.fromJson(response as Map<String, dynamic>);
+      final created = MealItemModel.fromJson(response);
       AppLogger.info('Created meal item: ${created.itemName}');
       return created;
     } on PostgrestException catch (e) {
@@ -186,7 +186,7 @@ class MealRepository {
           .select()
           .single();
 
-      final updated = MealItemModel.fromJson(response as Map<String, dynamic>);
+      final updated = MealItemModel.fromJson(response);
       AppLogger.info('Updated meal item: ${updated.itemName}');
       return updated;
     } on PostgrestException catch (e) {
@@ -221,7 +221,7 @@ class MealRepository {
       return Stream.error(const AuthenticationException(message: 'User not authenticated'));
     }
 
-    var query = _supabase
+    final query = _supabase
         .from('meals')
         .stream(primaryKey: ['id'])
         .eq('user_id', userId)

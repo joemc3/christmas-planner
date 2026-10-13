@@ -79,7 +79,7 @@ class GiftRepository {
         return null;
       }
 
-      return GiftModel.fromJson(response as Map<String, dynamic>);
+      return GiftModel.fromJson(response);
     } on PostgrestException catch (e) {
       AppLogger.error('Failed to fetch gift', error: e);
       throw DatabaseException(message: e.message, error: e);
@@ -97,7 +97,7 @@ class GiftRepository {
           .select()
           .single();
 
-      final created = GiftModel.fromJson(response as Map<String, dynamic>);
+      final created = GiftModel.fromJson(response);
       AppLogger.info('Created gift: ${created.name}');
       return created;
     } on PostgrestException catch (e) {
@@ -118,7 +118,7 @@ class GiftRepository {
           .select()
           .single();
 
-      final updated = GiftModel.fromJson(response as Map<String, dynamic>);
+      final updated = GiftModel.fromJson(response);
       AppLogger.info('Updated gift: ${updated.name}');
       return updated;
     } on PostgrestException catch (e) {

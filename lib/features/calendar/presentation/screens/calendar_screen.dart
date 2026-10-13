@@ -85,7 +85,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                     child: CircularProgressIndicator(),
                   ),
                 ),
-                error: (_, __) => const Center(
+                error: (_, _) => const Center(
                   child: Padding(
                     padding: EdgeInsets.all(32),
                     child: Text('Failed to load calendar'),
@@ -119,7 +119,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                                   padding: const EdgeInsets.all(24),
                                   child: Column(
                                     children: [
-                                      Icon(
+                                      const Icon(
                                         Icons.event_available,
                                         size: 40,
                                         color: FrostedHearthColors.inkLight,
@@ -145,7 +145,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                           );
                         },
                         loading: () => const Center(child: CircularProgressIndicator()),
-                        error: (_, __) => const Text('Failed to load events'),
+                        error: (_, _) => const Text('Failed to load events'),
                       ),
                     ],
                   ),
@@ -179,7 +179,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                           child: CircularProgressIndicator(),
                         ),
                       ),
-                      error: (_, __) => const Center(
+                      error: (_, _) => const Center(
                         child: Text('Failed to load upcoming events'),
                       ),
                     ),
@@ -227,14 +227,14 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
           outsideDaysVisible: false,
           weekendTextStyle: GoogleFonts.dmMono(color: FrostedHearthColors.winterBerry),
           todayDecoration: BoxDecoration(
-            color: FrostedHearthColors.ember.withOpacity(0.3),
+            color: FrostedHearthColors.ember.withValues(alpha: 0.3),
             shape: BoxShape.circle,
           ),
-          selectedDecoration: BoxDecoration(
+          selectedDecoration: const BoxDecoration(
             color: FrostedHearthColors.ember,
             shape: BoxShape.circle,
           ),
-          markerDecoration: BoxDecoration(
+          markerDecoration: const BoxDecoration(
             color: FrostedHearthColors.spruce,
             shape: BoxShape.circle,
           ),
@@ -268,8 +268,8 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
             fontWeight: FontWeight.w600,
             color: FrostedHearthColors.inkDark,
           ),
-          leftChevronIcon: Icon(Icons.chevron_left, color: FrostedHearthColors.spruce),
-          rightChevronIcon: Icon(Icons.chevron_right, color: FrostedHearthColors.spruce),
+          leftChevronIcon: const Icon(Icons.chevron_left, color: FrostedHearthColors.spruce),
+          rightChevronIcon: const Icon(Icons.chevron_right, color: FrostedHearthColors.spruce),
         ),
         daysOfWeekStyle: DaysOfWeekStyle(
           weekdayStyle: GoogleFonts.dmMono(
@@ -280,7 +280,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
           weekendStyle: GoogleFonts.dmMono(
             fontSize: 12,
             fontWeight: FontWeight.w600,
-            color: FrostedHearthColors.winterBerry.withOpacity(0.7),
+            color: FrostedHearthColors.winterBerry.withValues(alpha: 0.7),
           ),
         ),
         onDaySelected: (selectedDay, focusedDay) {
@@ -307,9 +307,9 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) => Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: FrostedHearthColors.snow,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
         ),
         padding: const EdgeInsets.all(24),
         child: Column(
@@ -332,10 +332,10 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: FrostedHearthColors.ember.withOpacity(0.1),
+                    color: FrostedHearthColors.ember.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Icon(Icons.event, color: FrostedHearthColors.ember),
+                  child: const Icon(Icons.event, color: FrostedHearthColors.ember),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
@@ -531,13 +531,13 @@ class _EventCard extends StatelessWidget {
                   ),
                   if (event.eventTime != null)
                     Text(
-                      event.eventTime!,
+                      DateFormat.jm().format(event.eventTime!),
                       style: GoogleFonts.dmMono(fontSize: 12, color: FrostedHearthColors.inkLight),
                     ),
                 ],
               ),
             ),
-            Icon(Icons.chevron_right, color: FrostedHearthColors.inkLight),
+            const Icon(Icons.chevron_right, color: FrostedHearthColors.inkLight),
           ],
         ),
       ),
@@ -574,7 +574,7 @@ class _TimelineView extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: isToday
                             ? FrostedHearthColors.ember
-                            : FrostedHearthColors.spruce.withOpacity(0.1),
+                            : FrostedHearthColors.spruce.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Column(
@@ -594,7 +594,7 @@ class _TimelineView extends StatelessWidget {
                             style: GoogleFonts.sourceSerif4(
                               fontSize: 9,
                               color: isToday
-                                  ? FrostedHearthColors.frostGold.withOpacity(0.8)
+                                  ? FrostedHearthColors.frostGold.withValues(alpha: 0.8)
                                   : FrostedHearthColors.inkLight,
                             ),
                           ),
@@ -606,7 +606,7 @@ class _TimelineView extends StatelessWidget {
                         child: Container(
                           width: 2,
                           margin: const EdgeInsets.symmetric(vertical: 8),
-                          color: FrostedHearthColors.ember.withOpacity(0.2),
+                          color: FrostedHearthColors.ember.withValues(alpha: 0.2),
                         ),
                       ),
                   ],

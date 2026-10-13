@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../core/constants/app_constants.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/validators.dart';
 import '../providers/auth_provider.dart';
@@ -77,7 +76,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     Container(
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                        color: AppTheme.christmasRed.withOpacity(0.1),
+                        color: AppTheme.christmasRed.withValues(alpha: 0.1),
                         shape: BoxShape.circle,
                       ),
                       child: const Icon(
@@ -109,7 +108,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         padding: const EdgeInsets.all(12),
                         margin: const EdgeInsets.only(bottom: 16),
                         decoration: BoxDecoration(
-                          color: AppTheme.error.withOpacity(0.1),
+                          color: AppTheme.error.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(color: AppTheme.error),
                         ),

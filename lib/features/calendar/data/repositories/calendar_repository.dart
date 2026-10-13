@@ -20,8 +20,7 @@ class CalendarRepository {
       var query = _supabase
           .from('calendar_events')
           .select()
-          .eq('user_id', userId)
-          .order('event_date', ascending: true);
+          .eq('user_id', userId);
 
       if (startDate != null) {
         query = query.gte('event_date', startDate.toIso8601String().split('T')[0]);
@@ -31,7 +30,7 @@ class CalendarRepository {
         query = query.lte('event_date', endDate.toIso8601String().split('T')[0]);
       }
 
-      final response = await query;
+      final response = await query.order('event_date', ascending: true);
       final events = (response as List)
           .map((json) => CalendarEventModel.fromJson(json as Map<String, dynamic>))
           .toList();
@@ -59,7 +58,7 @@ class CalendarRepository {
         return null;
       }
 
-      return CalendarEventModel.fromJson(response as Map<String, dynamic>);
+      return CalendarEventModel.fromJson(response);
     } on PostgrestException catch (e) {
       AppLogger.error('Failed to fetch calendar event', error: e);
       throw DatabaseException(message: e.message, error: e);
@@ -85,7 +84,7 @@ class CalendarRepository {
           .select()
           .single();
 
-      final created = CalendarEventModel.fromJson(response as Map<String, dynamic>);
+      final created = CalendarEventModel.fromJson(response);
       AppLogger.info('Created calendar event: ${created.title}');
       return created;
     } on PostgrestException catch (e) {
@@ -106,7 +105,7 @@ class CalendarRepository {
           .select()
           .single();
 
-      final updated = CalendarEventModel.fromJson(response as Map<String, dynamic>);
+      final updated = CalendarEventModel.fromJson(response);
       AppLogger.info('Updated calendar event: ${updated.title}');
       return updated;
     } on PostgrestException catch (e) {

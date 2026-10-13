@@ -103,7 +103,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     Container(
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                        color: AppTheme.christmasGreen.withOpacity(0.1),
+                        color: AppTheme.christmasGreen.withValues(alpha: 0.1),
                         shape: BoxShape.circle,
                       ),
                       child: const Icon(
@@ -135,7 +135,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         padding: const EdgeInsets.all(12),
                         margin: const EdgeInsets.only(bottom: 16),
                         decoration: BoxDecoration(
-                          color: AppTheme.error.withOpacity(0.1),
+                          color: AppTheme.error.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(color: AppTheme.error),
                         ),
