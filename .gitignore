@@ -102,3 +102,7 @@ supabase/.temp
 
 # Local smoke test server
 .smoke-server.pid
+
+# VPS deployment secrets and synced bundle
+deploy/vps/.env
+deploy/vps/site/
