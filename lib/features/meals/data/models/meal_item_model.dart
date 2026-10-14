@@ -63,7 +63,9 @@ class MealItemModel extends Equatable {
       description: json['description'] as String?,
       quantity: json['quantity'] as String?,
       cost: (json['cost'] as num).toDouble(),
-      actualCost: json['actual_cost'] != null ? (json['actual_cost'] as num).toDouble() : null,
+      actualCost: json['actual_cost'] != null
+          ? (json['actual_cost'] as num).toDouble()
+          : null,
       status: MealItemStatus.fromString(json['status'] as String),
       storeName: json['store_name'] as String?,
       category: json['category'] as String?,
@@ -164,22 +166,22 @@ class MealItemModel extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        mealId,
-        itemName,
-        description,
-        quantity,
-        cost,
-        actualCost,
-        status,
-        storeName,
-        category,
-        recipeLink,
-        prepTime,
-        cookTime,
-        assignedTo,
-        notes,
-        createdAt,
-        updatedAt,
-      ];
+    id,
+    mealId,
+    itemName,
+    description,
+    quantity,
+    cost,
+    actualCost,
+    status,
+    storeName,
+    category,
+    recipeLink,
+    prepTime,
+    cookTime,
+    assignedTo,
+    notes,
+    createdAt,
+    updatedAt,
+  ];
 }

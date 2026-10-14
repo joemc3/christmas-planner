@@ -54,10 +54,7 @@ class CustomCard extends StatelessWidget {
       );
     }
 
-    return Container(
-      margin: effectiveMargin,
-      child: content,
-    );
+    return Container(margin: effectiveMargin, child: content);
   }
 }
 
@@ -84,15 +81,15 @@ class GlassCard extends StatelessWidget {
     return Container(
       margin: margin ?? EdgeInsets.zero,
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(opacity),
+        color: Colors.white.withValues(alpha: opacity),
         borderRadius: borderRadius ?? BorderRadius.circular(16),
         border: Border.all(
-          color: Colors.white.withOpacity(0.2),
+          color: Colors.white.withValues(alpha: 0.2),
           width: 1.5,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: blur,
             offset: const Offset(0, 4),
           ),
@@ -137,34 +134,34 @@ class StatCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               CircleAvatar(
-                backgroundColor: color.withOpacity(0.1),
+                backgroundColor: color.withValues(alpha: 0.1),
                 child: Icon(icon, color: color),
               ),
-              if (trailing != null) trailing!,
+              ?trailing,
             ],
           ),
           const SizedBox(height: 16),
           Text(
             title,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppTheme.textSecondary,
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: AppTheme.textSecondary),
           ),
           const SizedBox(height: 4),
           Text(
             value,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: color,
-                ),
+              fontWeight: FontWeight.bold,
+              color: color,
+            ),
           ),
           if (subtitle != null) ...[
             const SizedBox(height: 4),
             Text(
               subtitle!,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: AppTheme.textHint,
-                  ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall?.copyWith(color: AppTheme.textHint),
             ),
           ],
         ],
@@ -198,9 +195,9 @@ class InfoCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -217,9 +214,9 @@ class InfoCard extends StatelessWidget {
                     Text(
                       title,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            color: color,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        color: color,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     const SizedBox(height: 4),
                     Text(
@@ -242,10 +239,7 @@ class InfoCard extends StatelessWidget {
             const SizedBox(height: 12),
             Align(
               alignment: Alignment.centerRight,
-              child: TextButton(
-                onPressed: onAction,
-                child: Text(actionText!),
-              ),
+              child: TextButton(onPressed: onAction, child: Text(actionText!)),
             ),
           ],
         ],
@@ -276,7 +270,8 @@ class ExpandableCard extends StatefulWidget {
   State<ExpandableCard> createState() => _ExpandableCardState();
 }
 
-class _ExpandableCardState extends State<ExpandableCard> with SingleTickerProviderStateMixin {
+class _ExpandableCardState extends State<ExpandableCard>
+    with SingleTickerProviderStateMixin {
   late bool _isExpanded;
   late AnimationController _controller;
   late Animation<double> _animation;
@@ -289,10 +284,7 @@ class _ExpandableCardState extends State<ExpandableCard> with SingleTickerProvid
       duration: const Duration(milliseconds: 300),
       vsync: this,
     );
-    _animation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
-    );
+    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
 
     if (_isExpanded) {
       _controller.value = 1.0;
@@ -329,7 +321,9 @@ class _ExpandableCardState extends State<ExpandableCard> with SingleTickerProvid
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: widget.headerColor,
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(16),
+                ),
               ),
               child: Row(
                 children: [
@@ -341,8 +335,8 @@ class _ExpandableCardState extends State<ExpandableCard> with SingleTickerProvid
                     child: Text(
                       widget.title,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                   if (widget.trailing != null) ...[
@@ -350,7 +344,10 @@ class _ExpandableCardState extends State<ExpandableCard> with SingleTickerProvid
                     const SizedBox(width: 8),
                   ],
                   RotationTransition(
-                    turns: Tween<double>(begin: 0, end: 0.5).animate(_animation),
+                    turns: Tween<double>(
+                      begin: 0,
+                      end: 0.5,
+                    ).animate(_animation),
                     child: const Icon(Icons.expand_more),
                   ),
                 ],
@@ -406,22 +403,22 @@ class ProgressCard extends StatelessWidget {
                     Text(
                       title,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     if (subtitle != null) ...[
                       const SizedBox(height: 4),
                       Text(
                         subtitle!,
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: AppTheme.textSecondary,
-                            ),
+                          color: AppTheme.textSecondary,
+                        ),
                       ),
                     ],
                   ],
                 ),
               ),
-              if (trailing != null) trailing!,
+              ?trailing,
             ],
           ),
           const SizedBox(height: 16),
@@ -441,15 +438,15 @@ class ProgressCard extends StatelessWidget {
               Text(
                 progressText ?? '${(progress * 100).toStringAsFixed(0)}%',
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: effectiveColor,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  color: effectiveColor,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               Text(
                 progress >= 1.0 ? 'Complete' : 'In Progress',
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: AppTheme.textSecondary,
-                    ),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodySmall?.copyWith(color: AppTheme.textSecondary),
               ),
             ],
           ),

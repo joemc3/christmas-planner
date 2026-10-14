@@ -13,7 +13,15 @@ final authRepositoryProvider = Provider<AuthRepository>((ref) {
 // Auth State Provider
 final authStateProvider = StreamProvider<User?>((ref) {
   final authRepo = ref.watch(authRepositoryProvider);
-  return authRepo.authStateChanges.map((event) => event.session?.user);
+  // Supabase emits its initialSession event during initialize(), before any
+  // widget subscribes, so start with the already-recovered user and then
+  // follow sign-in / sign-out / refresh events.
+  Stream<User?> states() async* {
+    yield authRepo.currentUser;
+    yield* authRepo.authStateChanges.map((event) => event.session?.user);
+  }
+
+  return states();
 });
 
 // Current User Provider
@@ -31,7 +39,11 @@ final userProfileProvider = FutureProvider<UserProfile?>((ref) async {
     final authRepo = ref.watch(authRepositoryProvider);
     return await authRepo.getUserProfile();
   } catch (e, stackTrace) {
-    AppLogger.error('Failed to load user profile', error: e, stackTrace: stackTrace);
+    AppLogger.error(
+      'Failed to load user profile',
+      error: e,
+      stackTrace: stackTrace,
+    );
     return null;
   }
 });
@@ -58,14 +70,8 @@ class AuthController {
     );
   }
 
-  Future<void> signIn({
-    required String email,
-    required String password,
-  }) async {
-    await _authRepository.signIn(
-      email: email,
-      password: password,
-    );
+  Future<void> signIn({required String email, required String password}) async {
+    await _authRepository.signIn(email: email, password: password);
   }
 
   Future<void> signOut() async {

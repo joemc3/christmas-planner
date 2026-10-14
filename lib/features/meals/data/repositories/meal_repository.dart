@@ -9,7 +9,7 @@ class MealRepository {
   final SupabaseClient _supabase;
 
   MealRepository({SupabaseClient? supabaseClient})
-      : _supabase = supabaseClient ?? Supabase.instance.client;
+    : _supabase = supabaseClient ?? Supabase.instance.client;
 
   Future<List<MealModel>> getMeals({int? year}) async {
     try {
@@ -19,17 +19,13 @@ class MealRepository {
       }
 
       // Build filter first, then apply transforms
-      var filterQuery = _supabase
-          .from('meals')
-          .select()
-          .eq('user_id', userId);
+      var filterQuery = _supabase.from('meals').select().eq('user_id', userId);
 
       if (year != null) {
         filterQuery = filterQuery.eq('year', year);
       }
 
-      final response = await filterQuery
-          .order('type', ascending: true);
+      final response = await filterQuery.order('type', ascending: true);
       final meals = (response as List)
           .map((json) => MealModel.fromJson(json as Map<String, dynamic>))
           .toList();
@@ -40,7 +36,11 @@ class MealRepository {
       AppLogger.error('Failed to fetch meals', error: e);
       throw DatabaseException(message: e.message, error: e);
     } catch (e, stackTrace) {
-      AppLogger.error('Unexpected error fetching meals', error: e, stackTrace: stackTrace);
+      AppLogger.error(
+        'Unexpected error fetching meals',
+        error: e,
+        stackTrace: stackTrace,
+      );
       throw DatabaseException(message: 'Failed to fetch meals', error: e);
     }
   }
@@ -57,12 +57,16 @@ class MealRepository {
         return null;
       }
 
-      return MealModel.fromJson(response as Map<String, dynamic>);
+      return MealModel.fromJson(response);
     } on PostgrestException catch (e) {
       AppLogger.error('Failed to fetch meal', error: e);
       throw DatabaseException(message: e.message, error: e);
     } catch (e, stackTrace) {
-      AppLogger.error('Unexpected error fetching meal', error: e, stackTrace: stackTrace);
+      AppLogger.error(
+        'Unexpected error fetching meal',
+        error: e,
+        stackTrace: stackTrace,
+      );
       throw DatabaseException(message: 'Failed to fetch meal', error: e);
     }
   }
@@ -83,14 +87,18 @@ class MealRepository {
           .select()
           .single();
 
-      final created = MealModel.fromJson(response as Map<String, dynamic>);
+      final created = MealModel.fromJson(response);
       AppLogger.info('Created meal: ${created.name}');
       return created;
     } on PostgrestException catch (e) {
       AppLogger.error('Failed to create meal', error: e);
       throw DatabaseException(message: e.message, error: e);
     } catch (e, stackTrace) {
-      AppLogger.error('Unexpected error creating meal', error: e, stackTrace: stackTrace);
+      AppLogger.error(
+        'Unexpected error creating meal',
+        error: e,
+        stackTrace: stackTrace,
+      );
       throw DatabaseException(message: 'Failed to create meal', error: e);
     }
   }
@@ -104,31 +112,36 @@ class MealRepository {
           .select()
           .single();
 
-      final updated = MealModel.fromJson(response as Map<String, dynamic>);
+      final updated = MealModel.fromJson(response);
       AppLogger.info('Updated meal: ${updated.name}');
       return updated;
     } on PostgrestException catch (e) {
       AppLogger.error('Failed to update meal', error: e);
       throw DatabaseException(message: e.message, error: e);
     } catch (e, stackTrace) {
-      AppLogger.error('Unexpected error updating meal', error: e, stackTrace: stackTrace);
+      AppLogger.error(
+        'Unexpected error updating meal',
+        error: e,
+        stackTrace: stackTrace,
+      );
       throw DatabaseException(message: 'Failed to update meal', error: e);
     }
   }
 
   Future<void> deleteMeal(String id) async {
     try {
-      await _supabase
-          .from('meals')
-          .delete()
-          .eq('id', id);
+      await _supabase.from('meals').delete().eq('id', id);
 
       AppLogger.info('Deleted meal: $id');
     } on PostgrestException catch (e) {
       AppLogger.error('Failed to delete meal', error: e);
       throw DatabaseException(message: e.message, error: e);
     } catch (e, stackTrace) {
-      AppLogger.error('Unexpected error deleting meal', error: e, stackTrace: stackTrace);
+      AppLogger.error(
+        'Unexpected error deleting meal',
+        error: e,
+        stackTrace: stackTrace,
+      );
       throw DatabaseException(message: 'Failed to delete meal', error: e);
     }
   }
@@ -152,7 +165,11 @@ class MealRepository {
       AppLogger.error('Failed to fetch meal items', error: e);
       throw DatabaseException(message: e.message, error: e);
     } catch (e, stackTrace) {
-      AppLogger.error('Unexpected error fetching meal items', error: e, stackTrace: stackTrace);
+      AppLogger.error(
+        'Unexpected error fetching meal items',
+        error: e,
+        stackTrace: stackTrace,
+      );
       throw DatabaseException(message: 'Failed to fetch meal items', error: e);
     }
   }
@@ -165,14 +182,18 @@ class MealRepository {
           .select()
           .single();
 
-      final created = MealItemModel.fromJson(response as Map<String, dynamic>);
+      final created = MealItemModel.fromJson(response);
       AppLogger.info('Created meal item: ${created.itemName}');
       return created;
     } on PostgrestException catch (e) {
       AppLogger.error('Failed to create meal item', error: e);
       throw DatabaseException(message: e.message, error: e);
     } catch (e, stackTrace) {
-      AppLogger.error('Unexpected error creating meal item', error: e, stackTrace: stackTrace);
+      AppLogger.error(
+        'Unexpected error creating meal item',
+        error: e,
+        stackTrace: stackTrace,
+      );
       throw DatabaseException(message: 'Failed to create meal item', error: e);
     }
   }
@@ -186,31 +207,36 @@ class MealRepository {
           .select()
           .single();
 
-      final updated = MealItemModel.fromJson(response as Map<String, dynamic>);
+      final updated = MealItemModel.fromJson(response);
       AppLogger.info('Updated meal item: ${updated.itemName}');
       return updated;
     } on PostgrestException catch (e) {
       AppLogger.error('Failed to update meal item', error: e);
       throw DatabaseException(message: e.message, error: e);
     } catch (e, stackTrace) {
-      AppLogger.error('Unexpected error updating meal item', error: e, stackTrace: stackTrace);
+      AppLogger.error(
+        'Unexpected error updating meal item',
+        error: e,
+        stackTrace: stackTrace,
+      );
       throw DatabaseException(message: 'Failed to update meal item', error: e);
     }
   }
 
   Future<void> deleteMealItem(String id) async {
     try {
-      await _supabase
-          .from('meal_items')
-          .delete()
-          .eq('id', id);
+      await _supabase.from('meal_items').delete().eq('id', id);
 
       AppLogger.info('Deleted meal item: $id');
     } on PostgrestException catch (e) {
       AppLogger.error('Failed to delete meal item', error: e);
       throw DatabaseException(message: e.message, error: e);
     } catch (e, stackTrace) {
-      AppLogger.error('Unexpected error deleting meal item', error: e, stackTrace: stackTrace);
+      AppLogger.error(
+        'Unexpected error deleting meal item',
+        error: e,
+        stackTrace: stackTrace,
+      );
       throw DatabaseException(message: 'Failed to delete meal item', error: e);
     }
   }
@@ -218,10 +244,12 @@ class MealRepository {
   Stream<List<MealModel>> watchMeals({int? year}) {
     final userId = _supabase.auth.currentUser?.id;
     if (userId == null) {
-      return Stream.error(const AuthenticationException(message: 'User not authenticated'));
+      return Stream.error(
+        const AuthenticationException(message: 'User not authenticated'),
+      );
     }
 
-    var query = _supabase
+    final query = _supabase
         .from('meals')
         .stream(primaryKey: ['id'])
         .eq('user_id', userId)
@@ -243,7 +271,9 @@ class MealRepository {
         .eq('meal_id', mealId)
         .order('category', ascending: true)
         .order('item_name', ascending: true)
-        .map((data) => data.map((json) => MealItemModel.fromJson(json)).toList());
+        .map(
+          (data) => data.map((json) => MealItemModel.fromJson(json)).toList(),
+        );
   }
 
   Future<Map<String, double>> calculateMealBudgetStats(String mealId) async {
@@ -261,16 +291,14 @@ class MealRepository {
         }
       }
 
-      return {
-        'totalSpent': totalSpent,
-        'totalPlanned': totalPlanned,
-      };
+      return {'totalSpent': totalSpent, 'totalPlanned': totalPlanned};
     } catch (e, stackTrace) {
-      AppLogger.error('Failed to calculate meal budget stats', error: e, stackTrace: stackTrace);
-      return {
-        'totalSpent': 0.0,
-        'totalPlanned': 0.0,
-      };
+      AppLogger.error(
+        'Failed to calculate meal budget stats',
+        error: e,
+        stackTrace: stackTrace,
+      );
+      return {'totalSpent': 0.0, 'totalPlanned': 0.0};
     }
   }
 }

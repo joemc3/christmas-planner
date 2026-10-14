@@ -118,18 +118,18 @@ class RecipientModel extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        userId,
-        name,
-        relationship,
-        ageGroup,
-        interests,
-        budgetLimit,
-        notes,
-        avatarUrl,
-        priority,
-        archived,
-        createdAt,
-        updatedAt,
-      ];
+    id,
+    userId,
+    name,
+    relationship,
+    ageGroup,
+    interests,
+    budgetLimit,
+    notes,
+    avatarUrl,
+    priority,
+    archived,
+    createdAt,
+    updatedAt,
+  ];
 }

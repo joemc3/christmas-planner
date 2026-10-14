@@ -1,5 +1,4 @@
 import 'dart:math';
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -27,10 +26,10 @@ class FrostedCard extends StatelessWidget {
       child: Container(
         padding: padding ?? const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: FrostedHearthColors.snow.withOpacity(0.85),
+          color: FrostedHearthColors.snow.withValues(alpha: 0.85),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: FrostedHearthColors.frostGold.withOpacity(0.3),
+            color: FrostedHearthColors.frostGold.withValues(alpha: 0.3),
             width: 1,
           ),
           boxShadow: AppTheme.cardShadow,
@@ -148,7 +147,7 @@ class _ArcPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round;
 
     if (gradient) {
-      paint.shader = SweepGradient(
+      paint.shader = const SweepGradient(
         startAngle: -pi / 2,
         endAngle: pi * 1.5,
         colors: [
@@ -161,13 +160,7 @@ class _ArcPainter extends CustomPainter {
       paint.color = color;
     }
 
-    canvas.drawArc(
-      rect,
-      -pi / 2,
-      2 * pi * progress,
-      false,
-      paint,
-    );
+    canvas.drawArc(rect, -pi / 2, 2 * pi * progress, false, paint);
   }
 
   @override
@@ -201,11 +194,7 @@ class MagicalCountdown extends StatelessWidget {
       child: Stack(
         children: [
           // Star field background
-          Positioned.fill(
-            child: CustomPaint(
-              painter: _StarFieldPainter(),
-            ),
-          ),
+          Positioned.fill(child: CustomPaint(painter: _StarFieldPainter())),
           // Content
           Padding(
             padding: const EdgeInsets.all(24),
@@ -243,7 +232,7 @@ class MagicalCountdown extends StatelessWidget {
                   style: GoogleFonts.sourceSerif4(
                     fontSize: 16,
                     fontStyle: FontStyle.italic,
-                    color: FrostedHearthColors.frostGold.withOpacity(0.8),
+                    color: FrostedHearthColors.frostGold.withValues(alpha: 0.8),
                   ),
                 ),
                 const Spacer(),
@@ -255,7 +244,7 @@ class MagicalCountdown extends StatelessWidget {
                     gradient: LinearGradient(
                       colors: [
                         FrostedHearthColors.ember,
-                        FrostedHearthColors.emberGlow.withOpacity(0),
+                        FrostedHearthColors.emberGlow.withValues(alpha: 0),
                       ],
                     ),
                   ),
@@ -281,7 +270,7 @@ class _StarFieldPainter extends CustomPainter {
       final radius = random.nextDouble() * 1.5 + 0.5;
       final opacity = random.nextDouble() * 0.5 + 0.2;
 
-      paint.color = FrostedHearthColors.frostGold.withOpacity(opacity);
+      paint.color = FrostedHearthColors.frostGold.withValues(alpha: opacity);
       canvas.drawCircle(Offset(x, y), radius, paint);
     }
   }
@@ -335,16 +324,16 @@ class BudgetStackedBar extends StatelessWidget {
           child: ClipRRect(
             borderRadius: BorderRadius.circular(16),
             child: Row(
-              children: categories.entries.toList().asMap().entries.map((entry) {
+              children: categories.entries.toList().asMap().entries.map((
+                entry,
+              ) {
                 final index = entry.key;
                 final category = entry.value;
                 final percentage = category.value / total;
 
                 return Expanded(
                   flex: (percentage * 1000).toInt().clamp(1, 1000),
-                  child: Container(
-                    color: colors[index % colors.length],
-                  ),
+                  child: Container(color: colors[index % colors.length]),
                 );
               }).toList(),
             ),
@@ -414,12 +403,12 @@ class EnchantedShoppingItem extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
           color: isChecked
-              ? FrostedHearthColors.success.withOpacity(0.08)
+              ? FrostedHearthColors.success.withValues(alpha: 0.08)
               : FrostedHearthColors.snow,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: isChecked
-                ? FrostedHearthColors.success.withOpacity(0.3)
+                ? FrostedHearthColors.success.withValues(alpha: 0.3)
                 : FrostedHearthColors.parchmentWarm,
           ),
         ),
@@ -443,11 +432,7 @@ class EnchantedShoppingItem extends StatelessWidget {
                 ),
               ),
               child: isChecked
-                  ? const Icon(
-                      Icons.check,
-                      size: 14,
-                      color: Colors.white,
-                    )
+                  ? const Icon(Icons.check, size: 14, color: Colors.white)
                   : null,
             ),
             const SizedBox(width: 14),
@@ -480,12 +465,9 @@ class EnchantedShoppingItem extends StatelessWidget {
             // Category tag
             if (category != null)
               Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                  vertical: 4,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: FrostedHearthColors.spruce.withOpacity(0.1),
+                  color: FrostedHearthColors.spruce.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
@@ -578,44 +560,50 @@ class _NavItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      behavior: HitTestBehavior.opaque,
-      child: AnimatedContainer(
-        duration: FrostedHearthTiming.quick,
-        curve: FrostedHearthCurves.playful,
-        padding: EdgeInsets.symmetric(
-          horizontal: isSelected ? 16 : 12,
-          vertical: 8,
-        ),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? FrostedHearthColors.ember.withOpacity(0.2)
-              : Colors.transparent,
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              icon,
-              size: 22,
-              color: isSelected
-                  ? FrostedHearthColors.frostGoldBright
-                  : FrostedHearthColors.frostGold.withOpacity(0.6),
-            ),
-            if (isSelected) ...[
-              const SizedBox(width: 8),
-              Text(
-                label,
-                style: GoogleFonts.fraunces(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                  color: FrostedHearthColors.frostGoldBright,
-                ),
+    return Semantics(
+      button: true,
+      selected: isSelected,
+      label: label,
+      excludeSemantics: true,
+      child: GestureDetector(
+        onTap: onTap,
+        behavior: HitTestBehavior.opaque,
+        child: AnimatedContainer(
+          duration: FrostedHearthTiming.quick,
+          curve: FrostedHearthCurves.playful,
+          padding: EdgeInsets.symmetric(
+            horizontal: isSelected ? 16 : 12,
+            vertical: 8,
+          ),
+          decoration: BoxDecoration(
+            color: isSelected
+                ? FrostedHearthColors.ember.withValues(alpha: 0.2)
+                : Colors.transparent,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                icon,
+                size: 22,
+                color: isSelected
+                    ? FrostedHearthColors.frostGoldBright
+                    : FrostedHearthColors.frostGold.withValues(alpha: 0.6),
               ),
+              if (isSelected) ...[
+                const SizedBox(width: 8),
+                Text(
+                  label,
+                  style: GoogleFonts.fraunces(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: FrostedHearthColors.frostGoldBright,
+                  ),
+                ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );
@@ -642,10 +630,7 @@ class SectionHeader extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            title,
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
+          Text(title, style: Theme.of(context).textTheme.titleLarge),
           if (actionText != null)
             TextButton(
               onPressed: onAction,
@@ -690,22 +675,18 @@ class EmptyState extends StatelessWidget {
           children: [
             Container(
               padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: FrostedHearthColors.parchmentWarm,
                 shape: BoxShape.circle,
               ),
-              child: Icon(
-                icon,
-                size: 48,
-                color: FrostedHearthColors.inkLight,
-              ),
+              child: Icon(icon, size: 48, color: FrostedHearthColors.inkLight),
             ),
             const SizedBox(height: 24),
             Text(
               title,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: FrostedHearthColors.inkMedium,
-                  ),
+                color: FrostedHearthColors.inkMedium,
+              ),
               textAlign: TextAlign.center,
             ),
             if (subtitle != null) ...[
@@ -718,10 +699,7 @@ class EmptyState extends StatelessWidget {
             ],
             if (actionText != null && onAction != null) ...[
               const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: onAction,
-                child: Text(actionText!),
-              ),
+              ElevatedButton(onPressed: onAction, child: Text(actionText!)),
             ],
           ],
         ),

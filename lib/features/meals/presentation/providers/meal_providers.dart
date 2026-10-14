@@ -17,22 +17,27 @@ final mealsStreamProvider = StreamProvider<List<MealModel>>((ref) {
 });
 
 // Meal by ID Provider
-final mealByIdProvider = FutureProvider.family<MealModel?, String>((ref, id) async {
+final mealByIdProvider = FutureProvider.family<MealModel?, String>((
+  ref,
+  id,
+) async {
   final repo = ref.watch(mealRepositoryProvider);
   return await repo.getMealById(id);
 });
 
 // Meal Items Stream Provider
-final mealItemsStreamProvider = StreamProvider.family<List<MealItemModel>, String>((ref, mealId) {
-  final repo = ref.watch(mealRepositoryProvider);
-  return repo.watchMealItems(mealId);
-});
+final mealItemsStreamProvider =
+    StreamProvider.family<List<MealItemModel>, String>((ref, mealId) {
+      final repo = ref.watch(mealRepositoryProvider);
+      return repo.watchMealItems(mealId);
+    });
 
 // Meal Budget Stats Provider
-final mealBudgetStatsProvider = FutureProvider.family<Map<String, double>, String>((ref, mealId) async {
-  final repo = ref.watch(mealRepositoryProvider);
-  return await repo.calculateMealBudgetStats(mealId);
-});
+final mealBudgetStatsProvider =
+    FutureProvider.family<Map<String, double>, String>((ref, mealId) async {
+      final repo = ref.watch(mealRepositoryProvider);
+      return await repo.calculateMealBudgetStats(mealId);
+    });
 
 // Meal Controller
 final mealControllerProvider = Provider<MealController>((ref) {
@@ -48,7 +53,11 @@ class MealController {
     try {
       return await _repository.createMeal(meal);
     } catch (e, stackTrace) {
-      AppLogger.error('Failed to create meal', error: e, stackTrace: stackTrace);
+      AppLogger.error(
+        'Failed to create meal',
+        error: e,
+        stackTrace: stackTrace,
+      );
       rethrow;
     }
   }
@@ -57,7 +66,11 @@ class MealController {
     try {
       return await _repository.updateMeal(meal);
     } catch (e, stackTrace) {
-      AppLogger.error('Failed to update meal', error: e, stackTrace: stackTrace);
+      AppLogger.error(
+        'Failed to update meal',
+        error: e,
+        stackTrace: stackTrace,
+      );
       rethrow;
     }
   }
@@ -66,7 +79,11 @@ class MealController {
     try {
       await _repository.deleteMeal(id);
     } catch (e, stackTrace) {
-      AppLogger.error('Failed to delete meal', error: e, stackTrace: stackTrace);
+      AppLogger.error(
+        'Failed to delete meal',
+        error: e,
+        stackTrace: stackTrace,
+      );
       rethrow;
     }
   }
@@ -75,7 +92,11 @@ class MealController {
     try {
       return await _repository.createMealItem(item);
     } catch (e, stackTrace) {
-      AppLogger.error('Failed to create meal item', error: e, stackTrace: stackTrace);
+      AppLogger.error(
+        'Failed to create meal item',
+        error: e,
+        stackTrace: stackTrace,
+      );
       rethrow;
     }
   }
@@ -84,7 +105,11 @@ class MealController {
     try {
       return await _repository.updateMealItem(item);
     } catch (e, stackTrace) {
-      AppLogger.error('Failed to update meal item', error: e, stackTrace: stackTrace);
+      AppLogger.error(
+        'Failed to update meal item',
+        error: e,
+        stackTrace: stackTrace,
+      );
       rethrow;
     }
   }
@@ -93,7 +118,11 @@ class MealController {
     try {
       await _repository.deleteMealItem(id);
     } catch (e, stackTrace) {
-      AppLogger.error('Failed to delete meal item', error: e, stackTrace: stackTrace);
+      AppLogger.error(
+        'Failed to delete meal item',
+        error: e,
+        stackTrace: stackTrace,
+      );
       rethrow;
     }
   }

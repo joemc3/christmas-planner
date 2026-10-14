@@ -4,8 +4,10 @@ import 'package:christmas_planner/core/utils/date_utils.dart';
 void main() {
   group('AppDateUtils', () {
     test('formatCurrency should format correctly', () {
-      expect(AppDateUtils.formatCurrency(100.5), '\$ 100.50');
-      expect(AppDateUtils.formatCurrency(0), '\$ 0.00');
+      expect(AppDateUtils.formatCurrency(100.5), '\$100.50');
+      expect(AppDateUtils.formatCurrency(0), '\$0.00');
+      expect(AppDateUtils.formatCurrency(1234.5), '\$1,234.50');
+      expect(AppDateUtils.formatCurrency(null), '\$0.00');
     });
 
     test('formatDate should format correctly', () {

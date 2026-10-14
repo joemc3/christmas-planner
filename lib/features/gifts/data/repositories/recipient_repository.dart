@@ -8,9 +8,11 @@ class RecipientRepository {
   final SupabaseClient _supabase;
 
   RecipientRepository({SupabaseClient? supabaseClient})
-      : _supabase = supabaseClient ?? Supabase.instance.client;
+    : _supabase = supabaseClient ?? Supabase.instance.client;
 
-  Future<List<RecipientModel>> getRecipients({bool includeArchived = false}) async {
+  Future<List<RecipientModel>> getRecipients({
+    bool includeArchived = false,
+  }) async {
     try {
       final userId = _supabase.auth.currentUser?.id;
       if (userId == null) {
@@ -40,7 +42,11 @@ class RecipientRepository {
       AppLogger.error('Failed to fetch recipients', error: e);
       throw DatabaseException(message: e.message, error: e);
     } catch (e, stackTrace) {
-      AppLogger.error('Unexpected error fetching recipients', error: e, stackTrace: stackTrace);
+      AppLogger.error(
+        'Unexpected error fetching recipients',
+        error: e,
+        stackTrace: stackTrace,
+      );
       throw DatabaseException(message: 'Failed to fetch recipients', error: e);
     }
   }
@@ -63,12 +69,16 @@ class RecipientRepository {
         return null;
       }
 
-      return RecipientModel.fromJson(response as Map<String, dynamic>);
+      return RecipientModel.fromJson(response);
     } on PostgrestException catch (e) {
       AppLogger.error('Failed to fetch recipient', error: e);
       throw DatabaseException(message: e.message, error: e);
     } catch (e, stackTrace) {
-      AppLogger.error('Unexpected error fetching recipient', error: e, stackTrace: stackTrace);
+      AppLogger.error(
+        'Unexpected error fetching recipient',
+        error: e,
+        stackTrace: stackTrace,
+      );
       throw DatabaseException(message: 'Failed to fetch recipient', error: e);
     }
   }
@@ -89,14 +99,18 @@ class RecipientRepository {
           .select()
           .single();
 
-      final created = RecipientModel.fromJson(response as Map<String, dynamic>);
+      final created = RecipientModel.fromJson(response);
       AppLogger.info('Created recipient: ${created.name}');
       return created;
     } on PostgrestException catch (e) {
       AppLogger.error('Failed to create recipient', error: e);
       throw DatabaseException(message: e.message, error: e);
     } catch (e, stackTrace) {
-      AppLogger.error('Unexpected error creating recipient', error: e, stackTrace: stackTrace);
+      AppLogger.error(
+        'Unexpected error creating recipient',
+        error: e,
+        stackTrace: stackTrace,
+      );
       throw DatabaseException(message: 'Failed to create recipient', error: e);
     }
   }
@@ -116,14 +130,18 @@ class RecipientRepository {
           .select()
           .single();
 
-      final updated = RecipientModel.fromJson(response as Map<String, dynamic>);
+      final updated = RecipientModel.fromJson(response);
       AppLogger.info('Updated recipient: ${updated.name}');
       return updated;
     } on PostgrestException catch (e) {
       AppLogger.error('Failed to update recipient', error: e);
       throw DatabaseException(message: e.message, error: e);
     } catch (e, stackTrace) {
-      AppLogger.error('Unexpected error updating recipient', error: e, stackTrace: stackTrace);
+      AppLogger.error(
+        'Unexpected error updating recipient',
+        error: e,
+        stackTrace: stackTrace,
+      );
       throw DatabaseException(message: 'Failed to update recipient', error: e);
     }
   }
@@ -146,7 +164,11 @@ class RecipientRepository {
       AppLogger.error('Failed to delete recipient', error: e);
       throw DatabaseException(message: e.message, error: e);
     } catch (e, stackTrace) {
-      AppLogger.error('Unexpected error deleting recipient', error: e, stackTrace: stackTrace);
+      AppLogger.error(
+        'Unexpected error deleting recipient',
+        error: e,
+        stackTrace: stackTrace,
+      );
       throw DatabaseException(message: 'Failed to delete recipient', error: e);
     }
   }
@@ -169,7 +191,11 @@ class RecipientRepository {
       AppLogger.error('Failed to archive recipient', error: e);
       throw DatabaseException(message: e.message, error: e);
     } catch (e, stackTrace) {
-      AppLogger.error('Unexpected error archiving recipient', error: e, stackTrace: stackTrace);
+      AppLogger.error(
+        'Unexpected error archiving recipient',
+        error: e,
+        stackTrace: stackTrace,
+      );
       throw DatabaseException(message: 'Failed to archive recipient', error: e);
     }
   }
@@ -177,7 +203,9 @@ class RecipientRepository {
   Stream<List<RecipientModel>> watchRecipients({bool includeArchived = false}) {
     final userId = _supabase.auth.currentUser?.id;
     if (userId == null) {
-      return Stream.error(const AuthenticationException(message: 'User not authenticated'));
+      return Stream.error(
+        const AuthenticationException(message: 'User not authenticated'),
+      );
     }
 
     return _supabase
@@ -187,7 +215,9 @@ class RecipientRepository {
         .order('priority', ascending: false)
         .order('name', ascending: true)
         .map((data) {
-          var recipients = data.map((json) => RecipientModel.fromJson(json)).toList();
+          var recipients = data
+              .map((json) => RecipientModel.fromJson(json))
+              .toList();
           if (!includeArchived) {
             recipients = recipients.where((r) => !r.archived).toList();
           }

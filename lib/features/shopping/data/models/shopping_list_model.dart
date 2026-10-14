@@ -74,14 +74,14 @@ class ShoppingListModel extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        userId,
-        name,
-        description,
-        isDefault,
-        createdAt,
-        updatedAt,
-      ];
+    id,
+    userId,
+    name,
+    description,
+    isDefault,
+    createdAt,
+    updatedAt,
+  ];
 }
 
 class ShoppingListItemModel extends Equatable {
@@ -222,20 +222,20 @@ class ShoppingListItemModel extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        shoppingListId,
-        itemName,
-        quantity,
-        category,
-        estimatedCost,
-        actualCost,
-        purchased,
-        purchasedDate,
-        storeName,
-        notes,
-        giftId,
-        mealItemId,
-        createdAt,
-        updatedAt,
-      ];
+    id,
+    shoppingListId,
+    itemName,
+    quantity,
+    category,
+    estimatedCost,
+    actualCost,
+    purchased,
+    purchasedDate,
+    storeName,
+    notes,
+    giftId,
+    mealItemId,
+    createdAt,
+    updatedAt,
+  ];
 }

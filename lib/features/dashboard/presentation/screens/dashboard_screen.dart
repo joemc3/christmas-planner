@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/constants/app_constants.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/date_utils.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
+import '../../../gifts/data/models/gift_model.dart';
 import '../../../gifts/presentation/providers/gift_providers.dart';
-import '../../../meals/presentation/providers/meal_providers.dart';
 
 class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
@@ -15,22 +16,19 @@ class DashboardScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final userProfile = ref.watch(userProfileProvider);
     final giftsStream = ref.watch(giftsStreamProvider);
-    final mealsStream = ref.watch(mealsStreamProvider);
     final giftStats = ref.watch(giftBudgetStatsProvider);
 
     final daysUntilChristmas = AppDateUtils.daysUntilChristmas();
     final daysUntilDeadline = AppDateUtils.daysUntilPreparationDeadline();
+    final shippingDays = userProfile.value?.defaultShippingDays;
+    final lastOrderDate = AppDateUtils.calculateStartOrderingDate(
+      customShippingDays: shippingDays,
+    );
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Dashboard'),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications_outlined),
-            onPressed: () {
-              // Navigate to notifications
-            },
-          ),
           IconButton(
             icon: const Icon(Icons.settings_outlined),
             onPressed: () => context.push('/settings'),
@@ -40,11 +38,10 @@ class DashboardScreen extends ConsumerWidget {
       body: RefreshIndicator(
         onRefresh: () async {
           ref.invalidate(giftsStreamProvider);
-          ref.invalidate(mealsStreamProvider);
           ref.invalidate(giftBudgetStatsProvider);
         },
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -54,14 +51,10 @@ class DashboardScreen extends ConsumerWidget {
                   name: profile?.fullName ?? 'User',
                   daysUntilChristmas: daysUntilChristmas,
                 ),
-                loading: () => const _WelcomeCard(
-                  name: 'User',
-                  daysUntilChristmas: 0,
-                ),
-                error: (_, __) => const _WelcomeCard(
-                  name: 'User',
-                  daysUntilChristmas: 0,
-                ),
+                loading: () =>
+                    const _WelcomeCard(name: 'User', daysUntilChristmas: 0),
+                error: (_, _) =>
+                    const _WelcomeCard(name: 'User', daysUntilChristmas: 0),
               ),
               const SizedBox(height: 24),
 
@@ -87,6 +80,11 @@ class DashboardScreen extends ConsumerWidget {
                   ),
                 ],
               ),
+              const SizedBox(height: 16),
+              _LastOrderDateCard(
+                lastOrderDate: lastOrderDate,
+                shippingDays: shippingDays ?? AppConstants.defaultShippingDays,
+              ),
               const SizedBox(height: 24),
 
               // Budget Overview
@@ -99,7 +97,7 @@ class DashboardScreen extends ConsumerWidget {
                   totalSpent: 0.0,
                   totalPlanned: 0.0,
                 ),
-                error: (_, __) => const _BudgetOverviewCard(
+                error: (_, _) => const _BudgetOverviewCard(
                   totalSpent: 0.0,
                   totalPlanned: 0.0,
                 ),
@@ -113,11 +111,11 @@ class DashboardScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 16),
               _QuickActionsGrid(
-                onGiftsTap: () => context.push('/gifts'),
-                onMealsTap: () => context.push('/meals'),
+                onGiftsTap: () => context.go('/gifts'),
+                onMealsTap: () => context.go('/meals'),
                 onBudgetTap: () => context.push('/budget'),
-                onCalendarTap: () => context.push('/calendar'),
-                onShoppingTap: () => context.push('/shopping'),
+                onCalendarTap: () => context.go('/calendar'),
+                onShoppingTap: () => context.go('/shopping'),
               ),
               const SizedBox(height: 24),
 
@@ -128,59 +126,14 @@ class DashboardScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 16),
               giftsStream.when(
-                data: (gifts) => _RecentGiftsList(
-                  gifts: gifts.take(5).toList(),
-                ),
+                data: (gifts) =>
+                    _RecentGiftsList(gifts: gifts.take(5).toList()),
                 loading: () => const Center(child: CircularProgressIndicator()),
-                error: (_, __) => const Text('Failed to load recent gifts'),
+                error: (_, _) => const Text('Failed to load recent gifts'),
               ),
             ],
           ),
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 0,
-        onTap: (index) {
-          switch (index) {
-            case 0:
-              break;
-            case 1:
-              context.push('/gifts');
-              break;
-            case 2:
-              context.push('/meals');
-              break;
-            case 3:
-              context.push('/shopping');
-              break;
-            case 4:
-              context.push('/calendar');
-              break;
-          }
-        },
-        type: BottomNavigationBarType.fixed,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.dashboard),
-            label: 'Dashboard',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.card_giftcard),
-            label: 'Gifts',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.restaurant),
-            label: 'Meals',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_cart),
-            label: 'Shopping',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_today),
-            label: 'Calendar',
-          ),
-        ],
       ),
     );
   }
@@ -190,10 +143,7 @@ class _WelcomeCard extends StatelessWidget {
   final String name;
   final int daysUntilChristmas;
 
-  const _WelcomeCard({
-    required this.name,
-    required this.daysUntilChristmas,
-  });
+  const _WelcomeCard({required this.name, required this.daysUntilChristmas});
 
   @override
   Widget build(BuildContext context) {
@@ -210,20 +160,89 @@ class _WelcomeCard extends StatelessWidget {
           Text(
             'Hello, $name!',
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           const SizedBox(height: 8),
           Text(
             daysUntilChristmas > 0
                 ? 'Christmas is $daysUntilChristmas days away!'
                 : 'Merry Christmas!',
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: Colors.white70,
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyLarge?.copyWith(color: Colors.white70),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// The date to have online orders placed by so they arrive before the
+/// preparation deadline: deadline minus buffer minus the user's shipping days.
+class _LastOrderDateCard extends StatelessWidget {
+  final DateTime lastOrderDate;
+  final int shippingDays;
+
+  const _LastOrderDateCard({
+    required this.lastOrderDate,
+    required this.shippingDays,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final today = DateTime.now();
+    final daysLeft = DateTime(
+      lastOrderDate.year,
+      lastOrderDate.month,
+      lastOrderDate.day,
+    ).difference(DateTime(today.year, today.month, today.day)).inDays;
+    final passed = daysLeft < 0;
+    final urgent = !passed && daysLeft <= 7;
+    final color = passed
+        ? AppTheme.error
+        : urgent
+        ? AppTheme.warning
+        : AppTheme.info;
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          children: [
+            Icon(Icons.local_shipping_outlined, size: 32, color: color),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    passed
+                        ? 'Online ordering window has closed'
+                        : 'Last day to order online: '
+                              '${AppDateUtils.formatDate(lastOrderDate)}',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: passed ? color : null,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    passed
+                        ? 'Anything still "To Buy" now needs a shop visit or '
+                              'express shipping.'
+                        : '$daysLeft day${daysLeft == 1 ? '' : 's'} left, '
+                              'allowing $shippingDays-day shipping plus a '
+                              '${AppConstants.defaultBufferDays}-day buffer '
+                              'before the ${AppDateUtils.formatDate(AppDateUtils.preparationTargetDate, format: 'd MMM')} deadline.',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -254,9 +273,9 @@ class _CountdownCard extends StatelessWidget {
             Text(
               count.toString(),
               style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: color,
-                  ),
+                fontWeight: FontWeight.bold,
+                color: color,
+              ),
             ),
             const SizedBox(height: 4),
             Text(
@@ -282,7 +301,9 @@ class _BudgetOverviewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final percentage = totalPlanned > 0 ? (totalSpent / totalPlanned) * 100 : 0.0;
+    final percentage = totalPlanned > 0
+        ? (totalSpent / totalPlanned) * 100
+        : 0.0;
 
     return Card(
       child: Padding(
@@ -290,10 +311,7 @@ class _BudgetOverviewCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Gift Budget',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
+            Text('Gift Budget', style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -301,16 +319,13 @@ class _BudgetOverviewCard extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Spent',
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
+                    Text('Spent', style: Theme.of(context).textTheme.bodySmall),
                     Text(
                       AppDateUtils.formatCurrency(totalSpent),
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            color: AppTheme.christmasRed,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        color: AppTheme.christmasRed,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ],
                 ),
@@ -324,8 +339,8 @@ class _BudgetOverviewCard extends StatelessWidget {
                     Text(
                       AppDateUtils.formatCurrency(totalPlanned),
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ],
                 ),
@@ -424,16 +439,13 @@ class _QuickActionCard extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(16),
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(icon, size: 48, color: color),
               const SizedBox(height: 8),
-              Text(
-                title,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
+              Text(title, style: Theme.of(context).textTheme.titleMedium),
             ],
           ),
         ),
@@ -443,7 +455,7 @@ class _QuickActionCard extends StatelessWidget {
 }
 
 class _RecentGiftsList extends StatelessWidget {
-  final List gifts;
+  final List<GiftModel> gifts;
 
   const _RecentGiftsList({required this.gifts});
 
@@ -455,13 +467,17 @@ class _RecentGiftsList extends StatelessWidget {
           padding: const EdgeInsets.all(32),
           child: Column(
             children: [
-              const Icon(Icons.card_giftcard, size: 48, color: AppTheme.lightGrey),
+              const Icon(
+                Icons.card_giftcard,
+                size: 48,
+                color: AppTheme.lightGrey,
+              ),
               const SizedBox(height: 16),
               Text(
                 'No gifts yet',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: AppTheme.textSecondary,
-                    ),
+                  color: AppTheme.textSecondary,
+                ),
               ),
               const SizedBox(height: 8),
               const Text('Start adding gifts to your list'),
@@ -481,10 +497,10 @@ class _RecentGiftsList extends StatelessWidget {
           final gift = gifts[index];
           return ListTile(
             leading: const Icon(Icons.card_giftcard),
-            title: Text(gift.name ?? 'Gift'),
-            subtitle: Text(AppDateUtils.formatCurrency(gift.price ?? 0.0)),
+            title: Text(gift.name),
+            subtitle: Text(AppDateUtils.formatCurrency(gift.price)),
             trailing: Chip(
-              label: Text(gift.status?.toString() ?? 'To Buy'),
+              label: Text(gift.status.value),
               backgroundColor: AppTheme.lightGrey,
             ),
           );

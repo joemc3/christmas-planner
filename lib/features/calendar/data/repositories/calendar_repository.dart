@@ -8,9 +8,12 @@ class CalendarRepository {
   final SupabaseClient _supabase;
 
   CalendarRepository({SupabaseClient? supabaseClient})
-      : _supabase = supabaseClient ?? Supabase.instance.client;
+    : _supabase = supabaseClient ?? Supabase.instance.client;
 
-  Future<List<CalendarEventModel>> getEvents({DateTime? startDate, DateTime? endDate}) async {
+  Future<List<CalendarEventModel>> getEvents({
+    DateTime? startDate,
+    DateTime? endDate,
+  }) async {
     try {
       final userId = _supabase.auth.currentUser?.id;
       if (userId == null) {
@@ -20,20 +23,27 @@ class CalendarRepository {
       var query = _supabase
           .from('calendar_events')
           .select()
-          .eq('user_id', userId)
-          .order('event_date', ascending: true);
+          .eq('user_id', userId);
 
       if (startDate != null) {
-        query = query.gte('event_date', startDate.toIso8601String().split('T')[0]);
+        query = query.gte(
+          'event_date',
+          startDate.toIso8601String().split('T')[0],
+        );
       }
 
       if (endDate != null) {
-        query = query.lte('event_date', endDate.toIso8601String().split('T')[0]);
+        query = query.lte(
+          'event_date',
+          endDate.toIso8601String().split('T')[0],
+        );
       }
 
-      final response = await query;
+      final response = await query.order('event_date', ascending: true);
       final events = (response as List)
-          .map((json) => CalendarEventModel.fromJson(json as Map<String, dynamic>))
+          .map(
+            (json) => CalendarEventModel.fromJson(json as Map<String, dynamic>),
+          )
           .toList();
 
       AppLogger.info('Fetched ${events.length} calendar events');
@@ -42,8 +52,15 @@ class CalendarRepository {
       AppLogger.error('Failed to fetch calendar events', error: e);
       throw DatabaseException(message: e.message, error: e);
     } catch (e, stackTrace) {
-      AppLogger.error('Unexpected error fetching calendar events', error: e, stackTrace: stackTrace);
-      throw DatabaseException(message: 'Failed to fetch calendar events', error: e);
+      AppLogger.error(
+        'Unexpected error fetching calendar events',
+        error: e,
+        stackTrace: stackTrace,
+      );
+      throw DatabaseException(
+        message: 'Failed to fetch calendar events',
+        error: e,
+      );
     }
   }
 
@@ -59,13 +76,20 @@ class CalendarRepository {
         return null;
       }
 
-      return CalendarEventModel.fromJson(response as Map<String, dynamic>);
+      return CalendarEventModel.fromJson(response);
     } on PostgrestException catch (e) {
       AppLogger.error('Failed to fetch calendar event', error: e);
       throw DatabaseException(message: e.message, error: e);
     } catch (e, stackTrace) {
-      AppLogger.error('Unexpected error fetching calendar event', error: e, stackTrace: stackTrace);
-      throw DatabaseException(message: 'Failed to fetch calendar event', error: e);
+      AppLogger.error(
+        'Unexpected error fetching calendar event',
+        error: e,
+        stackTrace: stackTrace,
+      );
+      throw DatabaseException(
+        message: 'Failed to fetch calendar event',
+        error: e,
+      );
     }
   }
 
@@ -85,15 +109,22 @@ class CalendarRepository {
           .select()
           .single();
 
-      final created = CalendarEventModel.fromJson(response as Map<String, dynamic>);
+      final created = CalendarEventModel.fromJson(response);
       AppLogger.info('Created calendar event: ${created.title}');
       return created;
     } on PostgrestException catch (e) {
       AppLogger.error('Failed to create calendar event', error: e);
       throw DatabaseException(message: e.message, error: e);
     } catch (e, stackTrace) {
-      AppLogger.error('Unexpected error creating calendar event', error: e, stackTrace: stackTrace);
-      throw DatabaseException(message: 'Failed to create calendar event', error: e);
+      AppLogger.error(
+        'Unexpected error creating calendar event',
+        error: e,
+        stackTrace: stackTrace,
+      );
+      throw DatabaseException(
+        message: 'Failed to create calendar event',
+        error: e,
+      );
     }
   }
 
@@ -106,32 +137,43 @@ class CalendarRepository {
           .select()
           .single();
 
-      final updated = CalendarEventModel.fromJson(response as Map<String, dynamic>);
+      final updated = CalendarEventModel.fromJson(response);
       AppLogger.info('Updated calendar event: ${updated.title}');
       return updated;
     } on PostgrestException catch (e) {
       AppLogger.error('Failed to update calendar event', error: e);
       throw DatabaseException(message: e.message, error: e);
     } catch (e, stackTrace) {
-      AppLogger.error('Unexpected error updating calendar event', error: e, stackTrace: stackTrace);
-      throw DatabaseException(message: 'Failed to update calendar event', error: e);
+      AppLogger.error(
+        'Unexpected error updating calendar event',
+        error: e,
+        stackTrace: stackTrace,
+      );
+      throw DatabaseException(
+        message: 'Failed to update calendar event',
+        error: e,
+      );
     }
   }
 
   Future<void> deleteEvent(String id) async {
     try {
-      await _supabase
-          .from('calendar_events')
-          .delete()
-          .eq('id', id);
+      await _supabase.from('calendar_events').delete().eq('id', id);
 
       AppLogger.info('Deleted calendar event: $id');
     } on PostgrestException catch (e) {
       AppLogger.error('Failed to delete calendar event', error: e);
       throw DatabaseException(message: e.message, error: e);
     } catch (e, stackTrace) {
-      AppLogger.error('Unexpected error deleting calendar event', error: e, stackTrace: stackTrace);
-      throw DatabaseException(message: 'Failed to delete calendar event', error: e);
+      AppLogger.error(
+        'Unexpected error deleting calendar event',
+        error: e,
+        stackTrace: stackTrace,
+      );
+      throw DatabaseException(
+        message: 'Failed to delete calendar event',
+        error: e,
+      );
     }
   }
 
@@ -154,7 +196,9 @@ class CalendarRepository {
           .order('event_date', ascending: true);
 
       final events = (response as List)
-          .map((json) => CalendarEventModel.fromJson(json as Map<String, dynamic>))
+          .map(
+            (json) => CalendarEventModel.fromJson(json as Map<String, dynamic>),
+          )
           .toList();
 
       AppLogger.info('Fetched ${events.length} events for $year-$month');
@@ -163,8 +207,15 @@ class CalendarRepository {
       AppLogger.error('Failed to fetch monthly events', error: e);
       throw DatabaseException(message: e.message, error: e);
     } catch (e, stackTrace) {
-      AppLogger.error('Unexpected error fetching monthly events', error: e, stackTrace: stackTrace);
-      throw DatabaseException(message: 'Failed to fetch monthly events', error: e);
+      AppLogger.error(
+        'Unexpected error fetching monthly events',
+        error: e,
+        stackTrace: stackTrace,
+      );
+      throw DatabaseException(
+        message: 'Failed to fetch monthly events',
+        error: e,
+      );
     }
   }
 
@@ -186,7 +237,9 @@ class CalendarRepository {
           .limit(limit);
 
       final events = (response as List)
-          .map((json) => CalendarEventModel.fromJson(json as Map<String, dynamic>))
+          .map(
+            (json) => CalendarEventModel.fromJson(json as Map<String, dynamic>),
+          )
           .toList();
 
       AppLogger.info('Fetched ${events.length} upcoming events');
@@ -195,15 +248,27 @@ class CalendarRepository {
       AppLogger.error('Failed to fetch upcoming events', error: e);
       throw DatabaseException(message: e.message, error: e);
     } catch (e, stackTrace) {
-      AppLogger.error('Unexpected error fetching upcoming events', error: e, stackTrace: stackTrace);
-      throw DatabaseException(message: 'Failed to fetch upcoming events', error: e);
+      AppLogger.error(
+        'Unexpected error fetching upcoming events',
+        error: e,
+        stackTrace: stackTrace,
+      );
+      throw DatabaseException(
+        message: 'Failed to fetch upcoming events',
+        error: e,
+      );
     }
   }
 
-  Stream<List<CalendarEventModel>> watchEvents({DateTime? startDate, DateTime? endDate}) {
+  Stream<List<CalendarEventModel>> watchEvents({
+    DateTime? startDate,
+    DateTime? endDate,
+  }) {
     final userId = _supabase.auth.currentUser?.id;
     if (userId == null) {
-      return Stream.error(const AuthenticationException(message: 'User not authenticated'));
+      return Stream.error(
+        const AuthenticationException(message: 'User not authenticated'),
+      );
     }
 
     return _supabase
@@ -212,14 +277,28 @@ class CalendarRepository {
         .eq('user_id', userId)
         .order('event_date', ascending: true)
         .map((data) {
-          var events = data.map((json) => CalendarEventModel.fromJson(json)).toList();
+          var events = data
+              .map((json) => CalendarEventModel.fromJson(json))
+              .toList();
 
           if (startDate != null) {
-            events = events.where((e) => e.eventDate.isAfter(startDate) || e.eventDate.isAtSameMomentAs(startDate)).toList();
+            events = events
+                .where(
+                  (e) =>
+                      e.eventDate.isAfter(startDate) ||
+                      e.eventDate.isAtSameMomentAs(startDate),
+                )
+                .toList();
           }
 
           if (endDate != null) {
-            events = events.where((e) => e.eventDate.isBefore(endDate) || e.eventDate.isAtSameMomentAs(endDate)).toList();
+            events = events
+                .where(
+                  (e) =>
+                      e.eventDate.isBefore(endDate) ||
+                      e.eventDate.isAtSameMomentAs(endDate),
+                )
+                .toList();
           }
 
           return events;

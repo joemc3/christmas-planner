@@ -8,7 +8,7 @@ class AuthRepository {
   final SupabaseClient _supabase;
 
   AuthRepository({SupabaseClient? supabaseClient})
-      : _supabase = supabaseClient ?? Supabase.instance.client;
+    : _supabase = supabaseClient ?? Supabase.instance.client;
 
   User? get currentUser => _supabase.auth.currentUser;
 
@@ -23,9 +23,7 @@ class AuthRepository {
       final response = await _supabase.auth.signUp(
         email: email,
         password: password,
-        data: {
-          'full_name': fullName,
-        },
+        data: {'full_name': fullName},
       );
 
       if (response.user == null) {
@@ -44,18 +42,16 @@ class AuthRepository {
         error: e,
       );
     } catch (e, stackTrace) {
-      AppLogger.error('Unexpected error during sign up', error: e, stackTrace: stackTrace);
-      throw AuthenticationException(
-        message: 'Sign up failed',
+      AppLogger.error(
+        'Unexpected error during sign up',
         error: e,
+        stackTrace: stackTrace,
       );
+      throw AuthenticationException(message: 'Sign up failed', error: e);
     }
   }
 
-  Future<User> signIn({
-    required String email,
-    required String password,
-  }) async {
+  Future<User> signIn({required String email, required String password}) async {
     try {
       final response = await _supabase.auth.signInWithPassword(
         email: email,
@@ -78,11 +74,12 @@ class AuthRepository {
         error: e,
       );
     } catch (e, stackTrace) {
-      AppLogger.error('Unexpected error during sign in', error: e, stackTrace: stackTrace);
-      throw AuthenticationException(
-        message: 'Sign in failed',
+      AppLogger.error(
+        'Unexpected error during sign in',
         error: e,
+        stackTrace: stackTrace,
       );
+      throw AuthenticationException(message: 'Sign in failed', error: e);
     }
   }
 
@@ -92,16 +89,14 @@ class AuthRepository {
       AppLogger.info('User signed out');
     } on AuthException catch (e) {
       AppLogger.error('Sign out failed', error: e);
-      throw AuthenticationException(
-        message: e.message,
-        error: e,
-      );
+      throw AuthenticationException(message: e.message, error: e);
     } catch (e, stackTrace) {
-      AppLogger.error('Unexpected error during sign out', error: e, stackTrace: stackTrace);
-      throw AuthenticationException(
-        message: 'Sign out failed',
+      AppLogger.error(
+        'Unexpected error during sign out',
         error: e,
+        stackTrace: stackTrace,
       );
+      throw AuthenticationException(message: 'Sign out failed', error: e);
     }
   }
 
@@ -111,35 +106,30 @@ class AuthRepository {
       AppLogger.info('Password reset email sent to: $email');
     } on AuthException catch (e) {
       AppLogger.error('Password reset failed', error: e);
-      throw AuthenticationException(
-        message: e.message,
-        error: e,
-      );
+      throw AuthenticationException(message: e.message, error: e);
     } catch (e, stackTrace) {
-      AppLogger.error('Unexpected error during password reset', error: e, stackTrace: stackTrace);
-      throw AuthenticationException(
-        message: 'Password reset failed',
+      AppLogger.error(
+        'Unexpected error during password reset',
         error: e,
+        stackTrace: stackTrace,
       );
+      throw AuthenticationException(message: 'Password reset failed', error: e);
     }
   }
 
   Future<void> updatePassword(String newPassword) async {
     try {
-      await _supabase.auth.updateUser(
-        UserAttributes(
-          password: newPassword,
-        ),
-      );
+      await _supabase.auth.updateUser(UserAttributes(password: newPassword));
       AppLogger.info('Password updated successfully');
     } on AuthException catch (e) {
       AppLogger.error('Password update failed', error: e);
-      throw AuthenticationException(
-        message: e.message,
-        error: e,
-      );
+      throw AuthenticationException(message: e.message, error: e);
     } catch (e, stackTrace) {
-      AppLogger.error('Unexpected error during password update', error: e, stackTrace: stackTrace);
+      AppLogger.error(
+        'Unexpected error during password update',
+        error: e,
+        stackTrace: stackTrace,
+      );
       throw AuthenticationException(
         message: 'Password update failed',
         error: e,
@@ -160,15 +150,22 @@ class AuthRepository {
           .eq('id', userId)
           .single();
 
-      final profile = UserProfile.fromJson(response as Map<String, dynamic>);
+      final profile = UserProfile.fromJson(response);
       AppLogger.info('Fetched user profile for: ${profile.email}');
       return profile;
     } on PostgrestException catch (e) {
       AppLogger.error('Failed to fetch user profile', error: e);
       throw DatabaseException(message: e.message, error: e);
     } catch (e, stackTrace) {
-      AppLogger.error('Unexpected error fetching user profile', error: e, stackTrace: stackTrace);
-      throw DatabaseException(message: 'Failed to fetch user profile', error: e);
+      AppLogger.error(
+        'Unexpected error fetching user profile',
+        error: e,
+        stackTrace: stackTrace,
+      );
+      throw DatabaseException(
+        message: 'Failed to fetch user profile',
+        error: e,
+      );
     }
   }
 
@@ -193,15 +190,22 @@ class AuthRepository {
           .select()
           .single();
 
-      final updated = UserProfile.fromJson(response as Map<String, dynamic>);
+      final updated = UserProfile.fromJson(response);
       AppLogger.info('Updated user profile for: ${updated.email}');
       return updated;
     } on PostgrestException catch (e) {
       AppLogger.error('Failed to update user profile', error: e);
       throw DatabaseException(message: e.message, error: e);
     } catch (e, stackTrace) {
-      AppLogger.error('Unexpected error updating user profile', error: e, stackTrace: stackTrace);
-      throw DatabaseException(message: 'Failed to update user profile', error: e);
+      AppLogger.error(
+        'Unexpected error updating user profile',
+        error: e,
+        stackTrace: stackTrace,
+      );
+      throw DatabaseException(
+        message: 'Failed to update user profile',
+        error: e,
+      );
     }
   }
 
@@ -213,15 +217,16 @@ class AuthRepository {
       }
 
       // Delete user profile (cascade will handle related data)
-      await _supabase
-          .from('user_profiles')
-          .delete()
-          .eq('id', userId);
+      await _supabase.from('user_profiles').delete().eq('id', userId);
 
       await signOut();
       AppLogger.info('Account deleted successfully');
     } catch (e, stackTrace) {
-      AppLogger.error('Failed to delete account', error: e, stackTrace: stackTrace);
+      AppLogger.error(
+        'Failed to delete account',
+        error: e,
+        stackTrace: stackTrace,
+      );
       throw DatabaseException(message: 'Failed to delete account', error: e);
     }
   }

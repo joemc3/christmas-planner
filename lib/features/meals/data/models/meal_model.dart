@@ -158,19 +158,19 @@ class MealModel extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        userId,
-        type,
-        name,
-        guestCount,
-        budgetLimit,
-        mealTime,
-        location,
-        theme,
-        dietaryRestrictions,
-        notes,
-        year,
-        createdAt,
-        updatedAt,
-      ];
+    id,
+    userId,
+    type,
+    name,
+    guestCount,
+    budgetLimit,
+    mealTime,
+    location,
+    theme,
+    dietaryRestrictions,
+    notes,
+    year,
+    createdAt,
+    updatedAt,
+  ];
 }

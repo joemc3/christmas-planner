@@ -23,19 +23,16 @@ class CustomDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async => dismissible,
+    return PopScope(
+      canPop: dismissible,
       child: AlertDialog(
         title: Text(title),
-        content: SingleChildScrollView(
-          child: content,
-        ),
-        contentPadding: contentPadding ?? const EdgeInsets.fromLTRB(24, 20, 24, 0),
+        content: SingleChildScrollView(child: content),
+        contentPadding:
+            contentPadding ?? const EdgeInsets.fromLTRB(24, 20, 24, 0),
         actions: actions,
         backgroundColor: backgroundColor,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       ),
     );
   }
@@ -164,8 +161,8 @@ class LoadingDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async => false,
+    return PopScope(
+      canPop: false,
       child: AlertDialog(
         content: Column(
           mainAxisSize: MainAxisSize.min,
@@ -173,16 +170,11 @@ class LoadingDialog extends StatelessWidget {
             const CircularProgressIndicator(),
             if (message != null) ...[
               const SizedBox(height: 16),
-              Text(
-                message!,
-                textAlign: TextAlign.center,
-              ),
+              Text(message!, textAlign: TextAlign.center),
             ],
           ],
         ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       ),
     );
   }
@@ -288,10 +280,7 @@ class ErrorDialog extends StatelessWidget {
         children: [
           const Icon(Icons.error_outline, size: 48, color: AppTheme.error),
           const SizedBox(height: 16),
-          Text(
-            message,
-            style: Theme.of(context).textTheme.bodyLarge,
-          ),
+          Text(message, style: Theme.of(context).textTheme.bodyLarge),
           if (details != null) ...[
             const SizedBox(height: 12),
             Container(
@@ -302,9 +291,9 @@ class ErrorDialog extends StatelessWidget {
               ),
               child: Text(
                 details!,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      fontFamily: 'monospace',
-                    ),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
               ),
             ),
           ],
@@ -361,7 +350,11 @@ class SuccessDialog extends StatelessWidget {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.check_circle_outline, size: 48, color: AppTheme.success),
+          const Icon(
+            Icons.check_circle_outline,
+            size: 48,
+            color: AppTheme.success,
+          ),
           const SizedBox(height: 16),
           Text(
             message,

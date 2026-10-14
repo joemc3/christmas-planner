@@ -1,5 +1,3 @@
-import 'dart:math';
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -178,9 +176,7 @@ class AppTheme {
       ),
       cardTheme: CardThemeData(
         elevation: 0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         color: FrostedHearthColors.snow,
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
@@ -204,7 +200,10 @@ class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(14),
           ),
-          side: BorderSide(color: FrostedHearthColors.spruce.withOpacity(0.3), width: 1.5),
+          side: BorderSide(
+            color: FrostedHearthColors.spruce.withValues(alpha: 0.3),
+            width: 1.5,
+          ),
           textStyle: GoogleFonts.fraunces(
             fontSize: 16,
             fontWeight: FontWeight.w600,
@@ -226,19 +225,29 @@ class AppTheme {
         contentPadding: const EdgeInsets.all(18),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(color: FrostedHearthColors.parchmentWarm),
+          borderSide: const BorderSide(
+            color: FrostedHearthColors.parchmentWarm,
+          ),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(color: FrostedHearthColors.parchmentWarm),
+          borderSide: const BorderSide(
+            color: FrostedHearthColors.parchmentWarm,
+          ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(color: FrostedHearthColors.ember, width: 2),
+          borderSide: const BorderSide(
+            color: FrostedHearthColors.ember,
+            width: 2,
+          ),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(color: FrostedHearthColors.error, width: 2),
+          borderSide: const BorderSide(
+            color: FrostedHearthColors.error,
+            width: 2,
+          ),
         ),
         labelStyle: GoogleFonts.sourceSerif4(
           fontSize: 14,
@@ -257,22 +266,16 @@ class AppTheme {
           color: FrostedHearthColors.inkDark,
         ),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       ),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         backgroundColor: FrostedHearthColors.ember,
         foregroundColor: FrostedHearthColors.frostGold,
         elevation: 8,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(18),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       ),
-      dialogTheme: DialogTheme(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24),
-        ),
+      dialogTheme: DialogThemeData(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         elevation: 8,
         titleTextStyle: GoogleFonts.fraunces(
           fontSize: 20,
@@ -283,7 +286,9 @@ class AppTheme {
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         backgroundColor: FrostedHearthColors.spruce,
         selectedItemColor: FrostedHearthColors.frostGoldBright,
-        unselectedItemColor: FrostedHearthColors.frostGold.withOpacity(0.6),
+        unselectedItemColor: FrostedHearthColors.frostGold.withValues(
+          alpha: 0.6,
+        ),
         type: BottomNavigationBarType.fixed,
         elevation: 0,
       ),
@@ -301,9 +306,7 @@ class AppTheme {
           fontSize: 14,
           color: FrostedHearthColors.frostGold,
         ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         behavior: SnackBarBehavior.floating,
       ),
     );
@@ -338,9 +341,7 @@ class AppTheme {
       ),
       cardTheme: CardThemeData(
         elevation: 2,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         color: const Color(0xFF1E1E1E),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
@@ -372,7 +373,10 @@ class AppTheme {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(color: FrostedHearthColors.ember, width: 2),
+          borderSide: const BorderSide(
+            color: FrostedHearthColors.ember,
+            width: 2,
+          ),
         ),
         labelStyle: GoogleFonts.sourceSerif4(
           fontSize: 14,
@@ -383,9 +387,15 @@ class AppTheme {
   }
 
   static TextTheme _buildTextTheme({bool isDark = false}) {
-    final color = isDark ? FrostedHearthColors.frostGold : FrostedHearthColors.inkDark;
-    final secondaryColor = isDark ? Colors.white70 : FrostedHearthColors.inkMedium;
-    final tertiaryColor = isDark ? Colors.white54 : FrostedHearthColors.inkLight;
+    final color = isDark
+        ? FrostedHearthColors.frostGold
+        : FrostedHearthColors.inkDark;
+    final secondaryColor = isDark
+        ? Colors.white70
+        : FrostedHearthColors.inkMedium;
+    final tertiaryColor = isDark
+        ? Colors.white54
+        : FrostedHearthColors.inkLight;
 
     return TextTheme(
       displayLarge: GoogleFonts.fraunces(
@@ -469,37 +479,40 @@ class AppTheme {
   }
 
   // Custom Gradients (Legacy)
-  static const LinearGradient christmasGradient = FrostedHearthGradients.hearthToFrost;
-  static const LinearGradient greenGradient = FrostedHearthGradients.winterNight;
-  static const LinearGradient goldGradient = FrostedHearthGradients.goldGradient;
+  static const LinearGradient christmasGradient =
+      FrostedHearthGradients.hearthToFrost;
+  static const LinearGradient greenGradient =
+      FrostedHearthGradients.winterNight;
+  static const LinearGradient goldGradient =
+      FrostedHearthGradients.goldGradient;
 
   // Custom Shadows
   static List<BoxShadow> get cardShadow => [
-        BoxShadow(
-          color: FrostedHearthColors.spruce.withOpacity(0.08),
-          blurRadius: 20,
-          offset: const Offset(0, 8),
-        ),
-        BoxShadow(
-          color: FrostedHearthColors.ember.withOpacity(0.03),
-          blurRadius: 40,
-          offset: const Offset(0, 16),
-        ),
-      ];
+    BoxShadow(
+      color: FrostedHearthColors.spruce.withValues(alpha: 0.08),
+      blurRadius: 20,
+      offset: const Offset(0, 8),
+    ),
+    BoxShadow(
+      color: FrostedHearthColors.ember.withValues(alpha: 0.03),
+      blurRadius: 40,
+      offset: const Offset(0, 16),
+    ),
+  ];
 
   static List<BoxShadow> get buttonShadow => [
-        BoxShadow(
-          color: FrostedHearthColors.ember.withOpacity(0.25),
-          blurRadius: 12,
-          offset: const Offset(0, 4),
-        ),
-      ];
+    BoxShadow(
+      color: FrostedHearthColors.ember.withValues(alpha: 0.25),
+      blurRadius: 12,
+      offset: const Offset(0, 4),
+    ),
+  ];
 
   static List<BoxShadow> get elevatedShadow => [
-        BoxShadow(
-          color: FrostedHearthColors.spruce.withOpacity(0.15),
-          blurRadius: 24,
-          offset: const Offset(0, 12),
-        ),
-      ];
+    BoxShadow(
+      color: FrostedHearthColors.spruce.withValues(alpha: 0.15),
+      blurRadius: 24,
+      offset: const Offset(0, 12),
+    ),
+  ];
 }
