@@ -1,227 +1,61 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../../../core/errors/exceptions.dart';
-import '../../../../core/utils/logger.dart';
+import '../../../../core/errors/guard.dart';
 import '../models/recipient_model.dart';
 
 class RecipientRepository {
-  final SupabaseClient _supabase;
-
   RecipientRepository({SupabaseClient? supabaseClient})
     : _supabase = supabaseClient ?? Supabase.instance.client;
 
-  Future<List<RecipientModel>> getRecipients({
-    bool includeArchived = false,
-  }) async {
-    try {
-      final userId = _supabase.auth.currentUser?.id;
-      if (userId == null) {
-        throw const AuthenticationException(message: 'User not authenticated');
-      }
+  final SupabaseClient _supabase;
 
-      // Build filter first, then apply transforms
-      var filterQuery = _supabase
-          .from('recipients')
-          .select()
-          .eq('user_id', userId);
+  /// The plan's recipients by name. Live; RLS scopes the rows.
+  Stream<List<RecipientModel>> watchRecipients(String planId) => _supabase
+      .from('recipients')
+      .stream(primaryKey: ['id'])
+      .eq('plan_id', planId)
+      .order('name', ascending: true)
+      .map((rows) => rows.map(RecipientModel.fromJson).toList());
 
-      if (!includeArchived) {
-        filterQuery = filterQuery.eq('archived', false);
-      }
+  Future<RecipientModel?> getRecipientById(String id) =>
+      guard('fetch recipient', () async {
+        final row = await _supabase
+            .from('recipients')
+            .select()
+            .eq('id', id)
+            .maybeSingle();
+        return row == null ? null : RecipientModel.fromJson(row);
+      });
 
-      final response = await filterQuery
-          .order('priority', ascending: false)
-          .order('name', ascending: true);
-      final recipients = (response as List)
-          .map((json) => RecipientModel.fromJson(json as Map<String, dynamic>))
-          .toList();
-
-      AppLogger.info('Fetched ${recipients.length} recipients');
-      return recipients;
-    } on PostgrestException catch (e) {
-      AppLogger.error('Failed to fetch recipients', error: e);
-      throw DatabaseException(message: e.message, error: e);
-    } catch (e, stackTrace) {
-      AppLogger.error(
-        'Unexpected error fetching recipients',
-        error: e,
-        stackTrace: stackTrace,
-      );
-      throw DatabaseException(message: 'Failed to fetch recipients', error: e);
-    }
-  }
-
-  Future<RecipientModel?> getRecipientById(String id) async {
-    try {
-      final userId = _supabase.auth.currentUser?.id;
-      if (userId == null) {
-        throw const AuthenticationException(message: 'User not authenticated');
-      }
-
-      final response = await _supabase
-          .from('recipients')
-          .select()
-          .eq('id', id)
-          .eq('user_id', userId)
-          .maybeSingle();
-
-      if (response == null) {
-        return null;
-      }
-
-      return RecipientModel.fromJson(response);
-    } on PostgrestException catch (e) {
-      AppLogger.error('Failed to fetch recipient', error: e);
-      throw DatabaseException(message: e.message, error: e);
-    } catch (e, stackTrace) {
-      AppLogger.error(
-        'Unexpected error fetching recipient',
-        error: e,
-        stackTrace: stackTrace,
-      );
-      throw DatabaseException(message: 'Failed to fetch recipient', error: e);
-    }
-  }
-
-  Future<RecipientModel> createRecipient(RecipientModel recipient) async {
-    try {
-      final userId = _supabase.auth.currentUser?.id;
-      if (userId == null) {
-        throw const AuthenticationException(message: 'User not authenticated');
-      }
-
-      final recipientData = recipient.toInsertJson();
-      recipientData['user_id'] = userId;
-
-      final response = await _supabase
-          .from('recipients')
-          .insert(recipientData)
-          .select()
-          .single();
-
-      final created = RecipientModel.fromJson(response);
-      AppLogger.info('Created recipient: ${created.name}');
-      return created;
-    } on PostgrestException catch (e) {
-      AppLogger.error('Failed to create recipient', error: e);
-      throw DatabaseException(message: e.message, error: e);
-    } catch (e, stackTrace) {
-      AppLogger.error(
-        'Unexpected error creating recipient',
-        error: e,
-        stackTrace: stackTrace,
-      );
-      throw DatabaseException(message: 'Failed to create recipient', error: e);
-    }
-  }
-
-  Future<RecipientModel> updateRecipient(RecipientModel recipient) async {
-    try {
-      final userId = _supabase.auth.currentUser?.id;
-      if (userId == null) {
-        throw const AuthenticationException(message: 'User not authenticated');
-      }
-
-      final response = await _supabase
-          .from('recipients')
-          .update(recipient.toInsertJson())
-          .eq('id', recipient.id)
-          .eq('user_id', userId)
-          .select()
-          .single();
-
-      final updated = RecipientModel.fromJson(response);
-      AppLogger.info('Updated recipient: ${updated.name}');
-      return updated;
-    } on PostgrestException catch (e) {
-      AppLogger.error('Failed to update recipient', error: e);
-      throw DatabaseException(message: e.message, error: e);
-    } catch (e, stackTrace) {
-      AppLogger.error(
-        'Unexpected error updating recipient',
-        error: e,
-        stackTrace: stackTrace,
-      );
-      throw DatabaseException(message: 'Failed to update recipient', error: e);
-    }
-  }
-
-  Future<void> deleteRecipient(String id) async {
-    try {
-      final userId = _supabase.auth.currentUser?.id;
-      if (userId == null) {
-        throw const AuthenticationException(message: 'User not authenticated');
-      }
-
-      await _supabase
-          .from('recipients')
-          .delete()
-          .eq('id', id)
-          .eq('user_id', userId);
-
-      AppLogger.info('Deleted recipient: $id');
-    } on PostgrestException catch (e) {
-      AppLogger.error('Failed to delete recipient', error: e);
-      throw DatabaseException(message: e.message, error: e);
-    } catch (e, stackTrace) {
-      AppLogger.error(
-        'Unexpected error deleting recipient',
-        error: e,
-        stackTrace: stackTrace,
-      );
-      throw DatabaseException(message: 'Failed to delete recipient', error: e);
-    }
-  }
-
-  Future<void> archiveRecipient(String id, bool archive) async {
-    try {
-      final userId = _supabase.auth.currentUser?.id;
-      if (userId == null) {
-        throw const AuthenticationException(message: 'User not authenticated');
-      }
-
-      await _supabase
-          .from('recipients')
-          .update({'archived': archive})
-          .eq('id', id)
-          .eq('user_id', userId);
-
-      AppLogger.info('${archive ? 'Archived' : 'Unarchived'} recipient: $id');
-    } on PostgrestException catch (e) {
-      AppLogger.error('Failed to archive recipient', error: e);
-      throw DatabaseException(message: e.message, error: e);
-    } catch (e, stackTrace) {
-      AppLogger.error(
-        'Unexpected error archiving recipient',
-        error: e,
-        stackTrace: stackTrace,
-      );
-      throw DatabaseException(message: 'Failed to archive recipient', error: e);
-    }
-  }
-
-  Stream<List<RecipientModel>> watchRecipients({bool includeArchived = false}) {
-    final userId = _supabase.auth.currentUser?.id;
-    if (userId == null) {
-      return Stream.error(
-        const AuthenticationException(message: 'User not authenticated'),
-      );
-    }
-
-    return _supabase
+  Future<RecipientModel> createRecipient({
+    required String planId,
+    required String name,
+    required double budgetLimit,
+  }) => guard('create recipient', () async {
+    final row = await _supabase
         .from('recipients')
-        .stream(primaryKey: ['id'])
-        .eq('user_id', userId)
-        .order('priority', ascending: false)
-        .order('name', ascending: true)
-        .map((data) {
-          var recipients = data
-              .map((json) => RecipientModel.fromJson(json))
-              .toList();
-          if (!includeArchived) {
-            recipients = recipients.where((r) => !r.archived).toList();
-          }
-          return recipients;
-        });
-  }
+        .insert({'plan_id': planId, 'name': name, 'budget_limit': budgetLimit})
+        .select()
+        .single();
+    return RecipientModel.fromJson(row);
+  });
+
+  Future<RecipientModel> updateRecipient(RecipientModel recipient) =>
+      guard('update recipient', () async {
+        final row = await _supabase
+            .from('recipients')
+            .update({
+              'name': recipient.name,
+              'budget_limit': recipient.budgetLimit,
+            })
+            .eq('id', recipient.id)
+            .select()
+            .single();
+        return RecipientModel.fromJson(row);
+      });
+
+  /// Deletes the person and, by cascade, their gifts.
+  Future<void> deleteRecipient(String id) => guard('delete recipient', () async {
+    await _supabase.from('recipients').delete().eq('id', id);
+  });
 }
