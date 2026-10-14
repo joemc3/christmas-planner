@@ -4,8 +4,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/layout/breakpoints.dart';
 import '../../../../core/theme/app_theme.dart';
-import '../../../../core/theme/typography.dart';
-import '../../../../core/utils/format.dart';
 import '../../../../shared/widgets/states.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
 import '../../../home/presentation/providers/home_data.dart';
@@ -127,31 +125,7 @@ class _PeopleList extends ConsumerWidget {
         if (total != null)
           Padding(
             padding: const EdgeInsets.fromLTRB(Space.lg, 0, Space.lg, Space.sm),
-            child: RichText(
-              text: TextSpan(
-                style: tabular(theme.textTheme.bodyMedium),
-                children: [
-                  TextSpan(
-                    text: total.isOverBudget
-                        ? '${formatMoney(total.overBy, currency: currency)} over'
-                        : formatMoney(total.remaining, currency: currency),
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      color: total.isOverBudget
-                          ? theme.colorScheme.error
-                          : theme.colorScheme.onSurface,
-                    ),
-                  ),
-                  TextSpan(
-                    text:
-                        ' ${total.isOverBudget ? 'budget' : 'left of'} '
-                        '${formatMoney(total.budget, currency: currency)} · '
-                        '${total.purchasedCount} of ${total.plannedCount} bought',
-                    style: TextStyle(color: theme.colorScheme.onSurfaceVariant),
-                  ),
-                ],
-              ),
-            ),
+            child: GiftsTotalLine(money: total, currency: currency),
           ),
         if (needing.isNotEmpty)
           Padding(
