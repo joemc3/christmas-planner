@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Christmas Planner design system</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..600&family=Public+Sans:wght@400..700&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,300..600,0..1,0&display=swap">
+<style>
+body{margin:0}
+.ds{font-family:'Public Sans',system-ui,-apple-system,'Segoe UI',sans-serif;color:#1B1F1C;-webkit-font-smoothing:antialiased}
+.ds *{box-sizing:border-box}
+.ds p,.ds h1,.ds h2,.ds h3{margin:0}
+.serif{font-family:'Newsreader',Georgia,'Times New Roman',serif}
+.num{font-variant-numeric:tabular-nums lining-nums}
+.ms{font-family:'Material Symbols Rounded';font-weight:normal;font-style:normal;font-size:24px;line-height:1;letter-spacing:normal;text-transform:none;white-space:nowrap;font-feature-settings:'liga';font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;display:inline-block;width:1em;height:1em;overflow:hidden;flex:none}
+.h2{font-family:'Newsreader',Georgia,serif;font-size:32px;line-height:40px;font-weight:500;letter-spacing:-.01em}
+.lbl{font-size:12px;line-height:16px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#4A524D}
+.sw{height:40px;border-radius:8px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;font:600 12px/16px 'Public Sans',sans-serif;font-variant-numeric:tabular-nums;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
+.trow{display:grid;grid-template-columns:230px 200px 200px minmax(0,1fr);gap:12px;align-items:center;min-height:48px;border-bottom:1px solid #DEDCD5}
+.role{font:600 14px/20px 'Public Sans',sans-serif}
+.use{font-size:13px;line-height:18px;color:#4A524D}
+.spec{display:grid;grid-template-columns:150px minmax(0,1fr);gap:16px;align-items:baseline;padding:12px 0;border-bottom:1px solid #DEDCD5}
+.hero{position:relative;border-radius:24px;overflow:hidden;padding:56px 72px 24px 24px}
+.hero .rv{position:absolute;top:0;bottom:0;right:36px;width:12px}
+.hero .rh{position:absolute;left:0;right:0;top:24px;height:12px}
+.mark{position:relative;border-radius:22%;overflow:hidden;flex:none}
+.mark i{position:absolute;display:block}
+</style>
+</helmet>
+<div style="width: 1440px; height: 2480px; background: #F3F1EC; padding: 64px; display: flex; flex-direction: column; gap: 48px" class="ds">
+  <header style="display: flex; align-items: center; gap: 24px">
+    <div class="mark" style="width: 72px; height: 72px; background: #1E4D3B" aria-hidden="true">
+      <i style="top: 0; bottom: 0; left: 58%; width: 12%; background: #C9A14C"></i>
+      <i style="left: 0; right: 0; top: 34%; height: 12%; background: #C9A14C"></i>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 4px">
+      <h1 class="serif" style="font-size: 48px; line-height: 56px; font-weight: 500; letter-spacing: -.015em">Christmas Planner</h1>
+      <p style="font-size: 17px; line-height: 24px; color: #4A524D">Design system · Evergreen &amp; Brass · Flutter 3.47, Material 3, one ColorScheme per theme</p>
+    </div>
+  </header>
+
+  <div style="display: grid; grid-template-columns: 840px minmax(0, 1fr); gap: 56px; align-items: start">
+    <section style="display: flex; flex-direction: column; gap: 16px">
+      <h2 class="h2">Colour roles</h2>
+      <p style="font-size: 15px; line-height: 22px; color: #4A524D; max-width: 760px">Seed <b class="num">#1E4D3B</b> with <span class="num">ColorScheme.fromSeed(dynamicSchemeVariant: tonalSpot)</span>, then every role below set explicitly so the scheme is identical on every platform. Dark is designed: a pine-night ground, lighter evergreen for actions, brass kept warm rather than inverted.</p>
+      <div class="trow" style="min-height: 32px"><span class="lbl">Role</span><span class="lbl">Light</span><span class="lbl">Dark</span><span class="lbl">Used for</span></div>
+      <div style="display: flex; flex-direction: column">
+        <sc-for list="{{roles}}" as="r" hint-placeholder-count="29">
+          <div class="trow">
+            <span class="role">{{r.role}}</span>
+            <span class="sw" style="background: {{r.light}}; color: {{r.lInk}}"><span>{{r.light}}</span></span>
+            <span class="sw" style="background: {{r.dark}}; color: {{r.dInk}}"><span>{{r.dark}}</span></span>
+            <span class="use">{{r.use}}</span>
+          </div>
+        </sc-for>
+      </div>
+      <h2 class="h2" style="margin-top: 32px">Seasonal extension</h2>
+      <p style="font-size: 15px; line-height: 22px; color: #4A524D; max-width: 760px">A <span class="num">ThemeExtension&lt;SeasonColors&gt;</span> for the four things Material roles do not name. Hero and alert map onto existing roles; ribbon is the only new colour and is decorative (never text).</p>
+      <div style="display: flex; flex-direction: column">
+        <sc-for list="{{ext}}" as="r" hint-placeholder-count="8">
+          <div class="trow">
+            <span class="role">{{r.role}}</span>
+            <span class="sw" style="background: {{r.light}}; color: {{r.lInk}}"><span>{{r.light}}</span></span>
+            <span class="sw" style="background: {{r.dark}}; color: {{r.dInk}}"><span>{{r.dark}}</span></span>
+            <span class="use">{{r.use}}</span>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <section style="display: flex; flex-direction: column; gap: 40px">
+      <div style="display: flex; flex-direction: column; gap: 8px">
+        <h2 class="h2">Type</h2>
+        <p style="font-size: 15px; line-height: 22px; color: #4A524D">Google Fonts: <b>Newsreader</b> (display, optical size on) and <b>Public Sans</b> (text, tabular figures for every amount).</p>
+        <div style="display: flex; flex-direction: column; margin-top: 8px">
+          <div class="spec"><span class="lbl">displaySmall<br>32/40 · 500</span><span class="serif" style="font-size: 32px; line-height: 40px; font-weight: 500">Start ordering by 26 November.</span></div>
+          <div class="spec"><span class="lbl">headlineMedium<br>28/36 · 500</span><span class="serif" style="font-size: 28px; line-height: 36px; font-weight: 500">Gifts</span></div>
+          <div class="spec"><span class="lbl">headlineSmall<br>24/32 · 500</span><span class="serif" style="font-size: 24px; line-height: 32px; font-weight: 500">Edit Christmas Day</span></div>
+          <div class="spec"><span class="lbl">titleLarge<br>22/28 · 500</span><span class="serif" style="font-size: 22px; line-height: 28px; font-weight: 500">Christmas Eve</span></div>
+          <div class="spec"><span class="lbl">moneyLarge<br>40/48 · 600 · tnum</span><span class="num" style="font-size: 40px; line-height: 48px; font-weight: 600; letter-spacing: -.02em">$225.00</span></div>
+          <div class="spec"><span class="lbl">titleMedium<br>16/24 · 600</span><span style="font-size: 16px; line-height: 24px; font-weight: 600">Espresso machine</span></div>
+          <div class="spec"><span class="lbl">bodyLarge<br>16/24 · 400</span><span style="font-size: 16px; line-height: 24px">43 days from today</span></div>
+          <div class="spec"><span class="lbl">bodyMedium<br>14/20 · 400</span><span class="num" style="font-size: 14px; line-height: 20px"><b>$21.00</b> left of $150.00</span></div>
+          <div class="spec"><span class="lbl">labelLarge<br>15/20 · 600</span><span style="font-size: 15px; line-height: 20px; font-weight: 600">Add gift</span></div>
+          <div class="spec"><span class="lbl">labelMedium<br>12/16 · 700</span><span style="font-size: 12px; line-height: 16px; font-weight: 700">2 to order</span></div>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 16px">
+        <h2 class="h2">Space, shape, depth, motion</h2>
+        <div style="display: flex; align-items: flex-end; gap: 12px">
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 6px"><span style="width: 4px; height: 4px; background: #1E4D3B"></span><span class="lbl">4</span></div>
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 6px"><span style="width: 8px; height: 8px; background: #1E4D3B"></span><span class="lbl">8</span></div>
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 6px"><span style="width: 12px; height: 12px; background: #1E4D3B"></span><span class="lbl">12</span></div>
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 6px"><span style="width: 16px; height: 16px; background: #1E4D3B"></span><span class="lbl">16</span></div>
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 6px"><span style="width: 24px; height: 24px; background: #1E4D3B"></span><span class="lbl">24</span></div>
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 6px"><span style="width: 32px; height: 32px; background: #1E4D3B"></span><span class="lbl">32</span></div>
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 6px"><span style="width: 48px; height: 48px; background: #1E4D3B"></span><span class="lbl">48</span></div>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 24px; font-size: 14px; line-height: 20px">
+          <span><b>Gutter</b> 16 phone, 32 laptop</span><span><b>Row</b> min 72, 12/16 padding</span>
+          <span><b>Radius</b> 12 fields, tags, steppers 22</span><span><b>Radius</b> 24 hero, 28 sheets, dialogs</span>
+          <span><b>Buttons</b> 48 tall, full pill</span><span><b>Touch</b> 44 minimum everywhere</span>
+          <span><b>Depth</b> flat; only FAB, sheet, dialog lift</span><span><b>Dividers</b> outlineVariant, 1 px</span>
+          <span><b>Motion</b> 200 ms standard easing</span><span><b>Bars</b> ease to new width, 300 ms</span>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 16px">
+        <h2 class="h2">The ribbon</h2>
+        <p style="font-size: 15px; line-height: 22px; color: #4A524D">One wrapped object per screen: the ordering-date card, or the mark. Two 12 px brass bands crossing in the top-right corner, 2 px darker edges. Flutter: two <span class="num">Positioned</span> containers in a <span class="num">Stack</span>, no assets.</p>
+        <div class="hero" style="background: #1E4D3B; color: #F4F1E8">
+          <i class="rv" style="background: #C9A14C; box-shadow: inset 2px 0 0 #A68337, inset -2px 0 0 #A68337"></i>
+          <i class="rh" style="background: #C9A14C; box-shadow: inset 0 2px 0 #A68337, inset 0 -2px 0 #A68337"></i>
+          <p style="font-size: 14px; line-height: 20px; font-weight: 600; color: #BFD6C9">Light</p>
+          <p class="serif" style="font-size: 32px; line-height: 40px; font-weight: 500; margin-top: 4px">Start ordering by 26 November.</p>
+        </div>
+        <div class="hero" style="background: #1F4D3B; color: #F1EEE4">
+          <i class="rv" style="background: #B8924A; box-shadow: inset 2px 0 0 #8C6C2E, inset -2px 0 0 #8C6C2E"></i>
+          <i class="rh" style="background: #B8924A; box-shadow: inset 0 2px 0 #8C6C2E, inset 0 -2px 0 #8C6C2E"></i>
+          <p style="font-size: 14px; line-height: 20px; font-weight: 600; color: #B5CDBF">Dark</p>
+          <p class="serif" style="font-size: 32px; line-height: 40px; font-weight: 500; margin-top: 4px">Start ordering by 26 November.</p>
+        </div>
+        <div class="hero" style="background: #8E1F33; color: #FFF4F4">
+          <i class="rv" style="background: #C9A14C; box-shadow: inset 2px 0 0 #A68337, inset -2px 0 0 #A68337"></i>
+          <i class="rh" style="background: #C9A14C; box-shadow: inset 0 2px 0 #A68337, inset 0 -2px 0 #A68337"></i>
+          <p style="font-size: 14px; line-height: 20px; font-weight: 600; color: #F6CDD3">On or after the date</p>
+          <p class="serif" style="font-size: 32px; line-height: 40px; font-weight: 500; margin-top: 4px">3 gifts still need ordering.</p>
+        </div>
+        <div style="display: flex; align-items: center; gap: 24px; margin-top: 8px">
+          <div class="mark" style="width: 96px; height: 96px; background: #1E4D3B" aria-hidden="true"><i style="top: 0; bottom: 0; left: 58%; width: 12%; background: #C9A14C"></i><i style="left: 0; right: 0; top: 34%; height: 12%; background: #C9A14C"></i></div>
+          <div class="mark" style="width: 48px; height: 48px; background: #1E4D3B" aria-hidden="true"><i style="top: 0; bottom: 0; left: 58%; width: 12%; background: #C9A14C"></i><i style="left: 0; right: 0; top: 34%; height: 12%; background: #C9A14C"></i></div>
+          <div class="mark" style="width: 32px; height: 32px; background: #1E4D3B" aria-hidden="true"><i style="top: 0; bottom: 0; left: 58%; width: 12%; background: #C9A14C"></i><i style="left: 0; right: 0; top: 34%; height: 12%; background: #C9A14C"></i></div>
+          <p style="font-size: 14px; line-height: 20px; color: #4A524D; max-width: 220px">The mark: app icon, favicon, rail and sign-in. The same parcel, seen from above.</p>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2480}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const W = '#FFFFFF', K = '#1B1F1C';
+    const roles = [
+      ['primary', '#1E4D3B', '#94D2B2', W, '#00382A', 'Primary buttons, bars, Purchased'],
+      ['onPrimary', '#FFFFFF', '#00382A', K, '#E4E9E4', 'Text and icons on primary'],
+      ['primaryContainer', '#CFE5D8', '#1F4D3B', '#0B2A1F', '#C9EEDA', 'Nav indicator, monograms, quiet date card'],
+      ['onPrimaryContainer', '#0B2A1F', '#C9EEDA', W, K, 'Text on primaryContainer'],
+      ['secondary', '#52635A', '#B8CCC0', W, '#23352C', 'Secondary icons'],
+      ['onSecondary', '#FFFFFF', '#23352C', K, '#E4E9E4', 'Text on secondary'],
+      ['secondaryContainer', '#D7E5DC', '#33463C', '#102019', '#D4E8DC', 'Tonal buttons, To Buy step'],
+      ['onSecondaryContainer', '#102019', '#D4E8DC', W, K, 'Text on secondaryContainer'],
+      ['tertiary', '#8A6414', '#E6C47C', W, '#3F2E00', 'Brass: Ordered, early warnings'],
+      ['onTertiary', '#FFFFFF', '#3F2E00', K, '#E4E9E4', 'Text on tertiary'],
+      ['tertiaryContainer', '#F5E4BC', '#5B4407', '#3B2A00', '#FDE3A8', 'Ordered step, planned-over note'],
+      ['onTertiaryContainer', '#3B2A00', '#FDE3A8', W, K, 'Text on tertiaryContainer'],
+      ['error', '#A3263A', '#FFB1B8', W, '#67001B', 'Cranberry: over budget, order now, delete'],
+      ['onError', '#FFFFFF', '#67001B', K, '#E4E9E4', 'Text on error'],
+      ['errorContainer', '#FADCDF', '#8A1D32', '#5C0E1C', '#FFDADC', 'To-order tags, late step'],
+      ['onErrorContainer', '#5C0E1C', '#FFDADC', W, K, 'Text on errorContainer'],
+      ['surface', '#FBFAF7', '#0F1512', K, '#E4E9E4', 'Screen ground'],
+      ['surfaceContainerLow', '#F5F3EE', '#151C18', K, '#E4E9E4', 'Sheets, rail'],
+      ['surfaceContainer', '#EFECE6', '#19211D', K, '#E4E9E4', 'Navigation bar'],
+      ['surfaceContainerHigh', '#E8E5DE', '#212A25', K, '#E4E9E4', 'Dialogs, selected list row'],
+      ['surfaceContainerHighest', '#E1DED6', '#2A342F', K, '#E4E9E4', 'Bar track, skeletons'],
+      ['onSurface', '#1B1F1C', '#E4E9E4', W, K, 'Body text'],
+      ['onSurfaceVariant', '#4A524D', '#B4BEB7', W, K, 'Secondary text, icons'],
+      ['outline', '#78807A', '#87918A', W, K, 'Field and stepper borders'],
+      ['outlineVariant', '#D4D6CF', '#38433D', K, '#E4E9E4', 'Dividers'],
+      ['inverseSurface', '#2E3330', '#E1E4DF', W, K, 'Snackbar'],
+      ['onInverseSurface', '#EFF1EC', '#2C322E', K, '#E4E9E4', 'Snackbar text'],
+      ['inversePrimary', '#94D2B2', '#1E4D3B', K, W, 'Snackbar action']
+    ];
+    const ext = [
+      ['heroSurface', '#1E4D3B', '#1F4D3B', '#F4F1E8', '#F1EEE4', 'Ordering-date card (= primary / primaryContainer)'],
+      ['onHero', '#F4F1E8', '#F1EEE4', K, K, 'Text on the date card'],
+      ['heroMuted', '#BFD6C9', '#B5CDBF', K, K, 'Secondary text on the date card'],
+      ['alertSurface', '#8E1F33', '#8A1D32', '#FFF4F4', '#FFF1F2', 'Date card on or after the date'],
+      ['onAlert', '#FFF4F4', '#FFF1F2', K, K, 'Text on the alert card'],
+      ['alertMuted', '#F6CDD3', '#F3C6CC', K, K, 'Secondary text on the alert card'],
+      ['ribbon', '#C9A14C', '#B8924A', K, K, 'Ribbon bands (decorative only)'],
+      ['ribbonEdge', '#A68337', '#8C6C2E', W, W, 'Ribbon edges']
+    ];
+    const map = (a) => a.map(([role, light, dark, lInk, dInk, use]) => ({ role, light, dark, lInk, dInk, use }));
+    return { roles: map(roles), ext: map(ext) };
+  }
+}
+</script>
+</body>
+</html>

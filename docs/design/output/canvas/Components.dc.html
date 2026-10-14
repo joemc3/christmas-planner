@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Component set</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..600&family=Public+Sans:wght@400..700&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,300..600,0..1,0&display=swap">
+<style>
+body{margin:0}
+[data-theme=light]{--canvas:#E7E5DF;--canvas-ink:#4A524D;--primary:#1E4D3B;--on-primary:#FFFFFF;--primary-container:#CFE5D8;--on-primary-container:#0B2A1F;--secondary:#52635A;--secondary-container:#D7E5DC;--on-secondary-container:#102019;--tertiary:#8A6414;--tertiary-container:#F5E4BC;--on-tertiary-container:#3B2A00;--error:#A3263A;--on-error:#FFFFFF;--error-container:#FADCDF;--on-error-container:#5C0E1C;--surface:#FBFAF7;--surface-low:#F5F3EE;--surface-c:#EFECE6;--surface-high:#E8E5DE;--surface-highest:#E1DED6;--on-surface:#1B1F1C;--on-surface-variant:#4A524D;--outline:#78807A;--outline-variant:#D4D6CF;--inverse-surface:#2E3330;--inverse-on-surface:#EFF1EC;--inverse-primary:#94D2B2;--field:#FFFFFF;--hero:#1E4D3B;--on-hero:#F4F1E8;--hero-muted:#BFD6C9;--alert:#8E1F33;--on-alert:#FFF4F4;--alert-muted:#F6CDD3;--ribbon:#C9A14C;--ribbon-edge:#A68337;--scrim:rgba(20,26,23,.44);--lift:0 1px 2px rgba(20,26,23,.08),0 8px 24px rgba(20,26,23,.10)}
+[data-theme=dark]{--canvas:#070A09;--canvas-ink:#B4BEB7;--primary:#94D2B2;--on-primary:#00382A;--primary-container:#1F4D3B;--on-primary-container:#C9EEDA;--secondary:#B8CCC0;--secondary-container:#33463C;--on-secondary-container:#D4E8DC;--tertiary:#E6C47C;--tertiary-container:#5B4407;--on-tertiary-container:#FDE3A8;--error:#FFB1B8;--on-error:#67001B;--error-container:#8A1D32;--on-error-container:#FFDADC;--surface:#0F1512;--surface-low:#151C18;--surface-c:#19211D;--surface-high:#212A25;--surface-highest:#2A342F;--on-surface:#E4E9E4;--on-surface-variant:#B4BEB7;--outline:#87918A;--outline-variant:#38433D;--inverse-surface:#E1E4DF;--inverse-on-surface:#2C322E;--inverse-primary:#1E4D3B;--field:#0F1512;--hero:#1F4D3B;--on-hero:#F1EEE4;--hero-muted:#B5CDBF;--alert:#8A1D32;--on-alert:#FFF1F2;--alert-muted:#F3C6CC;--ribbon:#B8924A;--ribbon-edge:#8C6C2E;--scrim:rgba(0,0,0,.6);--lift:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.4)}
+.cp{font-family:'Public Sans',system-ui,-apple-system,'Segoe UI',sans-serif;color:var(--on-surface);font-size:16px;line-height:24px;-webkit-font-smoothing:antialiased}
+.cp *{box-sizing:border-box}
+.cp p,.cp h1,.cp h2,.cp h3,.cp ul{margin:0;padding:0}
+.cp b{font-weight:600}
+.serif{font-family:'Newsreader',Georgia,'Times New Roman',serif;font-optical-sizing:auto}
+.num{font-variant-numeric:tabular-nums lining-nums}
+.ms{font-family:'Material Symbols Rounded';font-weight:normal;font-style:normal;font-size:24px;line-height:1;letter-spacing:normal;text-transform:none;white-space:nowrap;font-feature-settings:'liga';font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;display:inline-block;width:1em;height:1em;overflow:hidden;flex:none}
+.ms.fill{font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24}
+.ms.s18{font-size:18px}.ms.s20{font-size:20px}.ms.s32{font-size:32px}
+.cap{font:600 13px/20px 'Public Sans',sans-serif;letter-spacing:.02em;color:var(--canvas-ink);margin:0 0 8px}
+.phone{width:390px;height:844px;background:var(--surface);color:var(--on-surface);position:relative;overflow:hidden;display:flex;flex-direction:column;border-radius:32px;box-shadow:0 0 0 1px var(--outline-variant),0 12px 40px rgba(0,0,0,.12)}
+.laptop{width:1280px;height:800px;background:var(--surface);color:var(--on-surface);position:relative;overflow:hidden;display:flex;border-radius:12px;box-shadow:0 0 0 1px var(--outline-variant),0 12px 40px rgba(0,0,0,.12)}
+.appbar{flex:none;min-height:64px;display:flex;align-items:center;gap:4px;padding:0 4px 0 16px}
+.appbar.back{padding-left:4px}
+.h-l{font-family:'Newsreader',Georgia,serif;font-size:28px;line-height:36px;font-weight:500;letter-spacing:-.01em}
+.h-m{font-family:'Newsreader',Georgia,serif;font-size:24px;line-height:32px;font-weight:500}
+.h-s{font-family:'Newsreader',Georgia,serif;font-size:22px;line-height:28px;font-weight:500}
+.grow{flex:1;min-width:0}
+.f{display:flex;flex-direction:column}
+.ib{width:48px;height:48px;border-radius:24px;border:0;background:transparent;color:var(--on-surface-variant);display:inline-grid;place-items:center;cursor:pointer;padding:0;flex:none}
+.body{flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column}
+.btn{min-height:48px;padding:0 24px;border-radius:24px;border:0;font:600 15px/20px 'Public Sans',sans-serif;display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;text-decoration:none;white-space:nowrap}
+.btn .ms{font-size:20px}
+.b-pri{background:var(--primary);color:var(--on-primary)}
+.b-sec{background:transparent;color:var(--primary);box-shadow:inset 0 0 0 1px var(--outline)}
+.b-ton{background:var(--secondary-container);color:var(--on-secondary-container)}
+.b-dan{background:var(--error);color:var(--on-error)}
+.b-txt{background:transparent;color:var(--primary);padding:0 12px}
+.b-txt.dan{color:var(--error)}
+.b-focus{outline:3px solid var(--primary);outline-offset:3px}
+.full{width:100%}
+.fab{position:absolute;right:16px;bottom:96px;height:56px;padding:0 20px 0 16px;border-radius:16px;border:0;background:var(--primary);color:var(--on-primary);font:600 15px/20px 'Public Sans',sans-serif;display:inline-flex;align-items:center;gap:8px;box-shadow:var(--lift);cursor:pointer}
+.lab{font-size:14px;line-height:20px;font-weight:600;color:var(--on-surface);margin-bottom:6px;display:block}
+.fld{min-height:52px;border-radius:12px;background:var(--field);box-shadow:inset 0 0 0 1px var(--outline);display:flex;align-items:center;gap:8px;padding:0 4px 0 16px;color:var(--on-surface)}
+.fld.focus{box-shadow:inset 0 0 0 2px var(--primary)}
+.fld.err{box-shadow:inset 0 0 0 2px var(--error)}
+.fld input{border:0;outline:0;background:transparent;flex:1;min-width:0;height:50px;padding:0;font:400 16px/24px 'Public Sans',sans-serif;color:var(--on-surface);font-variant-numeric:tabular-nums}
+.fld input::placeholder{color:var(--on-surface-variant)}
+.fld .pre{color:var(--on-surface-variant);font-variant-numeric:tabular-nums}
+.help{font-size:13px;line-height:18px;color:var(--on-surface-variant);margin-top:6px}
+.help.err{color:var(--error);font-weight:600}
+.muted{color:var(--on-surface-variant)}
+.sm{font-size:14px;line-height:20px}
+.xs{font-size:12px;line-height:16px}
+.money{font:600 40px/48px 'Public Sans',sans-serif;letter-spacing:-.02em;font-variant-numeric:tabular-nums lining-nums}
+.over{color:var(--error)}
+.warn{color:var(--tertiary)}
+.bar{height:8px;border-radius:4px;background:var(--surface-highest);overflow:hidden}
+.bar.thin{height:6px;border-radius:3px}
+.bar>i{display:block;height:100%;border-radius:inherit;background:var(--primary)}
+.bar.over>i{background:var(--error)}
+.list{display:flex;flex-direction:column}
+.row{display:flex;align-items:center;gap:12px;min-height:72px;padding:12px 16px;border-bottom:1px solid var(--outline-variant);text-decoration:none;color:inherit}
+.row.sel{background:var(--surface-high)}
+.mono{width:40px;height:40px;border-radius:20px;background:var(--primary-container);color:var(--on-primary-container);display:grid;place-items:center;font:500 18px/1 'Newsreader',Georgia,serif;flex:none}
+.tag{display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:12px;font-size:12px;line-height:16px;font-weight:700;white-space:nowrap;flex:none}
+.tag .ms{font-size:16px}
+.t-err{background:var(--error-container);color:var(--on-error-container)}
+.t-brass{background:var(--tertiary-container);color:var(--on-tertiary-container)}
+.t-ok{background:var(--primary-container);color:var(--on-primary-container)}
+.t-ro{background:var(--surface-highest);color:var(--on-surface-variant)}
+.st{display:inline-flex;border-radius:23px;border:1px solid var(--outline);overflow:hidden;flex:none;background:var(--surface)}
+.st button{width:44px;height:44px;border:0;background:transparent;color:var(--on-surface-variant);display:grid;place-items:center;padding:0;cursor:pointer}
+.st button .ms{font-size:20px}
+.st button+button{border-left:1px solid var(--outline-variant)}
+.seg{display:flex;border:1px solid var(--outline);border-radius:24px;overflow:hidden;background:var(--field)}
+.seg button{flex:1;min-width:0;min-height:48px;border:0;background:transparent;color:var(--on-surface);font:600 14px/18px 'Public Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px;padding:0 6px;cursor:pointer}
+.seg button .ms{font-size:18px}
+.seg button+button{border-left:1px solid var(--outline)}
+.st .tb,.seg .tb{background:var(--secondary-container);color:var(--on-secondary-container)}
+.st .or,.seg .or{background:var(--tertiary-container);color:var(--on-tertiary-container)}
+.st .pu,.seg .pu{background:var(--primary);color:var(--on-primary)}
+.st .late,.seg .late{background:var(--error-container);color:var(--on-error-container)}
+.seg .sel{background:var(--secondary-container);color:var(--on-secondary-container)}
+.stl{font-weight:600}
+.s-tb{color:var(--on-surface-variant)}.s-or{color:var(--tertiary)}.s-pu{color:var(--primary)}.s-late{color:var(--error)}
+.nav{flex:none;height:80px;background:var(--surface-c);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));padding:12px 0 16px}
+.nav a,.rail a{display:flex;flex-direction:column;align-items:center;gap:4px;text-decoration:none;color:var(--on-surface-variant);font-size:12px;line-height:16px;font-weight:600}
+.nav .pill,.rail .pill{width:64px;height:32px;border-radius:16px;display:grid;place-items:center}
+.nav a.cur,.rail a.cur{color:var(--on-surface)}
+.nav a.cur .pill,.rail a.cur .pill{background:var(--primary-container);color:var(--on-primary-container)}
+.rail{width:96px;flex:none;background:var(--surface-low);display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px 0;border-right:1px solid var(--outline-variant)}
+.rail .pill{width:56px}
+.hero{position:relative;border-radius:24px;background:var(--hero);color:var(--on-hero);overflow:hidden;padding:56px 72px 24px 24px}
+.hero.alert{background:var(--alert);color:var(--on-alert)}
+.hero.quiet{background:var(--primary-container);color:var(--on-primary-container);padding:20px 24px}
+.hero .rv{position:absolute;top:0;bottom:0;right:36px;width:12px;background:var(--ribbon);box-shadow:inset 2px 0 0 var(--ribbon-edge),inset -2px 0 0 var(--ribbon-edge)}
+.hero .rh{position:absolute;left:0;right:0;top:24px;height:12px;background:var(--ribbon);box-shadow:inset 0 2px 0 var(--ribbon-edge),inset 0 -2px 0 var(--ribbon-edge)}
+.hero .kick{font-size:14px;line-height:20px;font-weight:600;color:var(--hero-muted)}
+.hero.alert .kick{color:var(--alert-muted)}
+.hero.quiet .kick{color:var(--on-primary-container)}
+.hero .date{font-family:'Newsreader',Georgia,serif;font-size:32px;line-height:40px;font-weight:500;letter-spacing:-.01em;margin:4px 0 8px}
+.hero.quiet .date{font-size:24px;line-height:32px;margin:0 0 4px}
+.hero a.go{display:flex;align-items:center;gap:8px;min-height:48px;color:inherit;text-decoration:none;border-top:1px solid rgba(255,255,255,.22);font-size:15px;line-height:20px}
+.mark{position:relative;border-radius:22%;overflow:hidden;flex:none;background:var(--hero)}
+.mark i{position:absolute;display:block;background:var(--ribbon)}
+.mark .v{top:0;bottom:0;left:58%;width:12%}.mark .h{left:0;right:0;top:34%;height:12%}
+.scrim{position:absolute;inset:0;background:var(--scrim)}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--surface-low);border-radius:28px 28px 0 0;padding:0 24px 24px;display:flex;flex-direction:column;gap:20px;box-shadow:var(--lift)}
+.grab{width:32px;height:4px;border-radius:2px;background:var(--outline);margin:12px auto 0}
+.dlg{background:var(--surface-high);border-radius:28px;padding:24px;display:flex;flex-direction:column;gap:16px;box-shadow:var(--lift)}
+.snack{position:absolute;left:16px;right:16px;bottom:96px;background:var(--inverse-surface);color:var(--inverse-on-surface);border-radius:8px;min-height:48px;display:flex;align-items:center;gap:8px;padding:4px 4px 4px 16px;font-size:14px;line-height:20px;box-shadow:var(--lift)}
+.snack .btn{color:var(--inverse-primary);min-height:44px}
+.sk{background:var(--surface-highest);border-radius:6px}
+.empty{display:flex;flex-direction:column;align-items:flex-start;gap:16px;padding:24px 16px;border-bottom:1px solid var(--outline-variant)}
+.sec{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.link{color:var(--primary);font-weight:600;text-decoration:none}
+.gl{font:700 12px/16px 'Public Sans',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--canvas-ink)}
+.card{background:var(--surface);border-radius:16px;box-shadow:0 0 0 1px var(--outline-variant);overflow:hidden;position:relative}
+</style>
+</helmet>
+<div style="width: 1440px; display: flex; flex-direction: column">
+<sc-for list="{{themes}}" as="th" hint-placeholder-count="2">
+<section data-theme="{{th.id}}" class="cp" style="background: var(--canvas); padding: 40px; display: flex; flex-direction: column; gap: 32px">
+  <h2 class="h-l" style="color: var(--on-surface)">Components · {{th.label}}</h2>
+  <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; align-items: start">
+
+    <!-- Column 1 -->
+    <div class="f" style="gap: 32px">
+      <div class="f" style="gap: 12px">
+        <span class="gl">Button</span>
+        <div class="card" style="padding: 20px; display: flex; flex-wrap: wrap; gap: 12px">
+          <button class="btn b-pri"><span class="ms" aria-hidden="true">add</span>Add gift</button>
+          <button class="btn b-sec">Cancel</button>
+          <button class="btn b-ton">Edit budget</button>
+          <button class="btn b-dan">Delete</button>
+          <button class="btn b-txt">Forgot password?</button>
+          <button class="btn b-pri b-focus">Focused (laptop)</button>
+        </div>
+      </div>
+      <div class="f" style="gap: 12px">
+        <span class="gl">Input</span>
+        <div class="card" style="padding: 20px; display: flex; flex-direction: column; gap: 16px">
+          <div><label class="lab">Name</label><div class="fld focus"><input value="Espresso machine" aria-label="Name"></div></div>
+          <div><label class="lab">Price</label><div class="fld"><span class="pre">$</span><input value="129.00" aria-label="Price" inputmode="decimal"></div></div>
+          <div><label class="lab">Shipping days</label><div class="fld"><input value="7" aria-label="Shipping days" inputmode="numeric"><button class="ib" aria-label="One fewer day"><span class="ms">remove</span></button><button class="ib" aria-label="One more day"><span class="ms">add</span></button></div></div>
+          <div><label class="lab">Email</label><div class="fld"><input value="jo@example.com" aria-label="Email" type="email"></div></div>
+          <div><label class="lab">Password</label><div class="fld err"><input value="••••••••" aria-label="Password"><button class="ib" aria-label="Show password"><span class="ms">visibility</span></button></div><p class="help err">That email and password don't match.</p></div>
+        </div>
+      </div>
+      <div class="f" style="gap: 12px">
+        <span class="gl">Theme toggle</span>
+        <div class="card" style="padding: 20px">
+          <div class="seg" role="radiogroup" aria-label="Theme">
+            <button class="sel" role="radio" aria-checked="true"><span class="ms" aria-hidden="true">check</span>System</button>
+            <button role="radio" aria-checked="false"><span class="ms" aria-hidden="true">light_mode</span>Light</button>
+            <button role="radio" aria-checked="false"><span class="ms" aria-hidden="true">dark_mode</span>Dark</button>
+          </div>
+        </div>
+      </div>
+      <div class="f" style="gap: 12px">
+        <span class="gl">Year switcher (small)</span>
+        <div class="card" style="padding: 12px 20px; display: flex; flex-direction: column; gap: 4px">
+          <a class="btn b-txt" href="#" style="align-self: flex-start; padding: 0 8px"><span class="ms" aria-hidden="true">history</span>Christmas 2026 · read only</a>
+          <div class="divider" style="height: 1px; background: var(--outline-variant)"></div>
+          <div style="display: flex; align-items: center; gap: 8px; min-height: 48px"><span class="tag t-ro"><span class="ms" aria-hidden="true">lock</span>Read only</span><span class="sm muted grow">Christmas 2026</span><a class="btn b-txt" href="#" style="padding: 0 8px">Back to 2027</a></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Column 2 -->
+    <div class="f" style="gap: 32px">
+      <div class="f" style="gap: 12px">
+        <span class="gl">Money triple · large</span>
+        <div class="card" style="padding: 20px; display: flex; flex-direction: column; gap: 24px">
+          <div class="f" style="gap: 8px">
+            <span class="sm muted">Left to spend</span>
+            <span class="money">$21.00</span>
+            <div class="bar" role="img" aria-label="86% of budget spent"><i style="width: 86%"></i></div>
+            <div class="sm num" style="display: flex; justify-content: space-between"><span class="muted">Spent <b style="color: var(--on-surface)">$129.00</b></span><button class="btn b-txt" style="min-height: 32px; padding: 0 4px; font-size: 14px">Budget $150.00<span class="ms s18" aria-hidden="true">edit</span></button></div>
+            <p class="sm warn" style="display: flex; gap: 6px; align-items: center"><span class="ms s18" aria-hidden="true">info</span><span class="num">Planned $153.99, $3.99 more than the budget</span></p>
+          </div>
+          <div class="f" style="gap: 8px; border-top: 1px solid var(--outline-variant); padding-top: 20px">
+            <span class="sm over" style="font-weight: 600">Over budget</span>
+            <span class="money over">$12.00 over</span>
+            <div class="bar over" role="img" aria-label="Over budget"><i style="width: 100%"></i></div>
+            <div class="sm num" style="display: flex; justify-content: space-between"><span class="muted">Spent <b style="color: var(--on-surface)">$112.00</b></span><span class="muted">Budget <b style="color: var(--on-surface)">$100.00</b></span></div>
+          </div>
+        </div>
+      </div>
+      <div class="f" style="gap: 12px">
+        <span class="gl">Money triple · compact</span>
+        <div class="card" style="padding: 20px; display: flex; flex-direction: column; gap: 20px">
+          <div class="f" style="gap: 6px"><span class="sm num"><b>$225.00</b> <span class="muted">left of $600.00</span></span><div class="bar thin"><i style="width: 62.5%"></i></div></div>
+          <div class="f" style="gap: 6px"><span class="sm num over"><b>$12.00 over</b> a $100.00 budget</span><div class="bar thin over"><i style="width: 100%"></i></div></div>
+        </div>
+      </div>
+      <div class="f" style="gap: 12px">
+        <span class="gl">Status stepper · row</span>
+        <div class="card" style="padding: 20px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 12px; align-items: center">
+          <div class="st" role="group" aria-label="Status To Buy"><button class="tb" aria-label="To Buy, current"><span class="ms">sell</span></button><button aria-label="Mark Ordered"><span class="ms">local_shipping</span></button><button aria-label="Mark Purchased"><span class="ms">check</span></button></div><span class="sm stl s-tb">To Buy</span>
+          <div class="st" role="group" aria-label="Status Ordered"><button class="or" aria-label="To Buy"><span class="ms">sell</span></button><button class="or" aria-label="Ordered, current"><span class="ms">local_shipping</span></button><button aria-label="Mark Purchased"><span class="ms">check</span></button></div><span class="sm stl s-or">Ordered</span>
+          <div class="st" role="group" aria-label="Status Purchased"><button class="pu" aria-label="To Buy"><span class="ms">sell</span></button><button class="pu" aria-label="Ordered"><span class="ms">local_shipping</span></button><button class="pu" aria-label="Purchased, current"><span class="ms">check</span></button></div><span class="sm stl s-pu">Purchased</span>
+          <div class="st" role="group" aria-label="Status To Buy, needs ordering"><button class="late" aria-label="To Buy, current"><span class="ms">sell</span></button><button aria-label="Mark Ordered"><span class="ms">local_shipping</span></button><button aria-label="Mark Purchased"><span class="ms">check</span></button></div><span class="sm stl s-late">To Buy, after the date</span>
+          <div class="st" role="group" aria-label="Menu item To Buy"><button class="tb" aria-label="To Buy, current"><span class="ms">sell</span></button><button aria-label="Mark Purchased"><span class="ms">check</span></button></div><span class="sm stl s-tb">Menu item · To Buy</span>
+          <div class="st" role="group" aria-label="Menu item Purchased"><button class="pu" aria-label="To Buy"><span class="ms">sell</span></button><button class="pu" aria-label="Purchased, current"><span class="ms">check</span></button></div><span class="sm stl s-pu">Menu item · Purchased</span>
+        </div>
+      </div>
+      <div class="f" style="gap: 12px">
+        <span class="gl">Status stepper · form control</span>
+        <div class="card" style="padding: 20px; display: flex; flex-direction: column; gap: 16px">
+          <div class="seg" role="radiogroup" aria-label="Status"><button class="or" role="radio" aria-checked="false"><span class="ms" aria-hidden="true">sell</span>To Buy</button><button class="or" role="radio" aria-checked="true"><span class="ms" aria-hidden="true">local_shipping</span>Ordered</button><button role="radio" aria-checked="false"><span class="ms" aria-hidden="true">check</span>Purchased</button></div>
+          <div class="seg" role="radiogroup" aria-label="Status"><button class="tb" role="radio" aria-checked="true"><span class="ms" aria-hidden="true">sell</span>To Buy</button><button role="radio" aria-checked="false"><span class="ms" aria-hidden="true">check</span>Purchased</button></div>
+        </div>
+      </div>
+      <div class="f" style="gap: 12px">
+        <span class="gl">Confirm</span>
+        <div class="dlg" style="width: 100%">
+          <h3 class="h-m">Delete Mum?</h3>
+          <p class="sm muted">Her 2 gifts are deleted with her.</p>
+          <div style="display: flex; justify-content: flex-end; gap: 8px"><button class="btn b-txt">Cancel</button><button class="btn b-dan">Delete</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Column 3 -->
+    <div class="f" style="gap: 32px">
+      <div class="f" style="gap: 12px">
+        <span class="gl">Recipient row</span>
+        <div class="card list">
+          <a class="row" href="#"><span class="mono" aria-hidden="true">M</span><div class="grow f" style="gap: 6px"><div style="display: flex; justify-content: space-between; gap: 8px; align-items: baseline"><span style="font-weight: 600">Mum</span><span class="sm muted num">0 of 2 bought</span></div><div class="bar thin"><i style="width: 86%"></i></div><span class="sm num"><b>$21.00</b> <span class="muted">left of $150.00</span></span></div><span class="ms muted" aria-hidden="true">chevron_right</span></a>
+          <a class="row" href="#"><span class="mono" aria-hidden="true">S</span><div class="grow f" style="gap: 6px"><div style="display: flex; justify-content: space-between; gap: 8px; align-items: center"><span style="font-weight: 600">Sam</span><span class="tag t-err"><span class="ms" aria-hidden="true">warning</span>Over budget</span></div><div class="bar thin over"><i style="width: 100%"></i></div><span class="sm num over"><b>$12.00 over</b> a $100.00 budget</span></div><span class="ms muted" aria-hidden="true">chevron_right</span></a>
+          <a class="row" href="#" style="border-bottom: 0"><span class="mono" aria-hidden="true">E</span><div class="grow f" style="gap: 6px"><div style="display: flex; justify-content: space-between; gap: 8px; align-items: center"><span style="font-weight: 600">Ellie</span><span class="tag t-err"><span class="ms" aria-hidden="true">schedule</span>2 to order</span></div><div class="bar thin"><i style="width: 0%"></i></div><span class="sm num"><b>$80.00</b> <span class="muted">left of $80.00</span></span></div><span class="ms muted" aria-hidden="true">chevron_right</span></a>
+        </div>
+      </div>
+      <div class="f" style="gap: 12px">
+        <span class="gl">Gift row and needs-ordering marker</span>
+        <div class="card list">
+          <div class="row"><div class="grow f"><span style="font-weight: 600">Espresso machine</span><span class="sm muted num"><b style="color: var(--on-surface)">$129.00</b> · John Lewis</span><span class="sm stl s-or">Ordered 2 Oct</span></div><div class="st" role="group" aria-label="Status Ordered"><button class="or" aria-label="To Buy"><span class="ms">sell</span></button><button class="or" aria-label="Ordered, current"><span class="ms">local_shipping</span></button><button aria-label="Mark Purchased"><span class="ms">check</span></button></div></div>
+          <div class="row" style="border-bottom: 0"><div class="grow f"><span style="font-weight: 600">Signed hardback</span><span class="sm muted num"><b style="color: var(--on-surface)">$24.99</b> · Waterstones</span><span class="sm stl s-late" style="display: flex; align-items: center; gap: 4px"><span class="ms s18" aria-hidden="true">schedule</span>Order now</span></div><div class="st" role="group" aria-label="Status To Buy, needs ordering"><button class="late" aria-label="To Buy, current"><span class="ms">sell</span></button><button aria-label="Mark Ordered"><span class="ms">local_shipping</span></button><button aria-label="Mark Purchased"><span class="ms">check</span></button></div></div>
+        </div>
+      </div>
+      <div class="f" style="gap: 12px">
+        <span class="gl">Meal row and menu item row</span>
+        <div class="card list">
+          <a class="row" href="#" style="align-items: flex-start"><div class="grow f" style="gap: 6px"><div style="display: flex; justify-content: space-between; gap: 8px; align-items: baseline"><span class="h-s">Christmas Day</span><span class="sm muted num">2 of 4 bought</span></div><span class="sm muted">25 December · 8 guests</span><div class="bar thin"><i style="width: 37.5%"></i></div><span class="sm num"><b>$137.50</b> <span class="muted">left of $220.00</span></span></div><span class="ms muted" aria-hidden="true" style="margin-top: 4px">chevron_right</span></a>
+          <a class="row" href="#" style="align-items: flex-start"><div class="grow f" style="gap: 6px"><span class="h-s">Christmas Eve</span><span class="sm muted">24 December · 6 guests</span><div style="display: flex; align-items: center; justify-content: space-between; gap: 8px"><span class="sm muted">No budget set yet</span><span class="btn b-ton" style="min-height: 44px; padding: 0 16px; font-size: 14px">Set budget</span></div></div></a>
+          <div class="row"><div class="grow f"><span style="font-weight: 600">Turkey crown</span><span class="sm num"><b>$64.00</b> · <span class="stl s-pu">Purchased</span></span></div><div class="st" role="group" aria-label="Status Purchased"><button class="pu" aria-label="To Buy"><span class="ms">sell</span></button><button class="pu" aria-label="Purchased, current"><span class="ms">check</span></button></div></div>
+          <div class="row" style="border-bottom: 0"><div class="grow f"><span style="font-weight: 600">Christmas pudding</span><span class="sm num"><b>$14.00</b> · <span class="stl s-tb">To Buy</span></span></div><div class="st" role="group" aria-label="Status To Buy"><button class="tb" aria-label="To Buy, current"><span class="ms">sell</span></button><button aria-label="Mark Purchased"><span class="ms">check</span></button></div></div>
+        </div>
+      </div>
+      <div class="f" style="gap: 12px">
+        <span class="gl">Empty, loading, error</span>
+        <div class="card list">
+          <div class="empty"><span class="ms s32 warn" aria-hidden="true">park</span><p style="font-weight: 600">No gifts yet for Rose.</p><button class="btn b-pri"><span class="ms" aria-hidden="true">add</span>Add gift</button></div>
+          <div class="row" aria-hidden="true"><div class="grow f" style="gap: 8px"><span class="sk" style="width: 55%; height: 16px"></span><span class="sk" style="width: 35%; height: 12px"></span></div><span class="sk" style="width: 134px; height: 46px; border-radius: 23px"></span></div>
+          <div class="f" style="gap: 12px; padding: 20px 16px; align-items: flex-start"><p style="display: flex; gap: 8px; align-items: center; font-weight: 600"><span class="ms over" aria-hidden="true">cloud_off</span>Couldn't load the gifts.</p><p class="sm muted">Check your connection, then try again.</p><button class="btn b-sec"><span class="ms" aria-hidden="true">refresh</span>Try again</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="f" style="gap: 12px">
+    <span class="gl">Ordering-date banner · before, on or after with gifts to order, after with everything ordered</span>
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; align-items: start">
+      <div class="hero"><i class="rv"></i><i class="rh"></i><p class="kick">43 days from today</p><p class="date">Start ordering by 26 November.</p><p class="sm" style="color: var(--hero-muted)">Gifts arrive by 10 December with 7 shipping days.</p></div>
+      <div class="hero alert"><i class="rv"></i><i class="rh"></i><p class="kick">Today is the ordering date</p><p class="date">3 gifts still need ordering.</p><div class="f" style="margin-top: 8px"><a class="go" href="#"><span class="grow">Signed hardback <span style="color: var(--alert-muted)">· Mum</span></span><span class="ms s20" aria-hidden="true">chevron_right</span></a><a class="go" href="#"><span class="grow">Watercolour set <span style="color: var(--alert-muted)">· Ellie</span></span><span class="ms s20" aria-hidden="true">chevron_right</span></a><a class="go" href="#"><span class="grow">The Wild Robot <span style="color: var(--alert-muted)">· Ellie</span></span><span class="ms s20" aria-hidden="true">chevron_right</span></a></div></div>
+      <div class="hero quiet"><p class="date">Every gift is ordered.</p><p class="sm">The ordering date was 26 November.</p></div>
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 390px 390px minmax(0, 1fr); gap: 32px; align-items: start">
+    <div class="f" style="gap: 12px">
+      <span class="gl">Sheet (phone) · tab bar</span>
+      <div class="card" style="height: 560px; display: flex; flex-direction: column; justify-content: flex-end">
+        <div class="scrim"></div>
+        <div class="sheet" style="bottom: 80px">
+          <div class="grab" aria-hidden="true"></div>
+          <h3 class="h-m">Edit gift budget</h3>
+          <div><label class="lab">Gift budget for 2026</label><div class="fld focus"><span class="pre">$</span><input value="600.00" aria-label="Gift budget"></div></div>
+          <div style="display: flex; justify-content: flex-end; gap: 8px"><button class="btn b-txt">Cancel</button><button class="btn b-pri">Save</button></div>
+        </div>
+        <nav class="nav" style="position: relative" aria-label="Main"><a class="cur" href="#"><span class="pill"><span class="ms fill">home</span></span>Home</a><a href="#"><span class="pill"><span class="ms">featured_seasonal_and_gifts</span></span>Gifts</a><a href="#"><span class="pill"><span class="ms">restaurant</span></span>Meals</a></nav>
+      </div>
+    </div>
+    <div class="f" style="gap: 12px">
+      <span class="gl">Snackbar · rail</span>
+      <div class="card" style="height: 560px; display: flex">
+        <nav class="rail" aria-label="Main"><span class="mark" style="width: 40px; height: 40px; margin-bottom: 12px" aria-hidden="true"><i class="v"></i><i class="h"></i></span><a href="#"><span class="pill"><span class="ms">home</span></span>Home</a><a class="cur" href="#"><span class="pill"><span class="ms fill">featured_seasonal_and_gifts</span></span>Gifts</a><a href="#"><span class="pill"><span class="ms">restaurant</span></span>Meals</a></nav>
+        <div class="grow" style="position: relative"><div class="snack" style="bottom: 24px; left: 16px; right: 16px"><span class="grow">Wool socks marked Purchased.</span><button class="btn b-txt">Undo</button></div></div>
+      </div>
+    </div>
+    <div class="f" style="gap: 12px">
+      <span class="gl">Dialog (laptop)</span>
+      <div class="card" style="height: 560px; display: grid; place-items: center; background: var(--surface-c)">
+        <div class="dlg" style="width: 480px">
+          <h3 class="h-m">Add gift for Mum</h3>
+          <div><label class="lab">Name</label><div class="fld focus"><input value="" placeholder="What is it?" aria-label="Name"></div></div>
+          <div style="display: grid; grid-template-columns: 160px minmax(0, 1fr); gap: 12px"><div><label class="lab">Price</label><div class="fld"><span class="pre">$</span><input value="" placeholder="0.00" aria-label="Price"></div></div><div><label class="lab">Store or link <span class="muted" style="font-weight: 400">(optional)</span></label><div class="fld"><input value="" aria-label="Store or link"></div></div></div>
+          <div><span class="lab">Status</span><div class="seg"><button class="tb"><span class="ms" aria-hidden="true">sell</span>To Buy</button><button><span class="ms" aria-hidden="true">local_shipping</span>Ordered</button><button><span class="ms" aria-hidden="true">check</span>Purchased</button></div></div>
+          <div style="display: flex; justify-content: flex-end; gap: 8px"><button class="btn b-txt">Cancel</button><button class="btn b-pri">Add gift</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</sc-for>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"themes":{"editor":"enum","options":["both","light","dark"],"default":"both"},"$preview":{"width":1440,"height":4800}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const t = this.props.themes ?? 'both';
+    const all = [{ id: 'light', label: 'Light' }, { id: 'dark', label: 'Dark' }];
+    return { themes: t === 'both' ? all : all.filter((x) => x.id === t) };
+  }
+}
+</script>
+</body>
+</html>

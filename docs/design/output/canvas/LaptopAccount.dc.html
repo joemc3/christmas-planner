@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Laptop sign in and settings</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..600&family=Public+Sans:wght@400..700&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,300..600,0..1,0&display=swap">
+<style>
+body{margin:0}
+[data-theme=light]{--canvas:#E7E5DF;--canvas-ink:#4A524D;--primary:#1E4D3B;--on-primary:#FFFFFF;--primary-container:#CFE5D8;--on-primary-container:#0B2A1F;--secondary:#52635A;--secondary-container:#D7E5DC;--on-secondary-container:#102019;--tertiary:#8A6414;--tertiary-container:#F5E4BC;--on-tertiary-container:#3B2A00;--error:#A3263A;--on-error:#FFFFFF;--error-container:#FADCDF;--on-error-container:#5C0E1C;--surface:#FBFAF7;--surface-low:#F5F3EE;--surface-c:#EFECE6;--surface-high:#E8E5DE;--surface-highest:#E1DED6;--on-surface:#1B1F1C;--on-surface-variant:#4A524D;--outline:#78807A;--outline-variant:#D4D6CF;--inverse-surface:#2E3330;--inverse-on-surface:#EFF1EC;--inverse-primary:#94D2B2;--field:#FFFFFF;--hero:#1E4D3B;--on-hero:#F4F1E8;--hero-muted:#BFD6C9;--alert:#8E1F33;--on-alert:#FFF4F4;--alert-muted:#F6CDD3;--ribbon:#C9A14C;--ribbon-edge:#A68337;--scrim:rgba(20,26,23,.44);--lift:0 1px 2px rgba(20,26,23,.08),0 8px 24px rgba(20,26,23,.10)}
+[data-theme=dark]{--canvas:#070A09;--canvas-ink:#B4BEB7;--primary:#94D2B2;--on-primary:#00382A;--primary-container:#1F4D3B;--on-primary-container:#C9EEDA;--secondary:#B8CCC0;--secondary-container:#33463C;--on-secondary-container:#D4E8DC;--tertiary:#E6C47C;--tertiary-container:#5B4407;--on-tertiary-container:#FDE3A8;--error:#FFB1B8;--on-error:#67001B;--error-container:#8A1D32;--on-error-container:#FFDADC;--surface:#0F1512;--surface-low:#151C18;--surface-c:#19211D;--surface-high:#212A25;--surface-highest:#2A342F;--on-surface:#E4E9E4;--on-surface-variant:#B4BEB7;--outline:#87918A;--outline-variant:#38433D;--inverse-surface:#E1E4DF;--inverse-on-surface:#2C322E;--inverse-primary:#1E4D3B;--field:#0F1512;--hero:#1F4D3B;--on-hero:#F1EEE4;--hero-muted:#B5CDBF;--alert:#8A1D32;--on-alert:#FFF1F2;--alert-muted:#F3C6CC;--ribbon:#B8924A;--ribbon-edge:#8C6C2E;--scrim:rgba(0,0,0,.6);--lift:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.4)}
+.cp{font-family:'Public Sans',system-ui,-apple-system,'Segoe UI',sans-serif;color:var(--on-surface);font-size:16px;line-height:24px;-webkit-font-smoothing:antialiased}
+.cp *{box-sizing:border-box}
+.cp p,.cp h1,.cp h2,.cp h3,.cp ul{margin:0;padding:0}
+.cp b{font-weight:600}
+.ms{font-family:'Material Symbols Rounded';font-weight:normal;font-style:normal;font-size:24px;line-height:1;letter-spacing:normal;text-transform:none;white-space:nowrap;font-feature-settings:'liga';font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;display:inline-block;width:1em;height:1em;overflow:hidden;flex:none}
+.ms.fill{font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24}
+.cap{font:600 13px/20px 'Public Sans',sans-serif;letter-spacing:.02em;color:var(--canvas-ink);margin:0 0 8px}
+.laptop{width:1280px;height:800px;background:var(--surface);color:var(--on-surface);position:relative;overflow:hidden;display:flex;border-radius:12px;box-shadow:0 0 0 1px var(--outline-variant),0 12px 40px rgba(0,0,0,.12)}
+.lhead{min-height:72px;display:flex;align-items:center;gap:8px;padding:0 24px 0 32px;flex:none}
+.h-l{font-family:'Newsreader',Georgia,serif;font-size:32px;line-height:40px;font-weight:500;letter-spacing:-.01em}
+.grow{flex:1;min-width:0}
+.f{display:flex;flex-direction:column}
+.ib{width:48px;height:48px;border-radius:24px;border:0;background:transparent;color:var(--on-surface-variant);display:inline-grid;place-items:center;cursor:pointer;padding:0;flex:none;text-decoration:none}
+.btn{min-height:48px;padding:0 24px;border-radius:24px;border:0;font:600 15px/20px 'Public Sans',sans-serif;display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;text-decoration:none;white-space:nowrap}
+.btn .ms{font-size:20px}
+.b-pri{background:var(--primary);color:var(--on-primary)}
+.b-sec{background:transparent;color:var(--primary);box-shadow:inset 0 0 0 1px var(--outline)}
+.b-txt{background:transparent;color:var(--primary);padding:0 12px}
+.b-txt.dan{color:var(--error)}
+.b-focus{outline:3px solid var(--primary);outline-offset:3px}
+.full{width:100%}
+.lab{font-size:14px;line-height:20px;font-weight:600;color:var(--on-surface);margin-bottom:6px;display:block}
+.fld{min-height:52px;border-radius:12px;background:var(--field);box-shadow:inset 0 0 0 1px var(--outline);display:flex;align-items:center;gap:8px;padding:0 4px 0 16px;color:var(--on-surface)}
+.fld.focus{box-shadow:inset 0 0 0 2px var(--primary)}
+.fld input{border:0;outline:0;background:transparent;flex:1;min-width:0;height:50px;padding:0;font:400 16px/24px 'Public Sans',sans-serif;color:var(--on-surface);font-variant-numeric:tabular-nums}
+.help{font-size:13px;line-height:18px;color:var(--on-surface-variant);margin-top:6px}
+.muted{color:var(--on-surface-variant)}
+.sm{font-size:14px;line-height:20px}
+.link{color:var(--primary);font-weight:600;text-decoration:none}
+.seg{display:flex;border:1px solid var(--outline);border-radius:24px;overflow:hidden;background:var(--field)}
+.seg button{flex:1;min-width:0;min-height:48px;border:0;background:transparent;color:var(--on-surface);font:600 14px/18px 'Public Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px;padding:0 6px;cursor:pointer}
+.seg button .ms{font-size:18px}
+.seg button+button{border-left:1px solid var(--outline)}
+.seg .sel{background:var(--secondary-container);color:var(--on-secondary-container)}
+.rail{width:96px;flex:none;background:var(--surface-low);display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px 0;border-right:1px solid var(--outline-variant)}
+.rail a{display:flex;flex-direction:column;align-items:center;gap:4px;text-decoration:none;color:var(--on-surface-variant);font-size:12px;line-height:16px;font-weight:600}
+.rail .pill{width:56px;height:32px;border-radius:16px;display:grid;place-items:center}
+.rail a.cur{color:var(--on-surface)}
+.rail a.cur .pill{background:var(--primary-container);color:var(--on-primary-container)}
+.mark{position:relative;border-radius:22%;overflow:hidden;flex:none;background:var(--hero)}
+.mark i{position:absolute;display:block;background:var(--ribbon)}
+.mark .v{top:0;bottom:0;left:58%;width:12%}.mark .h{left:0;right:0;top:34%;height:12%}
+.hero{position:relative;background:var(--hero);color:var(--on-hero);overflow:hidden}
+.hero .rv{position:absolute;top:0;bottom:0;right:72px;width:16px;background:var(--ribbon);box-shadow:inset 2px 0 0 var(--ribbon-edge),inset -2px 0 0 var(--ribbon-edge)}
+.hero .rh{position:absolute;left:0;right:0;top:64px;height:16px;background:var(--ribbon);box-shadow:inset 0 2px 0 var(--ribbon-edge),inset 0 -2px 0 var(--ribbon-edge)}
+</style>
+</helmet>
+<div style="width: 2680px; display: flex; flex-direction: column">
+<sc-for list="{{themes}}" as="th" hint-placeholder-count="2">
+<section data-theme="{{th.id}}" class="cp" style="background: var(--canvas); padding: 40px; display: flex; gap: 40px; align-items: flex-start">
+
+  <div class="f">
+    <p class="cap">{{th.label}} · Sign in, laptop (create account and reset use the same frame)</p>
+    <div class="laptop">
+      <div class="hero" style="width: 520px; flex: none; padding: 160px 120px 48px 56px; display: flex; flex-direction: column">
+        <i class="rv"></i><i class="rh"></i>
+        <h1 class="serif" style="font-family: 'Newsreader', Georgia, serif; font-size: 48px; line-height: 56px; font-weight: 500; letter-spacing: -.015em">Christmas Planner</h1>
+        <p style="margin-top: 12px; font-size: 18px; line-height: 28px; color: var(--hero-muted)">Gifts and the two Christmas meals, inside the money.</p>
+      </div>
+      <div class="grow" style="display: grid; place-items: center">
+        <form class="f" style="width: 400px; gap: 20px" onsubmit="return false">
+          <h2 class="h-l">Sign in</h2>
+          <div><label class="lab">Email</label><div class="fld focus"><input type="email" value="jo@example.com" aria-label="Email"></div></div>
+          <div><label class="lab">Password</label><div class="fld"><input type="password" value="christmas" aria-label="Password"><button class="ib" type="button" aria-label="Show password"><span class="ms">visibility</span></button></div></div>
+          <button class="btn b-pri full b-focus" type="submit">Sign in</button>
+          <div style="display: flex; justify-content: space-between; align-items: center"><a class="btn b-txt" href="#" style="padding: 0 4px">Forgot your password?</a><a class="link sm" href="#">Create an account</a></div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="f">
+    <p class="cap">{{th.label}} · Settings, laptop</p>
+    <div class="laptop">
+      <nav class="rail" aria-label="Main"><span class="mark" style="width: 40px; height: 40px; margin-bottom: 12px" aria-hidden="true"><i class="v"></i><i class="h"></i></span><a class="cur" href="#" aria-current="page"><span class="pill"><span class="ms fill">home</span></span>Home</a><a href="#"><span class="pill"><span class="ms">featured_seasonal_and_gifts</span></span>Gifts</a><a href="#"><span class="pill"><span class="ms">restaurant</span></span>Meals</a></nav>
+      <main class="grow f" style="overflow: hidden">
+        <header class="lhead"><a class="ib" href="#" aria-label="Back to Home"><span class="ms">arrow_back</span></a><h1 class="h-l grow">Settings</h1></header>
+        <form class="f" style="padding: 8px 40px 0 88px; gap: 22px; max-width: 640px" onsubmit="return false">
+          <div><label class="lab">Your name</label><div class="fld"><input value="Jo" aria-label="Your name"></div><p class="help">Signed in as jo@example.com</p></div>
+          <div><label class="lab">Currency</label><button class="fld" type="button" style="width: 100%; border: 0; font: inherit; text-align: left; cursor: pointer" aria-haspopup="listbox"><span class="grow">US dollar ($)</span><span class="ms muted" style="margin-right: 12px">expand_more</span></button></div>
+          <div><label class="lab">Shipping days</label><div class="fld" style="max-width: 240px"><input value="7" aria-label="Shipping days" inputmode="numeric"><button class="ib" type="button" aria-label="One fewer day"><span class="ms">remove</span></button><button class="ib" type="button" aria-label="One more day"><span class="ms">add</span></button></div><p class="help">How long your orders usually take. It moves the ordering date: with 7 days, start ordering by 26 November.</p></div>
+          <div><span class="lab">Theme</span><div class="seg" role="radiogroup" aria-label="Theme" style="max-width: 400px"><button class="sel" type="button" role="radio" aria-checked="true"><span class="ms" aria-hidden="true">check</span>System</button><button type="button" role="radio" aria-checked="false">Light</button><button type="button" role="radio" aria-checked="false">Dark</button></div></div>
+          <div style="display: flex; gap: 12px; align-items: center; padding-top: 22px; border-top: 1px solid var(--outline-variant)"><button class="btn b-sec" type="button"><span class="ms" aria-hidden="true">logout</span>Sign out</button><span class="grow"></span><button class="btn b-txt dan" type="button">Delete account</button></div>
+        </form>
+      </main>
+    </div>
+  </div>
+
+</section>
+</sc-for>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"themes":{"editor":"enum","options":["both","light","dark"],"default":"both"},"$preview":{"width":2680,"height":1816}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const t = this.props.themes ?? 'both';
+    const all = [{ id: 'light', label: 'Light' }, { id: 'dark', label: 'Dark' }];
+    return { themes: t === 'both' ? all : all.filter((x) => x.id === t) };
+  }
+}
+</script>
+</body>
+</html>
