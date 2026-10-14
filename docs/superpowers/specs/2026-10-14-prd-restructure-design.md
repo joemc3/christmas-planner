@@ -132,3 +132,18 @@ As today: repositories throw typed exceptions (`AppException` subclasses), provi
 ## 10. Out of scope here
 
 Visual design (the design session), hosting, mobile builds, anything in PRD section 8.
+
+## 11. Rules settled by the design reconciliation (2026-10-14)
+
+From `docs/design/decisions.md`. These are product rules the brief left open and the design made concrete; the PRD's rules in section 5 are unchanged.
+
+- **Status dates.** Moving to Ordered stamps `order_date` = today if it is null. Moving to Purchased stamps `purchased_date` = today if null; skipping Ordered leaves `order_date` null. Moving back (only possible in the form) clears the dates of states no longer reached. Both dates stay editable in the form.
+- **Undo.** A row-stepper change shows a snackbar for five seconds whose Undo restores the previous status and both dates exactly.
+- **Zero means unset.** A plan's `gift_budget_total` of 0 shows "No gift budget yet"; a meal's `budget_limit` of 0 shows "No budget set yet"; a meal's `guest_count` of 0 shows "Guests not set". Sums treat them as 0.
+- **Meal dates.** Christmas Eve is 24 December and Christmas Day 25 December of the plan year, derived for display, never stored.
+- **Home alert card.** On or after Start Ordering By, lists at most three To Buy gifts (by recipient name, then gift name) as links to B4, then "and n more" to Gifts.
+- **Previous years.** A plan whose year is less than the current year is read-only: no add, edit, delete or status change; the UI says so. `ensure_plan` is called only for the current year.
+- **Routes.** `/login`, `/register`, `/forgot`, `/reset` (target of the Supabase recovery email; the app reads the recovery session and shows the new-password form), `/settings`, `/home`, `/gifts`, `/gifts/:recipientId`, `/gifts/:recipientId/gift/:giftId`, `/meals`, `/meals/:mealId`.
+- **Breakpoints.** Below 840 px: bottom `NavigationBar`, forms as bottom sheets, one pane. 840 px and up: `NavigationRail` with the mark, forms as dialogs. 1200 px and up: Gifts and Meals render list plus detail side by side; the detail routes still exist and deep-link.
+- **Theme.** Follow system, light or dark, stored per device in shared preferences (not in the profile); default follows system.
+- **Icons.** Built-in rounded Material icons; the Gifts tab uses `redeem`.
