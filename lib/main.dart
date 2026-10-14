@@ -1,37 +1,19 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:timezone/data/latest.dart' as tz;
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-import 'core/constants/app_constants.dart';
-import 'core/utils/logger.dart';
-import 'shared/services/notification_service.dart';
 import 'app.dart';
-
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
+import 'core/constants/app_constants.dart';
+import 'core/theme/theme_mode_provider.dart';
+import 'core/utils/logger.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  // Initialize timezone
-  tz.initializeTimeZones();
-
-  // Initialize logger
   AppLogger.init();
 
-  // Set preferred orientations
-  await SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
-    DeviceOrientation.landscapeLeft,
-    DeviceOrientation.landscapeRight,
-  ]);
+  final prefs = await SharedPreferences.getInstance();
 
-  // Initialize Supabase
   try {
     await Supabase.initialize(
       url: AppConstants.supabaseUrl,
@@ -40,12 +22,7 @@ Future<void> main() async {
         authFlowType: AuthFlowType.pkce,
         autoRefreshToken: true,
       ),
-      realtimeClientOptions: const RealtimeClientOptions(
-        logLevel: RealtimeLogLevel.info,
-      ),
-      storageOptions: const StorageClientOptions(retryAttempts: 3),
     );
-    AppLogger.info('Supabase initialized successfully');
   } catch (e, stackTrace) {
     AppLogger.error(
       'Failed to initialize Supabase',
@@ -54,21 +31,10 @@ Future<void> main() async {
     );
   }
 
-  // Initialize local notifications (mobile only; the plugin has no web implementation)
-  if (!kIsWeb) {
-    await NotificationService.initialize(flutterLocalNotificationsPlugin);
-  }
-
-  // Set system UI overlay style
-  SystemChrome.setSystemUIOverlayStyle(
-    const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.dark,
-      statusBarBrightness: Brightness.light,
-      systemNavigationBarColor: Colors.white,
-      systemNavigationBarIconBrightness: Brightness.dark,
+  runApp(
+    ProviderScope(
+      overrides: [sharedPreferencesProvider.overrideWithValue(prefs)],
+      child: const ChristmasPlannerApp(),
     ),
   );
-
-  runApp(const ProviderScope(child: ChristmasPlannerApp()));
 }

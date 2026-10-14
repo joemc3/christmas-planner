@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Meal and menu item form</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..600&family=Public+Sans:wght@400..700&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,300..600,0..1,0&display=swap">
+<style>
+body{margin:0}
+[data-theme=light]{--canvas:#E7E5DF;--canvas-ink:#4A524D;--primary:#1E4D3B;--on-primary:#FFFFFF;--primary-container:#CFE5D8;--on-primary-container:#0B2A1F;--secondary:#52635A;--secondary-container:#D7E5DC;--on-secondary-container:#102019;--tertiary:#8A6414;--tertiary-container:#F5E4BC;--on-tertiary-container:#3B2A00;--error:#A3263A;--on-error:#FFFFFF;--error-container:#FADCDF;--on-error-container:#5C0E1C;--surface:#FBFAF7;--surface-low:#F5F3EE;--surface-c:#EFECE6;--surface-high:#E8E5DE;--surface-highest:#E1DED6;--on-surface:#1B1F1C;--on-surface-variant:#4A524D;--outline:#78807A;--outline-variant:#D4D6CF;--inverse-surface:#2E3330;--inverse-on-surface:#EFF1EC;--inverse-primary:#94D2B2;--field:#FFFFFF;--hero:#1E4D3B;--on-hero:#F4F1E8;--hero-muted:#BFD6C9;--alert:#8E1F33;--on-alert:#FFF4F4;--alert-muted:#F6CDD3;--ribbon:#C9A14C;--ribbon-edge:#A68337;--scrim:rgba(20,26,23,.44);--lift:0 1px 2px rgba(20,26,23,.08),0 8px 24px rgba(20,26,23,.10)}
+[data-theme=dark]{--canvas:#070A09;--canvas-ink:#B4BEB7;--primary:#94D2B2;--on-primary:#00382A;--primary-container:#1F4D3B;--on-primary-container:#C9EEDA;--secondary:#B8CCC0;--secondary-container:#33463C;--on-secondary-container:#D4E8DC;--tertiary:#E6C47C;--tertiary-container:#5B4407;--on-tertiary-container:#FDE3A8;--error:#FFB1B8;--on-error:#67001B;--error-container:#8A1D32;--on-error-container:#FFDADC;--surface:#0F1512;--surface-low:#151C18;--surface-c:#19211D;--surface-high:#212A25;--surface-highest:#2A342F;--on-surface:#E4E9E4;--on-surface-variant:#B4BEB7;--outline:#87918A;--outline-variant:#38433D;--inverse-surface:#E1E4DF;--inverse-on-surface:#2C322E;--inverse-primary:#1E4D3B;--field:#0F1512;--hero:#1F4D3B;--on-hero:#F1EEE4;--hero-muted:#B5CDBF;--alert:#8A1D32;--on-alert:#FFF1F2;--alert-muted:#F3C6CC;--ribbon:#B8924A;--ribbon-edge:#8C6C2E;--scrim:rgba(0,0,0,.6);--lift:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.4)}
+.cp{font-family:'Public Sans',system-ui,-apple-system,'Segoe UI',sans-serif;color:var(--on-surface);font-size:16px;line-height:24px;-webkit-font-smoothing:antialiased}
+.cp *{box-sizing:border-box}
+.cp p,.cp h1,.cp h2,.cp h3,.cp ul{margin:0;padding:0}
+.cp b{font-weight:600}
+.num{font-variant-numeric:tabular-nums lining-nums}
+.ms{font-family:'Material Symbols Rounded';font-weight:normal;font-style:normal;font-size:24px;line-height:1;letter-spacing:normal;text-transform:none;white-space:nowrap;font-feature-settings:'liga';font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;display:inline-block;width:1em;height:1em;overflow:hidden;flex:none}
+.ms.fill{font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24}
+.ms.s18{font-size:18px}.ms.s20{font-size:20px}.ms.s32{font-size:32px}
+.cap{font:600 13px/20px 'Public Sans',sans-serif;letter-spacing:.02em;color:var(--canvas-ink);margin:0 0 8px}
+.phone{width:390px;height:844px;background:var(--surface);color:var(--on-surface);position:relative;overflow:hidden;display:flex;flex-direction:column;border-radius:32px;box-shadow:0 0 0 1px var(--outline-variant),0 12px 40px rgba(0,0,0,.12)}
+.appbar{flex:none;min-height:64px;display:flex;align-items:center;gap:4px;padding:0 4px}
+.h-l{font-family:'Newsreader',Georgia,serif;font-size:28px;line-height:36px;font-weight:500;letter-spacing:-.01em}
+.h-m{font-family:'Newsreader',Georgia,serif;font-size:24px;line-height:32px;font-weight:500}
+.grow{flex:1;min-width:0}
+.f{display:flex;flex-direction:column}
+.ib{width:48px;height:48px;border-radius:24px;border:0;background:transparent;color:var(--on-surface-variant);display:inline-grid;place-items:center;cursor:pointer;padding:0;flex:none;text-decoration:none}
+.body{flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column}
+.btn{min-height:48px;padding:0 24px;border-radius:24px;border:0;font:600 15px/20px 'Public Sans',sans-serif;display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;text-decoration:none;white-space:nowrap}
+.btn .ms{font-size:20px}
+.b-pri{background:var(--primary);color:var(--on-primary)}
+.b-sec{background:transparent;color:var(--primary);box-shadow:inset 0 0 0 1px var(--outline)}
+.b-txt{background:transparent;color:var(--primary);padding:0 12px}
+.b-txt.dan{color:var(--error)}
+.fab{position:absolute;right:16px;bottom:96px;height:56px;padding:0 20px 0 16px;border-radius:16px;border:0;background:var(--primary);color:var(--on-primary);font:600 15px/20px 'Public Sans',sans-serif;display:inline-flex;align-items:center;gap:8px;box-shadow:var(--lift);cursor:pointer}
+.lab{font-size:14px;line-height:20px;font-weight:600;color:var(--on-surface);margin-bottom:6px;display:block}
+.fld{min-height:52px;border-radius:12px;background:var(--field);box-shadow:inset 0 0 0 1px var(--outline);display:flex;align-items:center;gap:8px;padding:0 4px 0 16px;color:var(--on-surface)}
+.fld.focus{box-shadow:inset 0 0 0 2px var(--primary)}
+.fld input{border:0;outline:0;background:transparent;flex:1;min-width:0;height:50px;padding:0;font:400 16px/24px 'Public Sans',sans-serif;color:var(--on-surface);font-variant-numeric:tabular-nums}
+.fld .pre{color:var(--on-surface-variant)}
+.help{font-size:13px;line-height:18px;color:var(--on-surface-variant);margin-top:6px}
+.muted{color:var(--on-surface-variant)}
+.sm{font-size:14px;line-height:20px}
+.money{font:600 40px/48px 'Public Sans',sans-serif;letter-spacing:-.02em;font-variant-numeric:tabular-nums lining-nums}
+.over{color:var(--error)}
+.warn{color:var(--tertiary)}
+.bar{height:8px;border-radius:4px;background:var(--surface-highest);overflow:hidden}
+.bar>i{display:block;height:100%;border-radius:inherit;background:var(--primary)}
+.head{padding:0 16px 8px;display:flex;flex-direction:column;gap:8px;flex:none}
+.foot{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:14px;line-height:20px;font-variant-numeric:tabular-nums}
+.sec{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:16px 16px 8px;flex:none}
+.list{display:flex;flex-direction:column;border-top:1px solid var(--outline-variant)}
+.row{display:flex;align-items:center;gap:12px;min-height:72px;padding:12px 16px;border-bottom:1px solid var(--outline-variant)}
+.st{display:inline-flex;border-radius:23px;border:1px solid var(--outline);overflow:hidden;flex:none;background:var(--surface)}
+.st button{width:44px;height:44px;border:0;background:transparent;color:var(--on-surface-variant);display:grid;place-items:center;padding:0;cursor:pointer}
+.st button .ms{font-size:20px}
+.st button+button{border-left:1px solid var(--outline-variant)}
+.st .tb,.seg .tb{background:var(--secondary-container);color:var(--on-secondary-container)}
+.st .pu,.seg .pu{background:var(--primary);color:var(--on-primary)}
+.seg{display:flex;border:1px solid var(--outline);border-radius:24px;overflow:hidden;background:var(--field)}
+.seg button{flex:1;min-width:0;min-height:48px;border:0;background:transparent;color:var(--on-surface);font:600 14px/18px 'Public Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px;padding:0 6px;cursor:pointer}
+.seg button .ms{font-size:18px}
+.seg button+button{border-left:1px solid var(--outline)}
+.stl{font-weight:600}
+.s-tb{color:var(--on-surface-variant)}.s-pu{color:var(--primary)}
+.nav{flex:none;height:80px;background:var(--surface-c);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));padding:12px 0 16px}
+.nav a{display:flex;flex-direction:column;align-items:center;gap:4px;text-decoration:none;color:var(--on-surface-variant);font-size:12px;line-height:16px;font-weight:600}
+.nav .pill{width:64px;height:32px;border-radius:16px;display:grid;place-items:center}
+.nav a.cur{color:var(--on-surface)}
+.nav a.cur .pill{background:var(--primary-container);color:var(--on-primary-container)}
+.scrim{position:absolute;inset:0;background:var(--scrim)}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--surface-low);border-radius:28px 28px 0 0;padding:0 24px 32px;display:flex;flex-direction:column;gap:20px;box-shadow:var(--lift)}
+.grab{width:32px;height:4px;border-radius:2px;background:var(--outline);margin:12px auto 0}
+.sk{background:var(--surface-highest);border-radius:6px;display:block}
+.empty{display:flex;flex-direction:column;align-items:flex-start;gap:16px;padding:24px 16px;border-bottom:1px solid var(--outline-variant)}
+</style>
+</helmet>
+<div style="width: 3050px; display: flex; flex-direction: column">
+<sc-for list="{{themes}}" as="th" hint-placeholder-count="2">
+<section data-theme="{{th.id}}" class="cp" style="background: var(--canvas); padding: 40px; display: flex; gap: 40px; align-items: flex-start">
+
+  <!-- 1. Christmas Day -->
+  <div class="f">
+    <p class="cap">{{th.label}} · Christmas Day, two items bought</p>
+    <div class="phone">
+      <header class="appbar"><a class="ib" href="#" aria-label="Back to Meals"><span class="ms">arrow_back</span></a><h1 class="h-l grow">Christmas Day</h1><button class="ib" aria-label="Edit guests and budget"><span class="ms">edit</span></button></header>
+      <div class="body">
+        <div class="head">
+          <p class="sm muted" style="display: flex; align-items: center; gap: 6px"><span class="ms s18" aria-hidden="true">group</span>25 December · 8 guests</p>
+          <span class="sm muted" style="margin-top: 4px">Left to spend</span>
+          <span class="money">$137.50</span>
+          <div class="bar" role="img" aria-label="38% of the budget spent"><i style="width: 37.5%"></i></div>
+          <div class="foot"><span class="muted">Spent <b style="color: var(--on-surface)">$82.50</b></span><span class="muted">Budget <b style="color: var(--on-surface)">$220.00</b></span></div>
+        </div>
+        <div class="sec"><h2 class="h-m">Menu</h2><span class="sm muted num">2 of 4 bought</span></div>
+        <div class="list">
+          <div class="row"><div class="grow f"><span style="font-weight: 600">Turkey crown</span><span class="sm num"><b>$64.00</b> · <span class="stl s-pu">Purchased</span></span></div><div class="st" role="group" aria-label="Status Purchased"><button class="pu" aria-label="To Buy"><span class="ms">sell</span></button><button class="pu" aria-label="Purchased, current"><span class="ms">check</span></button></div></div>
+          <div class="row"><div class="grow f"><span style="font-weight: 600">Pigs in blankets</span><span class="sm num"><b>$12.00</b> · <span class="stl s-tb">To Buy</span></span></div><div class="st" role="group" aria-label="Status To Buy"><button class="tb" aria-label="To Buy, current"><span class="ms">sell</span></button><button aria-label="Mark Purchased"><span class="ms">check</span></button></div></div>
+          <div class="row"><div class="grow f"><span style="font-weight: 600">Roast potatoes and veg</span><span class="sm num"><b>$18.50</b> · <span class="stl s-pu">Purchased</span></span></div><div class="st" role="group" aria-label="Status Purchased"><button class="pu" aria-label="To Buy"><span class="ms">sell</span></button><button class="pu" aria-label="Purchased, current"><span class="ms">check</span></button></div></div>
+          <div class="row"><div class="grow f"><span style="font-weight: 600">Christmas pudding</span><span class="sm num"><b>$14.00</b> · <span class="stl s-tb">To Buy</span></span></div><div class="st" role="group" aria-label="Status To Buy"><button class="tb" aria-label="To Buy, current"><span class="ms">sell</span></button><button aria-label="Mark Purchased"><span class="ms">check</span></button></div></div>
+        </div>
+      </div>
+      <button class="fab"><span class="ms" aria-hidden="true">add</span>Add item</button>
+      <nav class="nav" aria-label="Main"><a href="#"><span class="pill"><span class="ms">home</span></span>Home</a><a href="#"><span class="pill"><span class="ms">featured_seasonal_and_gifts</span></span>Gifts</a><a class="cur" href="#" aria-current="page"><span class="pill"><span class="ms fill">restaurant</span></span>Meals</a></nav>
+    </div>
+  </div>
+
+  <!-- 2. Empty -->
+  <div class="f">
+    <p class="cap">{{th.label}} · Empty</p>
+    <div class="phone">
+      <header class="appbar"><a class="ib" href="#" aria-label="Back to Meals"><span class="ms">arrow_back</span></a><h1 class="h-l grow">Christmas Eve</h1><button class="ib" aria-label="Edit guests and budget"><span class="ms">edit</span></button></header>
+      <div class="body">
+        <div class="head">
+          <p class="sm muted" style="display: flex; align-items: center; gap: 6px"><span class="ms s18" aria-hidden="true">group</span>24 December · 6 guests</p>
+          <span class="sm muted" style="margin-top: 4px">Left to spend</span>
+          <span class="money">$120.00</span>
+          <div class="bar" role="img" aria-label="Nothing spent yet"><i style="width: 0%"></i></div>
+          <div class="foot"><span class="muted">Spent <b style="color: var(--on-surface)">$0.00</b></span><span class="muted">Budget <b style="color: var(--on-surface)">$120.00</b></span></div>
+        </div>
+        <div class="sec"><h2 class="h-m">Menu</h2></div>
+        <div class="list">
+          <div class="empty"><span class="ms s32 warn" aria-hidden="true">park</span><p style="font-weight: 600">Nothing on the menu yet.</p><button class="btn b-pri"><span class="ms" aria-hidden="true">add</span>Add item</button></div>
+        </div>
+      </div>
+      <nav class="nav" aria-label="Main"><a href="#"><span class="pill"><span class="ms">home</span></span>Home</a><a href="#"><span class="pill"><span class="ms">featured_seasonal_and_gifts</span></span>Gifts</a><a class="cur" href="#" aria-current="page"><span class="pill"><span class="ms fill">restaurant</span></span>Meals</a></nav>
+    </div>
+  </div>
+
+  <!-- 3. Guests and budget sheet -->
+  <div class="f">
+    <p class="cap">{{th.label}} · Guests and budget (sheet)</p>
+    <div class="phone">
+      <header class="appbar"><a class="ib" href="#" aria-label="Back to Meals"><span class="ms">arrow_back</span></a><h1 class="h-l grow">Christmas Day</h1></header>
+      <div class="scrim"></div>
+      <form class="sheet" role="dialog" aria-label="Edit Christmas Day" onsubmit="return false">
+        <div class="grab" aria-hidden="true"></div>
+        <h3 class="h-m">Edit Christmas Day</h3>
+        <div><label class="lab">Guests</label><div class="fld"><input value="8" aria-label="Guests" inputmode="numeric"><button class="ib" type="button" aria-label="One fewer guest"><span class="ms">remove</span></button><button class="ib" type="button" aria-label="One more guest"><span class="ms">add</span></button></div></div>
+        <div><label class="lab">Budget</label><div class="fld focus"><span class="pre">$</span><input value="220.00" aria-label="Budget" inputmode="decimal"></div><p class="help num">Planned so far: $108.50</p></div>
+        <div style="display: flex; justify-content: flex-end; gap: 8px"><button class="btn b-txt" type="button">Cancel</button><button class="btn b-pri" type="submit">Save</button></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 4. Add item sheet -->
+  <div class="f">
+    <p class="cap">{{th.label}} · B7 Add item (sheet)</p>
+    <div class="phone">
+      <header class="appbar"><a class="ib" href="#" aria-label="Back to Meals"><span class="ms">arrow_back</span></a><h1 class="h-l grow">Christmas Day</h1></header>
+      <div class="scrim"></div>
+      <form class="sheet" role="dialog" aria-label="Add to Christmas Day" onsubmit="return false">
+        <div class="grab" aria-hidden="true"></div>
+        <h3 class="h-m">Add to Christmas Day</h3>
+        <div><label class="lab">Name</label><div class="fld"><input value="Brandy butter" aria-label="Name"></div></div>
+        <div><label class="lab">Cost</label><div class="fld focus"><span class="pre">$</span><input value="4.50" aria-label="Cost" inputmode="decimal"></div><p class="help num">Christmas Day has $137.50 left.</p></div>
+        <div><span class="lab">Status</span><div class="seg" role="radiogroup" aria-label="Status"><button class="tb" type="button" role="radio" aria-checked="true"><span class="ms" aria-hidden="true">sell</span>To Buy</button><button type="button" role="radio" aria-checked="false"><span class="ms" aria-hidden="true">check</span>Purchased</button></div></div>
+        <div style="display: flex; justify-content: flex-end; gap: 8px"><button class="btn b-txt" type="button">Cancel</button><button class="btn b-pri" type="submit">Add item</button></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 5. Edit item sheet -->
+  <div class="f">
+    <p class="cap">{{th.label}} · B7 Edit item, delete from the form</p>
+    <div class="phone">
+      <header class="appbar"><a class="ib" href="#" aria-label="Back to Meals"><span class="ms">arrow_back</span></a><h1 class="h-l grow">Christmas Day</h1></header>
+      <div class="scrim"></div>
+      <form class="sheet" role="dialog" aria-label="Edit item" onsubmit="return false">
+        <div class="grab" aria-hidden="true"></div>
+        <h3 class="h-m">Edit item</h3>
+        <div><label class="lab">Name</label><div class="fld"><input value="Christmas pudding" aria-label="Name"></div></div>
+        <div><label class="lab">Cost</label><div class="fld"><span class="pre">$</span><input value="14.00" aria-label="Cost" inputmode="decimal"></div></div>
+        <div><span class="lab">Status</span><div class="seg" role="radiogroup" aria-label="Status"><button class="tb" type="button" role="radio" aria-checked="true"><span class="ms" aria-hidden="true">sell</span>To Buy</button><button type="button" role="radio" aria-checked="false"><span class="ms" aria-hidden="true">check</span>Purchased</button></div></div>
+        <div style="display: flex; align-items: center; gap: 8px"><button class="btn b-txt dan" type="button" style="padding: 0 8px"><span class="ms" aria-hidden="true">delete</span>Delete</button><span class="grow"></span><button class="btn b-txt" type="button">Cancel</button><button class="btn b-pri" type="submit">Save</button></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 6. Loading -->
+  <div class="f">
+    <p class="cap">{{th.label}} · Loading</p>
+    <div class="phone">
+      <header class="appbar"><a class="ib" href="#" aria-label="Back to Meals"><span class="ms">arrow_back</span></a><h1 class="h-l grow">Christmas Day</h1></header>
+      <div class="body" aria-busy="true" aria-label="Loading the menu">
+        <div class="head" aria-hidden="true">
+          <span class="sk" style="width: 170px; height: 14px; margin: 3px 0"></span>
+          <span class="sk" style="width: 90px; height: 14px; margin: 7px 0 3px"></span>
+          <span class="sk" style="width: 160px; height: 40px; margin: 4px 0"></span>
+          <span class="sk" style="width: 100%; height: 8px"></span>
+          <span class="sk" style="width: 100%; height: 14px; margin: 3px 0"></span>
+        </div>
+        <div class="sec"><h2 class="h-m">Menu</h2></div>
+        <div class="list" aria-hidden="true">
+          <div class="row"><div class="grow f" style="gap: 10px"><span class="sk" style="width: 50%; height: 16px"></span><span class="sk" style="width: 36%; height: 12px"></span></div><span class="sk" style="width: 90px; height: 46px; border-radius: 23px"></span></div>
+          <div class="row"><div class="grow f" style="gap: 10px"><span class="sk" style="width: 62%; height: 16px"></span><span class="sk" style="width: 30%; height: 12px"></span></div><span class="sk" style="width: 90px; height: 46px; border-radius: 23px"></span></div>
+          <div class="row"><div class="grow f" style="gap: 10px"><span class="sk" style="width: 44%; height: 16px"></span><span class="sk" style="width: 34%; height: 12px"></span></div><span class="sk" style="width: 90px; height: 46px; border-radius: 23px"></span></div>
+        </div>
+      </div>
+      <nav class="nav" aria-label="Main"><a href="#"><span class="pill"><span class="ms">home</span></span>Home</a><a href="#"><span class="pill"><span class="ms">featured_seasonal_and_gifts</span></span>Gifts</a><a class="cur" href="#" aria-current="page"><span class="pill"><span class="ms fill">restaurant</span></span>Meals</a></nav>
+    </div>
+  </div>
+
+  <!-- 7. Error -->
+  <div class="f">
+    <p class="cap">{{th.label}} · Couldn't load</p>
+    <div class="phone">
+      <header class="appbar"><a class="ib" href="#" aria-label="Back to Meals"><span class="ms">arrow_back</span></a><h1 class="h-l grow">Christmas Day</h1></header>
+      <div class="body">
+        <div class="list">
+          <div class="empty" role="alert"><span class="ms s32 over" aria-hidden="true">cloud_off</span><div class="f" style="gap: 4px"><p style="font-weight: 600">Couldn't load the menu.</p><p class="sm muted">Check your connection, then try again.</p></div><button class="btn b-sec"><span class="ms" aria-hidden="true">refresh</span>Try again</button></div>
+        </div>
+      </div>
+      <nav class="nav" aria-label="Main"><a href="#"><span class="pill"><span class="ms">home</span></span>Home</a><a href="#"><span class="pill"><span class="ms">featured_seasonal_and_gifts</span></span>Gifts</a><a class="cur" href="#" aria-current="page"><span class="pill"><span class="ms fill">restaurant</span></span>Meals</a></nav>
+    </div>
+  </div>
+
+</section>
+</sc-for>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"themes":{"editor":"enum","options":["both","light","dark"],"default":"both"},"$preview":{"width":3050,"height":1904}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const t = this.props.themes ?? 'both';
+    const all = [{ id: 'light', label: 'Light' }, { id: 'dark', label: 'Dark' }];
+    return { themes: t === 'both' ? all : all.filter((x) => x.id === t) };
+  }
+}
+</script>
+</body>
+</html>

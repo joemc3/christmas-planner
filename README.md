@@ -11,30 +11,32 @@ plan: [docs/superpowers](docs/superpowers). Design brief for the design session:
 
 ## Status
 
-- Compiles, analyzer clean, tests pass, builds for web, runs locally end to
-  end (see CI and `make smoke`).
-- The current code is larger than the product. PRD version 1.1 returns to
-  the original brief; the restructure that brings the code down to it is
-  specified and planned in `docs/superpowers` and lands with the new design.
-- Working today: accounts, recipients and gifts with status tracking and
-  per-person budgets, meals with menus and costs, a yearly budget screen,
-  calendar events, shopping lists. The last three go in the restructure.
+- Every requirement in `docs/PRD.md` is built and covered by a unit, widget
+  or browser smoke test. Analyzer clean, 72 tests, CI green.
+- Three tabs: Home (the ordering date, the two master budgets), Gifts
+  (people, then one person's gifts), Meals (Christmas Eve and Christmas
+  Day). Settings from Home. Previous years open read-only.
+- Not hosted yet; web only (no `android/` or `ios/` folders).
 
 ## Screenshots
 
-Taken by the browser smoke test (`tool/e2e/smoke.mjs`) against a local
-Supabase stack, October 2026.
+Taken by the browser smoke test (`make smoke`) against a local Supabase
+stack, October 2026. Evergreen & Brass design, light theme unless noted.
 
-| Dashboard | Gifts | Recipient |
+| Home | Gifts | Recipient |
 |---|---|---|
-| ![Dashboard](docs/screenshots/dashboard.png) | ![Gifts](docs/screenshots/gifts.png) | ![Recipient](docs/screenshots/recipient.png) |
+| ![Home](docs/screenshots/17-home.png) | ![Gifts](docs/screenshots/12-gifts-list.png) | ![Recipient](docs/screenshots/09-recipient-planned-over.png) |
 
-| Gift detail | Meal | Budget |
+| Gift | Meal | Home, dark |
 |---|---|---|
-| ![Gift detail](docs/screenshots/gift-detail.png) | ![Meal](docs/screenshots/meal-detail.png) | ![Budget](docs/screenshots/budget.png) |
+| ![Gift](docs/screenshots/10-gift.png) | ![Meal](docs/screenshots/15-meal.png) | ![Home dark](docs/screenshots/19-home-dark.png) |
 
-More in [docs/screenshots](docs/screenshots): login, recipient form, meals,
-calendar, shopping, settings.
+| Laptop: Gifts with a person selected |
+|---|
+| ![Laptop gifts](docs/screenshots/21-laptop-gifts.png) |
+
+All 22 in [docs/screenshots](docs/screenshots): sign in, create account, the
+empty states, the forms, meals, settings and the laptop layouts.
 
 ## Run it locally
 

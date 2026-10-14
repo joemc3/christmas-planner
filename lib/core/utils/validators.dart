@@ -1,56 +1,33 @@
-import 'dart:convert';
-
 import '../constants/app_constants.dart';
 
+/// Form validators. Messages are one short line each.
 class Validators {
   Validators._();
 
+  static final RegExp _email = RegExp(
+    r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+  );
+
+  static const double maxAmount = 999999.99;
+
   static String? validateEmail(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Email is required';
-    }
-    if (!AppConstants.emailRegex.hasMatch(value)) {
-      return 'Please enter a valid email';
-    }
+    if (value == null || value.trim().isEmpty) return 'Enter your email';
+    if (!_email.hasMatch(value.trim())) return 'Enter a valid email';
     return null;
   }
 
+  /// At least 8 characters (PRD ACC-1; the design's hint says exactly that).
   static String? validatePassword(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Password is required';
-    }
+    if (value == null || value.isEmpty) return 'Enter a password';
     if (value.length < AppConstants.minPasswordLength) {
-      return 'Password must be at least ${AppConstants.minPasswordLength} characters';
-    }
-    if (value.length > AppConstants.maxPasswordLength) {
-      return 'Password must not exceed ${AppConstants.maxPasswordLength} characters';
-    }
-    // Check for at least one uppercase letter
-    if (!value.contains(RegExp(r'[A-Z]'))) {
-      return 'Password must contain at least one uppercase letter';
-    }
-    // Check for at least one lowercase letter
-    if (!value.contains(RegExp(r'[a-z]'))) {
-      return 'Password must contain at least one lowercase letter';
-    }
-    // Check for at least one digit
-    if (!value.contains(RegExp(r'[0-9]'))) {
-      return 'Password must contain at least one number';
-    }
-    // Check for at least one special character
-    if (!value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
-      return 'Password must contain at least one special character';
+      return 'At least ${AppConstants.minPasswordLength} characters';
     }
     return null;
   }
 
   static String? validateConfirmPassword(String? value, String? password) {
-    if (value == null || value.isEmpty) {
-      return 'Please confirm your password';
-    }
-    if (value != password) {
-      return 'Passwords do not match';
-    }
+    if (value == null || value.isEmpty) return 'Enter the password again';
+    if (value != password) return 'The passwords do not match';
     return null;
   }
 
@@ -58,97 +35,38 @@ class Validators {
     String? value, {
     String fieldName = 'This field',
   }) {
-    if (value == null || value.trim().isEmpty) {
-      return '$fieldName is required';
-    }
+    if (value == null || value.trim().isEmpty) return '$fieldName is required';
     return null;
   }
 
   static String? validateName(String? value, {String fieldName = 'Name'}) {
     if (value == null || value.trim().isEmpty) {
-      return '$fieldName is required';
+      return 'Enter a ${fieldName.toLowerCase()}';
     }
     if (value.trim().length > AppConstants.maxNameLength) {
-      return '$fieldName must not exceed ${AppConstants.maxNameLength} characters';
+      return '$fieldName must be ${AppConstants.maxNameLength} characters or fewer';
     }
     return null;
   }
 
-  static String? validateDescription(String? value) {
-    if (value != null && value.length > AppConstants.maxDescriptionLength) {
-      return 'Description must not exceed ${AppConstants.maxDescriptionLength} characters';
-    }
-    return null;
-  }
-
-  static String? validateNotes(String? value) {
-    if (value != null && value.length > AppConstants.maxNotesLength) {
-      return 'Notes must not exceed ${AppConstants.maxNotesLength} characters';
-    }
-    return null;
-  }
-
+  /// Accepts "40", "12.5", "$1,299.99". Rejects negatives and junk.
   static String? validatePrice(String? value, {bool required = true}) {
-    if (value == null || value.isEmpty) {
-      if (required) {
-        return 'Price is required';
-      }
-      return null;
+    if (value == null || value.trim().isEmpty) {
+      return required ? 'Enter an amount' : null;
     }
-
     final trimmed = value.trim();
-    if (trimmed.startsWith('-')) {
-      return 'Price cannot be negative';
+    if (trimmed.startsWith('-')) return 'Cannot be negative';
+    final cleaned = trimmed.replaceAll(RegExp(r'[^\d.]'), '');
+    final amount = double.tryParse(cleaned);
+    if (amount == null || !RegExp(r'^\d+(\.\d{1,2})?$').hasMatch(cleaned)) {
+      return 'Enter a valid amount';
     }
-
-    // Allow a currency symbol and thousands separators, e.g. "$1,299.99".
-    final cleanValue = trimmed.replaceAll(RegExp(r'[^\d.]'), '');
-    if (!AppConstants.priceRegex.hasMatch(cleanValue)) {
-      return 'Please enter a valid price';
-    }
-
-    final price = double.tryParse(cleanValue);
-    if (price == null) {
-      return 'Please enter a valid price';
-    }
-    if (price < AppConstants.minBudgetAmount) {
-      return 'Price must be greater than or equal to ${AppConstants.minBudgetAmount}';
-    }
-    if (price > AppConstants.maxBudgetAmount) {
-      return 'Price must not exceed ${AppConstants.maxBudgetAmount}';
-    }
+    if (amount > maxAmount) return 'Too large';
     return null;
   }
 
-  static String? validateBudget(String? value, {bool required = true}) {
-    return validatePrice(value, required: required);
-  }
-
-  static String? validateUrl(String? value, {bool required = false}) {
-    if (value == null || value.isEmpty) {
-      if (required) {
-        return 'URL is required';
-      }
-      return null;
-    }
-    if (!AppConstants.urlRegex.hasMatch(value)) {
-      return 'Please enter a valid URL';
-    }
-    return null;
-  }
-
-  static String? validatePhone(String? value, {bool required = false}) {
-    if (value == null || value.isEmpty) {
-      if (required) {
-        return 'Phone number is required';
-      }
-      return null;
-    }
-    if (!AppConstants.phoneRegex.hasMatch(value)) {
-      return 'Please enter a valid phone number';
-    }
-    return null;
-  }
+  static String? validateBudget(String? value, {bool required = true}) =>
+      validatePrice(value, required: required);
 
   static String? validateInteger(
     String? value, {
@@ -158,58 +76,24 @@ class Validators {
     String fieldName = 'Value',
   }) {
     if (value == null || value.isEmpty) {
-      if (required) {
-        return '$fieldName is required';
-      }
-      return null;
+      return required ? '$fieldName is required' : null;
     }
-
-    final intValue = int.tryParse(value);
-    if (intValue == null) {
-      return 'Please enter a valid number';
-    }
-
-    if (min != null && intValue < min) {
-      return '$fieldName must be at least $min';
-    }
-
-    if (max != null && intValue > max) {
-      return '$fieldName must not exceed $max';
-    }
-
+    final n = int.tryParse(value);
+    if (n == null) return 'Enter a whole number';
+    if (min != null && n < min) return '$fieldName must be at least $min';
+    if (max != null && n > max) return '$fieldName must be $max or fewer';
     return null;
   }
 
-  static String? validateGuestCount(String? value) {
-    return validateInteger(value, min: 1, max: 999, fieldName: 'Guest count');
-  }
-
-  /// Strips HTML (including script blocks and their content) and trims
-  /// whitespace. Data is sent to Supabase through parameterised requests, so
-  /// no SQL "sanitising" is needed and user text like "Select a gift" is kept.
+  /// Strips HTML, including script blocks and their content, and trims.
   static String? sanitizeInput(String? input) {
-    if (input == null || input.isEmpty) {
-      return input;
-    }
-
-    var sanitized = input.trim();
-    sanitized = sanitized.replaceAll(
+    if (input == null || input.isEmpty) return input;
+    var s = input.trim();
+    s = s.replaceAll(
       RegExp(r'<script[^>]*>.*?</script>', caseSensitive: false, dotAll: true),
       '',
     );
-    sanitized = sanitized.replaceAll(RegExp(r'<[^>]*>'), '');
-    return sanitized.trim();
-  }
-
-  static bool isValidJson(String? value) {
-    if (value == null || value.isEmpty) {
-      return false;
-    }
-    try {
-      final dynamic result = json.decode(value);
-      return result != null;
-    } catch (e) {
-      return false;
-    }
+    s = s.replaceAll(RegExp(r'<[^>]*>'), '');
+    return s.trim();
   }
 }

@@ -1,0 +1,241 @@
+{
+  "v": 3,
+  "attachments": {},
+  "boards": {
+    "Auth.dc.html": {
+      "h": 1904,
+      "page": "phone",
+      "title": "A1–A3 · Sign in, create account, reset",
+      "w": 2190,
+      "x": 0,
+      "y": 0
+    },
+    "Components.dc.html": {
+      "h": 4800,
+      "page": "system",
+      "title": "Component set — light and dark",
+      "w": 1440,
+      "x": 1560,
+      "y": 0
+    },
+    "Gift.dc.html": {
+      "h": 1904,
+      "page": "phone",
+      "title": "B4 · Gift and gift form",
+      "w": 1760,
+      "x": 0,
+      "y": 8256
+    },
+    "Gifts.dc.html": {
+      "h": 1904,
+      "page": "phone",
+      "title": "B2 · Gifts: the people",
+      "w": 2190,
+      "x": 0,
+      "y": 4128
+    },
+    "Home.dc.html": {
+      "h": 1904,
+      "page": "phone",
+      "title": "B1 · Home across the season",
+      "w": 3050,
+      "x": 0,
+      "y": 2064
+    },
+    "LaptopAccount.dc.html": {
+      "h": 1816,
+      "page": "laptop",
+      "title": "Laptop · Sign in and Settings",
+      "w": 2680,
+      "x": 0,
+      "y": 5928
+    },
+    "LaptopGifts.dc.html": {
+      "h": 1816,
+      "page": "laptop",
+      "title": "Laptop · Gifts with recipient, gift dialog",
+      "w": 2680,
+      "x": 0,
+      "y": 1976
+    },
+    "LaptopHome.dc.html": {
+      "h": 1816,
+      "page": "laptop",
+      "title": "Laptop · Home",
+      "w": 2680,
+      "x": 0,
+      "y": 0
+    },
+    "LaptopMeals.dc.html": {
+      "h": 1816,
+      "page": "laptop",
+      "title": "Laptop · Meals with meal, item dialog",
+      "w": 2680,
+      "x": 0,
+      "y": 3952
+    },
+    "Main.dc.html": {
+      "h": 2646,
+      "page": "system",
+      "title": "Design system — Evergreen & Brass",
+      "w": 1582,
+      "x": -22,
+      "y": 0
+    },
+    "Meal.dc.html": {
+      "h": 1904,
+      "page": "phone",
+      "title": "B6–B7 · Meal and menu item form",
+      "w": 3050,
+      "x": 0,
+      "y": 12384
+    },
+    "Meals.dc.html": {
+      "h": 1904,
+      "page": "phone",
+      "title": "B5 · Meals",
+      "w": 1760,
+      "x": 0,
+      "y": 10320
+    },
+    "Recipient.dc.html": {
+      "h": 1904,
+      "page": "phone",
+      "title": "B3 · Recipient",
+      "w": 3910,
+      "x": 0,
+      "y": 6192
+    },
+    "Settings.dc.html": {
+      "h": 1904,
+      "page": "phone",
+      "title": "B8 · Settings",
+      "w": 900,
+      "x": 0,
+      "y": 14448
+    }
+  },
+  "createdOnFiles": {
+    "at": "2026-10-14T17:40:00Z",
+    "v": 1
+  },
+  "designSystems": [],
+  "launch": {
+    "page": "system",
+    "view": "canvas"
+  },
+  "notes": {
+    "nAuth": {
+      "maxH": 700,
+      "page": "phone",
+      "text": "A1–A3. Sign-in is the one place the brand gets room: an evergreen band wrapped in the brass ribbon, the same mark as the app icon, then a plain form on paper white. One line says what the account is for. No social sign-in, no tour; after creating an account the user lands on empty Home. Reset is three quiet states: ask, check your email, new password. Labels sit above fields so 130% text never collides with input text (principle 7).",
+      "w": 520,
+      "x": -600,
+      "y": 0
+    },
+    "nGift": {
+      "maxH": 700,
+      "page": "phone",
+      "text": "B4. The gift screen is a reference card for the shop: whose it is and what is left for them, the price large, the store as a link, the status as a labelled three-step control with the stamped dates beneath it, each editable. The form is one component for add and edit: a bottom sheet on phone, a dialog on laptop. Delete lives on the gift screen, behind one confirm.",
+      "w": 520,
+      "x": -600,
+      "y": 8256
+    },
+    "nGifts": {
+      "maxH": 700,
+      "page": "phone",
+      "text": "B2. A plain list of people (principles 4 and 5): monogram, name, remaining first, a thin bar, purchased of planned. Over budget changes the words ('$12.00 over'), the bar and adds a tag, so it never relies on a red decimal (principle 1). After the ordering date a cranberry 'to order' tag appears only on the rows that need it, and one summary line names the people. The empty state is the verbatim sentence where the first row would be, with the one action (principle 6).",
+      "w": 520,
+      "x": -600,
+      "y": 4128
+    },
+    "nHome": {
+      "maxH": 900,
+      "page": "phone",
+      "text": "B1. Built on principle 2. The ordering date is the only filled, ribboned object on the screen: before 26 November it carries the verbatim date and the days left; on or after, it turns cranberry, leads with the verbatim count and lists the gifts themselves as links, so 'straight to them' is one tap with no new screen. When nothing is To Buy it steps down to a quiet tonal card and says so once. Days to Christmas sits beneath, small. Gift and meal money follow as two plain sections with remaining as the large number (principle 1); the budget figure is a button that opens the edit sheet. Purchased-of-planned rides in the Gifts heading. The previous-year link is a small text button at the very bottom; a read-only year drops the ribbon, labels itself and offers the way back.",
+      "w": 520,
+      "x": -600,
+      "y": 2064
+    },
+    "nLap": {
+      "maxH": 700,
+      "page": "laptop",
+      "text": "Laptop is the phone widened, not a new product (principle 7): the tab bar becomes a rail carrying the mark, Gifts and Meals become list-plus-detail, forms open as dialogs. Content holds to readable widths instead of stretching. Nothing appears here that the phone does not have.",
+      "w": 520,
+      "x": -600,
+      "y": 0
+    },
+    "nMeal": {
+      "maxH": 700,
+      "page": "phone",
+      "text": "B6–B7. Mirrors the recipient screen so the app teaches one pattern: header with guests and the money triple, then a flat menu whose rows end in a two-cell stepper (tag, check). Guests and budget are edited together in one sheet. The item form is the gift form with two states and no store.",
+      "w": 520,
+      "x": -600,
+      "y": 12384
+    },
+    "nMeals": {
+      "maxH": 700,
+      "page": "phone",
+      "text": "B5. Exactly two rows, Christmas Eve and Christmas Day, each with date, guests, remaining of budget, items bought and one bar. No add, no delete, anywhere. A meal with no budget says so and offers the button in place of the money, which doubles as this screen's empty state.",
+      "w": 520,
+      "x": -600,
+      "y": 10320
+    },
+    "nRecip": {
+      "maxH": 900,
+      "page": "phone",
+      "text": "B3. One person: the large money triple, then their gifts. If planned gifts would exceed the budget a brass line warns before it happens; when spent exceeds it the header switches to the over state. Each gift row ends in a three-cell stepper (tag, truck, check). You tap the state you have reached, so To Buy to Purchased in a shop is one tap, and the filled cells read left to right as a sequence (principle 3). A snackbar with Undo covers a mis-tap; nothing celebrates. A To Buy gift after the date gets 'Order now' and a cranberry first cell. Delete asks once and says the gifts go too.",
+      "w": 520,
+      "x": -600,
+      "y": 6192
+    },
+    "nSet": {
+      "maxH": 700,
+      "page": "phone",
+      "text": "B8. A short form: name, currency, shipping days with the line explaining it moves the ordering date (and the resulting date shown live), theme as a three-way segmented control. Sign out and delete account sit apart at the bottom; delete asks once with the verbatim sentence.",
+      "w": 520,
+      "x": -600,
+      "y": 14448
+    },
+    "nSys": {
+      "fill": "green",
+      "maxH": 900,
+      "page": "system",
+      "text": "Direction: Evergreen & Brass. December comes from three things only: an evergreen ground, a brass ribbon that wraps exactly one object per screen (the ordering date, the app mark), and cranberry reserved for problems (over budget, order now, delete). Paper-white surfaces, a warm editorial serif (Newsreader) for titles and the date, a plain sans with tabular figures (Public Sans) for everything you read or add up. No snowflakes, no confetti, no illustration. Icons are Material Symbols; the one seasonal glyph is the 'park' tree beside days to Christmas and in empty states. Motion: 200 ms state changes and the bar easing to its new width; nothing else moves.",
+      "w": 520,
+      "x": -600,
+      "y": 0
+    }
+  },
+  "order": [
+    "Auth.dc.html",
+    "Home.dc.html",
+    "Gifts.dc.html",
+    "Recipient.dc.html",
+    "Gift.dc.html",
+    "Meals.dc.html",
+    "Meal.dc.html",
+    "Settings.dc.html",
+    "LaptopHome.dc.html",
+    "LaptopGifts.dc.html",
+    "LaptopMeals.dc.html",
+    "LaptopAccount.dc.html",
+    "Main.dc.html",
+    "Components.dc.html"
+  ],
+  "pages": [
+    {
+      "id": "system",
+      "name": "System"
+    },
+    {
+      "id": "phone",
+      "name": "Phone"
+    },
+    {
+      "id": "laptop",
+      "name": "Laptop"
+    }
+  ],
+  "title": "Christmas Planner — Evergreen & Brass"
+}

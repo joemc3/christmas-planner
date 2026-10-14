@@ -22,16 +22,14 @@ dependencies:
   # UI
   cupertino_icons: ^1.0.8
   google_fonts: ^6.3.0
-  table_calendar: ^3.2.0
 
   # Utilities
   equatable: ^2.0.7
   intl: ^0.20.2
   logger: ^2.6.0
 
-  # Local notifications (mobile only; no-op on web)
-  flutter_local_notifications: ^19.5.0
-  timezone: ^0.10.1
+  # Per-device settings (theme choice)
+  shared_preferences: ^2.5.3
 
 dev_dependencies:
   flutter_test:

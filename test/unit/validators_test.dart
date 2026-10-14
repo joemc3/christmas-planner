@@ -1,97 +1,86 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:christmas_planner/core/utils/validators.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  group('Validators', () {
-    group('validateEmail', () {
-      test('should return null for valid email', () {
-        expect(Validators.validateEmail('test@example.com'), null);
-      });
-
-      test('should return error for invalid email', () {
-        expect(Validators.validateEmail('invalid-email'), isNotNull);
-      });
-
-      test('should return error for empty email', () {
-        expect(Validators.validateEmail(''), isNotNull);
-      });
-
-      test('should return error for null email', () {
-        expect(Validators.validateEmail(null), isNotNull);
-      });
+  group('validateEmail', () {
+    test('accepts a valid email', () {
+      expect(Validators.validateEmail('test@example.com'), isNull);
     });
-
-    group('validatePassword', () {
-      test('should return null for valid password', () {
-        expect(Validators.validatePassword('Password123!'), null);
-      });
-
-      test('should return error for password without uppercase', () {
-        expect(Validators.validatePassword('password123!'), isNotNull);
-      });
-
-      test('should return error for password without lowercase', () {
-        expect(Validators.validatePassword('PASSWORD123!'), isNotNull);
-      });
-
-      test('should return error for password without number', () {
-        expect(Validators.validatePassword('Password!'), isNotNull);
-      });
-
-      test('should return error for password without special character', () {
-        expect(Validators.validatePassword('Password123'), isNotNull);
-      });
-
-      test('should return error for short password', () {
-        expect(Validators.validatePassword('Pass1!'), isNotNull);
-      });
+    test('rejects junk, empty and null', () {
+      expect(Validators.validateEmail('invalid-email'), isNotNull);
+      expect(Validators.validateEmail(''), isNotNull);
+      expect(Validators.validateEmail(null), isNotNull);
     });
+  });
 
-    group('validatePrice', () {
-      test('should return null for valid price', () {
-        expect(Validators.validatePrice('100.50'), null);
-      });
-
-      test('should return error for invalid price', () {
-        expect(Validators.validatePrice('abc'), isNotNull);
-      });
-
-      test('should return error for negative price', () {
-        expect(Validators.validatePrice('-10'), isNotNull);
-      });
-
-      test('should return null for optional empty price', () {
-        expect(Validators.validatePrice('', required: false), null);
-      });
+  group('validatePassword', () {
+    test('needs eight characters and nothing else', () {
+      expect(Validators.validatePassword('mistletoe'), isNull);
+      expect(Validators.validatePassword('Password123!'), isNull);
+      expect(Validators.validatePassword('short'), isNotNull);
+      expect(Validators.validatePassword(''), isNotNull);
+      expect(Validators.validatePassword(null), isNotNull);
     });
+  });
 
-    group('sanitizeInput', () {
-      test('should remove HTML tags', () {
-        expect(
-          Validators.sanitizeInput('<script>alert("xss")</script>Hello'),
-          'Hello',
-        );
-      });
+  group('validateConfirmPassword', () {
+    test('must match', () {
+      expect(
+        Validators.validateConfirmPassword('abcdefgh', 'abcdefgh'),
+        isNull,
+      );
+      expect(
+        Validators.validateConfirmPassword('abcdefgh', 'other'),
+        isNotNull,
+      );
+      expect(Validators.validateConfirmPassword('', 'x'), isNotNull);
+    });
+  });
 
-      test('should keep ordinary text containing SQL-like words', () {
-        expect(
-          Validators.sanitizeInput('Select a gift to update'),
-          'Select a gift to update',
-        );
-      });
+  group('validateName', () {
+    test('required and bounded', () {
+      expect(Validators.validateName('Mum'), isNull);
+      expect(Validators.validateName('   '), isNotNull);
+      expect(Validators.validateName('x' * 101), isNotNull);
+    });
+  });
 
-      test('should strip script content but keep surrounding text', () {
-        expect(
-          Validators.sanitizeInput(
-            'Hi <b>there</b><script>evil()</script> friend',
-          ),
-          'Hi there friend',
-        );
-      });
+  group('validatePrice', () {
+    test('accepts plain and formatted amounts', () {
+      expect(Validators.validatePrice('100.50'), isNull);
+      expect(Validators.validatePrice(r'$1,299.99'), isNull);
+      expect(Validators.validatePrice('0'), isNull);
+    });
+    test('rejects junk, negatives and three decimals', () {
+      expect(Validators.validatePrice('abc'), isNotNull);
+      expect(Validators.validatePrice('-10'), isNotNull);
+      expect(Validators.validatePrice('1.999'), isNotNull);
+    });
+    test('optional when empty', () {
+      expect(Validators.validatePrice('', required: false), isNull);
+      expect(Validators.validatePrice(''), isNotNull);
+    });
+  });
 
-      test('should trim whitespace', () {
-        expect(Validators.sanitizeInput('  Hello  '), 'Hello');
-      });
+  group('validateInteger', () {
+    test('bounds', () {
+      expect(Validators.validateInteger('7', min: 0, max: 60), isNull);
+      expect(Validators.validateInteger('61', min: 0, max: 60), isNotNull);
+      expect(Validators.validateInteger('x'), isNotNull);
+    });
+  });
+
+  group('sanitizeInput', () {
+    test('removes HTML tags and script content, keeps text', () {
+      expect(
+        Validators.sanitizeInput('<script>alert("xss")</script>Hello'),
+        'Hello',
+      );
+      expect(
+        Validators.sanitizeInput('Select a gift to update'),
+        'Select a gift to update',
+      );
+      expect(Validators.sanitizeInput('  Hello  '), 'Hello');
     });
   });
 }

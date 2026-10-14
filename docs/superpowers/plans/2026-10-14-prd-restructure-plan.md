@@ -49,6 +49,8 @@ Each task: write the failing test first where one applies, make it pass, run `ma
 - Unit test of the view model with fixtures before and after the ordering date.
 
 ### B5. Screens on the old look, new structure
+
+*Executed as part of C3 instead (2026-10-14): with the design in hand before implementation started, rebuilding the old screens on the new models and then replacing them would have been throwaway work.*
 - Point the existing Frosted screens at the new models and providers so the app runs end to end on the new schema before the new design lands: Home (existing dashboard reduced), Gifts list, Recipient, Gift form (three-step stepper), Meals (two fixed rows), Meal, Item form, Settings. Remove the removed fields from every form.
 - Rewrite `tool/e2e/smoke.mjs` for three tabs and flows C1 to C5. `make smoke` green with screenshots into a scratch folder (not `docs/screenshots/` yet).
 
@@ -56,7 +58,40 @@ This is the point at which the restructure is complete and verifiable independen
 
 ## Stage C: the design
 
-Written after reconciliation. One task per row of `docs/design/decisions.md` with verdict adopt or adopt with change, in this order: theme and tokens, the component set, then screens in the order of `03-screens-and-flows.md`, then empty/loading/error states, then the smoke test screenshots refreshed into `docs/screenshots/` and the README screenshot table updated.
+Written 2026-10-14 from `docs/design/decisions.md`; every row there with verdict adopt or adopt with change maps to a task below. The source of truth for values is `docs/design/output/design-system.md`.
+
+### C1. Theme and tokens
+- `lib/core/theme/color_schemes.dart`: light and dark `ColorScheme` from the seed with every role set per the table. `lib/core/theme/season_colors.dart`: the `ThemeExtension`. `lib/core/theme/typography.dart`: Newsreader and Public Sans via `google_fonts`, the text theme table, `moneyLarge` in the extension, tabular figures.
+- First, a throwaway check that Public Sans renders `tnum` in a web build (compare "11.11" and "00.00" widths); if not, switch to IBM Plex Sans and record it in `decisions.md`.
+- `lib/core/theme/app_theme.dart` rebuilt: shapes, spacing constants, component themes (buttons, inputs with label above, navigation bar and rail, snackbar, dialogs, sheets). Delete the Frosted theme.
+- Theme mode provider backed by shared preferences; `app.dart` honours it.
+- Test: both schemes have the expected primary, error and surface values; the extension resolves in both.
+
+### C2. Components
+`lib/shared/widgets/`, one file each, each with a widget test where behaviour exists:
+- `app_mark.dart` (also exported as the favicon and PWA icon PNGs under `web/`), `ribbon_card.dart` (Stack with two Positioned bands).
+- `money_triple.dart` (large and compact, over state, animated bar).
+- `status_stepper_row.dart` (bordered pill of 44 px cells, forward only, skipping allowed, calls back with the new status) and `status_stepper_form.dart` (SegmentedButton).
+- `recipient_row.dart`, `gift_row.dart`, `meal_row.dart`, `menu_item_row.dart`.
+- `ordering_banner.dart` (before, alert with up to three links, all-ordered quiet).
+- `form_host.dart`: shows a child form as a bottom sheet below 840 px and a dialog at or above. `confirm.dart`. `empty_state.dart`, `skeleton_rows.dart`, `error_block.dart`.
+- `undo_snackbar.dart`: helper that shows the snackbar and wires Undo to a revert callback.
+
+### C3. Screens, in brief order
+Each task replaces the stage B5 placeholder screen with the designed one and extends the smoke test to cover it.
+- A1 sign in, A2 create account, A3 reset (three states; `/forgot` and `/reset` routes; recovery session handling).
+- B1 Home: all seven states from the canvas, driven by the view model from B4; budget edit sheet; year switcher and read-only banner.
+- B2 Gifts list with tags and the after-date summary line.
+- B3 Recipient with planned-over line, row steppers with undo, Order now markers, delete confirm, edit-person sheet.
+- B4 Gift screen and the shared gift form (add shows "leaves"; edit shows dates).
+- B5 Meals with the unset states. B6 Meal with the guests-and-budget sheet. B7 item form.
+- B8 Settings with currency dropdown, live ordering date, theme control, delete confirm.
+- Laptop: rail at 840, list-plus-detail at 1200 for Gifts and Meals, dialogs.
+
+### C4. States and the smoke test
+- Empty, loading and error for every list screen, using the shared widgets.
+- `tool/e2e/smoke.mjs`: flows C1 to C6 at 390 px, then Home, Gifts and Meals at 1280 px; screenshots into `docs/screenshots/`; README screenshot table updated to the new file names.
+- `make smoke` green; `docs/PRD.md` status column updated to Built for every row.
 
 ## Done when
 

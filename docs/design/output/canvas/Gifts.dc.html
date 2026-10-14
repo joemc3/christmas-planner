@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Gifts: the people</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..600&family=Public+Sans:wght@400..700&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,300..600,0..1,0&display=swap">
+<style>
+body{margin:0}
+[data-theme=light]{--canvas:#E7E5DF;--canvas-ink:#4A524D;--primary:#1E4D3B;--on-primary:#FFFFFF;--primary-container:#CFE5D8;--on-primary-container:#0B2A1F;--secondary:#52635A;--secondary-container:#D7E5DC;--on-secondary-container:#102019;--tertiary:#8A6414;--tertiary-container:#F5E4BC;--on-tertiary-container:#3B2A00;--error:#A3263A;--on-error:#FFFFFF;--error-container:#FADCDF;--on-error-container:#5C0E1C;--surface:#FBFAF7;--surface-low:#F5F3EE;--surface-c:#EFECE6;--surface-high:#E8E5DE;--surface-highest:#E1DED6;--on-surface:#1B1F1C;--on-surface-variant:#4A524D;--outline:#78807A;--outline-variant:#D4D6CF;--inverse-surface:#2E3330;--inverse-on-surface:#EFF1EC;--inverse-primary:#94D2B2;--field:#FFFFFF;--hero:#1E4D3B;--on-hero:#F4F1E8;--hero-muted:#BFD6C9;--alert:#8E1F33;--on-alert:#FFF4F4;--alert-muted:#F6CDD3;--ribbon:#C9A14C;--ribbon-edge:#A68337;--scrim:rgba(20,26,23,.44);--lift:0 1px 2px rgba(20,26,23,.08),0 8px 24px rgba(20,26,23,.10)}
+[data-theme=dark]{--canvas:#070A09;--canvas-ink:#B4BEB7;--primary:#94D2B2;--on-primary:#00382A;--primary-container:#1F4D3B;--on-primary-container:#C9EEDA;--secondary:#B8CCC0;--secondary-container:#33463C;--on-secondary-container:#D4E8DC;--tertiary:#E6C47C;--tertiary-container:#5B4407;--on-tertiary-container:#FDE3A8;--error:#FFB1B8;--on-error:#67001B;--error-container:#8A1D32;--on-error-container:#FFDADC;--surface:#0F1512;--surface-low:#151C18;--surface-c:#19211D;--surface-high:#212A25;--surface-highest:#2A342F;--on-surface:#E4E9E4;--on-surface-variant:#B4BEB7;--outline:#87918A;--outline-variant:#38433D;--inverse-surface:#E1E4DF;--inverse-on-surface:#2C322E;--inverse-primary:#1E4D3B;--field:#0F1512;--hero:#1F4D3B;--on-hero:#F1EEE4;--hero-muted:#B5CDBF;--alert:#8A1D32;--on-alert:#FFF1F2;--alert-muted:#F3C6CC;--ribbon:#B8924A;--ribbon-edge:#8C6C2E;--scrim:rgba(0,0,0,.6);--lift:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.4)}
+.cp{font-family:'Public Sans',system-ui,-apple-system,'Segoe UI',sans-serif;color:var(--on-surface);font-size:16px;line-height:24px;-webkit-font-smoothing:antialiased}
+.cp *{box-sizing:border-box}
+.cp p,.cp h1,.cp h2,.cp h3,.cp ul{margin:0;padding:0}
+.cp b{font-weight:600}
+.num{font-variant-numeric:tabular-nums lining-nums}
+.ms{font-family:'Material Symbols Rounded';font-weight:normal;font-style:normal;font-size:24px;line-height:1;letter-spacing:normal;text-transform:none;white-space:nowrap;font-feature-settings:'liga';font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;display:inline-block;width:1em;height:1em;overflow:hidden;flex:none}
+.ms.fill{font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24}
+.ms.s18{font-size:18px}.ms.s20{font-size:20px}.ms.s32{font-size:32px}
+.cap{font:600 13px/20px 'Public Sans',sans-serif;letter-spacing:.02em;color:var(--canvas-ink);margin:0 0 8px}
+.phone{width:390px;height:844px;background:var(--surface);color:var(--on-surface);position:relative;overflow:hidden;display:flex;flex-direction:column;border-radius:32px;box-shadow:0 0 0 1px var(--outline-variant),0 12px 40px rgba(0,0,0,.12)}
+.appbar{flex:none;min-height:64px;display:flex;align-items:center;gap:8px;padding:0 4px 0 16px}
+.h-l{font-family:'Newsreader',Georgia,serif;font-size:28px;line-height:36px;font-weight:500;letter-spacing:-.01em}
+.grow{flex:1;min-width:0}
+.f{display:flex;flex-direction:column}
+.body{flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column}
+.btn{min-height:48px;padding:0 24px;border-radius:24px;border:0;font:600 15px/20px 'Public Sans',sans-serif;display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;text-decoration:none;white-space:nowrap}
+.btn .ms{font-size:20px}
+.b-pri{background:var(--primary);color:var(--on-primary)}
+.b-sec{background:transparent;color:var(--primary);box-shadow:inset 0 0 0 1px var(--outline)}
+.fab{position:absolute;right:16px;bottom:96px;height:56px;padding:0 20px 0 16px;border-radius:16px;border:0;background:var(--primary);color:var(--on-primary);font:600 15px/20px 'Public Sans',sans-serif;display:inline-flex;align-items:center;gap:8px;box-shadow:var(--lift);cursor:pointer}
+.muted{color:var(--on-surface-variant)}
+.sm{font-size:14px;line-height:20px}
+.over{color:var(--error)}
+.warn{color:var(--tertiary)}
+.bar{height:6px;border-radius:3px;background:var(--surface-highest);overflow:hidden}
+.bar>i{display:block;height:100%;border-radius:inherit;background:var(--primary)}
+.bar.over>i{background:var(--error)}
+.list{display:flex;flex-direction:column;border-top:1px solid var(--outline-variant)}
+.row{display:flex;align-items:center;gap:12px;min-height:72px;padding:12px 8px 12px 16px;border-bottom:1px solid var(--outline-variant);text-decoration:none;color:inherit}
+.mono{width:40px;height:40px;border-radius:20px;background:var(--primary-container);color:var(--on-primary-container);display:grid;place-items:center;font:500 18px/1 'Newsreader',Georgia,serif;flex:none}
+.l1{display:flex;align-items:center;gap:8px;min-height:24px}
+.l3{display:flex;justify-content:space-between;gap:8px;font-size:14px;line-height:20px;font-variant-numeric:tabular-nums}
+.tag{display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:12px;font-size:12px;line-height:16px;font-weight:700;white-space:nowrap;flex:none}
+.tag .ms{font-size:16px}
+.t-err{background:var(--error-container);color:var(--on-error-container)}
+.nav{flex:none;height:80px;background:var(--surface-c);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));padding:12px 0 16px}
+.nav a{display:flex;flex-direction:column;align-items:center;gap:4px;text-decoration:none;color:var(--on-surface-variant);font-size:12px;line-height:16px;font-weight:600}
+.nav .pill{width:64px;height:32px;border-radius:16px;display:grid;place-items:center}
+.nav a.cur{color:var(--on-surface)}
+.nav a.cur .pill{background:var(--primary-container);color:var(--on-primary-container)}
+.sum{padding:0 16px 12px;display:flex;flex-direction:column;gap:4px;flex:none}
+.sk{background:var(--surface-highest);border-radius:6px;display:block}
+.empty{display:flex;flex-direction:column;align-items:flex-start;gap:16px;padding:24px 16px;border-bottom:1px solid var(--outline-variant)}
+</style>
+</helmet>
+<div style="width: 2190px; display: flex; flex-direction: column">
+<sc-for list="{{themes}}" as="th" hint-placeholder-count="2">
+<section data-theme="{{th.id}}" class="cp" style="background: var(--canvas); padding: 40px; display: flex; gap: 40px; align-items: flex-start">
+
+  <!-- 1. Before the date -->
+  <div class="f">
+    <p class="cap">{{th.label}} · Before the date, 14 October</p>
+    <div class="phone">
+      <header class="appbar"><h1 class="h-l grow">Gifts</h1></header>
+      <div class="body">
+        <div class="sum"><p class="sm muted num"><b style="color: var(--on-surface)">$225.00</b> left of $600.00 · 2 of 8 bought</p></div>
+        <div class="list">
+          <a class="row" href="#"><span class="mono" aria-hidden="true">M</span><div class="grow f" style="gap: 6px"><div class="l1"><span style="font-weight: 600">Mum</span></div><div class="bar"><i style="width: 86%"></i></div><div class="l3"><span><b>$21.00</b> <span class="muted">left of $150.00</span></span><span class="muted">0 of 2 bought</span></div></div><span class="ms muted" aria-hidden="true">chevron_right</span></a>
+          <a class="row" href="#"><span class="mono" aria-hidden="true">D</span><div class="grow f" style="gap: 6px"><div class="l1"><span style="font-weight: 600">Dad</span></div><div class="bar"><i style="width: 74%"></i></div><div class="l3"><span><b>$31.00</b> <span class="muted">left of $120.00</span></span><span class="muted">1 of 2 bought</span></div></div><span class="ms muted" aria-hidden="true">chevron_right</span></a>
+          <a class="row" href="#"><span class="mono" aria-hidden="true">S</span><div class="grow f" style="gap: 6px"><div class="l1"><span style="font-weight: 600">Sam</span><span class="tag t-err"><span class="ms" aria-hidden="true">warning</span>Over budget</span></div><div class="bar over"><i style="width: 100%"></i></div><div class="l3"><span class="over"><b>$12.00 over</b> <span>budget $100.00</span></span><span class="muted">1 of 1 bought</span></div></div><span class="ms muted" aria-hidden="true">chevron_right</span></a>
+          <a class="row" href="#"><span class="mono" aria-hidden="true">E</span><div class="grow f" style="gap: 6px"><div class="l1"><span style="font-weight: 600">Ellie</span></div><div class="bar"><i style="width: 0%"></i></div><div class="l3"><span><b>$80.00</b> <span class="muted">left of $80.00</span></span><span class="muted">0 of 2 bought</span></div></div><span class="ms muted" aria-hidden="true">chevron_right</span></a>
+          <a class="row" href="#"><span class="mono" aria-hidden="true">G</span><div class="grow f" style="gap: 6px"><div class="l1"><span style="font-weight: 600">Grandma</span></div><div class="bar"><i style="width: 75%"></i></div><div class="l3"><span><b>$15.00</b> <span class="muted">left of $60.00</span></span><span class="muted">0 of 1 bought</span></div></div><span class="ms muted" aria-hidden="true">chevron_right</span></a>
+        </div>
+      </div>
+      <button class="fab"><span class="ms" aria-hidden="true">person_add</span>Add person</button>
+      <nav class="nav" aria-label="Main"><a href="#"><span class="pill"><span class="ms">home</span></span>Home</a><a class="cur" href="#" aria-current="page"><span class="pill"><span class="ms fill">featured_seasonal_and_gifts</span></span>Gifts</a><a href="#"><span class="pill"><span class="ms">restaurant</span></span>Meals</a></nav>
+    </div>
+  </div>
+
+  <!-- 2. On or after the date -->
+  <div class="f">
+    <p class="cap">{{th.label}} · On the date, 26 November</p>
+    <div class="phone">
+      <header class="appbar"><h1 class="h-l grow">Gifts</h1></header>
+      <div class="body">
+        <div class="sum"><p class="sm muted num"><b style="color: var(--on-surface)">$207.00</b> left of $600.00 · 3 of 8 bought</p><p class="sm over" style="display: flex; align-items: center; gap: 6px; font-weight: 600"><span class="ms s18" aria-hidden="true">schedule</span>3 gifts need ordering: Mum, Ellie</p></div>
+        <div class="list">
+          <a class="row" href="#"><span class="mono" aria-hidden="true">M</span><div class="grow f" style="gap: 6px"><div class="l1"><span style="font-weight: 600">Mum</span><span class="tag t-err"><span class="ms" aria-hidden="true">schedule</span>1 to order</span></div><div class="bar"><i style="width: 86%"></i></div><div class="l3"><span><b>$21.00</b> <span class="muted">left of $150.00</span></span><span class="muted">0 of 2 bought</span></div></div><span class="ms muted" aria-hidden="true">chevron_right</span></a>
+          <a class="row" href="#"><span class="mono" aria-hidden="true">D</span><div class="grow f" style="gap: 6px"><div class="l1"><span style="font-weight: 600">Dad</span></div><div class="bar"><i style="width: 89%"></i></div><div class="l3"><span><b>$13.00</b> <span class="muted">left of $120.00</span></span><span class="muted">2 of 2 bought</span></div></div><span class="ms muted" aria-hidden="true">chevron_right</span></a>
+          <a class="row" href="#"><span class="mono" aria-hidden="true">S</span><div class="grow f" style="gap: 6px"><div class="l1"><span style="font-weight: 600">Sam</span><span class="tag t-err"><span class="ms" aria-hidden="true">warning</span>Over budget</span></div><div class="bar over"><i style="width: 100%"></i></div><div class="l3"><span class="over"><b>$12.00 over</b> <span>budget $100.00</span></span><span class="muted">1 of 1 bought</span></div></div><span class="ms muted" aria-hidden="true">chevron_right</span></a>
+          <a class="row" href="#"><span class="mono" aria-hidden="true">E</span><div class="grow f" style="gap: 6px"><div class="l1"><span style="font-weight: 600">Ellie</span><span class="tag t-err"><span class="ms" aria-hidden="true">schedule</span>2 to order</span></div><div class="bar"><i style="width: 0%"></i></div><div class="l3"><span><b>$80.00</b> <span class="muted">left of $80.00</span></span><span class="muted">0 of 2 bought</span></div></div><span class="ms muted" aria-hidden="true">chevron_right</span></a>
+          <a class="row" href="#"><span class="mono" aria-hidden="true">G</span><div class="grow f" style="gap: 6px"><div class="l1"><span style="font-weight: 600">Grandma</span></div><div class="bar"><i style="width: 75%"></i></div><div class="l3"><span><b>$15.00</b> <span class="muted">left of $60.00</span></span><span class="muted">0 of 1 bought</span></div></div><span class="ms muted" aria-hidden="true">chevron_right</span></a>
+        </div>
+      </div>
+      <button class="fab"><span class="ms" aria-hidden="true">person_add</span>Add person</button>
+      <nav class="nav" aria-label="Main"><a href="#"><span class="pill"><span class="ms">home</span></span>Home</a><a class="cur" href="#" aria-current="page"><span class="pill"><span class="ms fill">featured_seasonal_and_gifts</span></span>Gifts</a><a href="#"><span class="pill"><span class="ms">restaurant</span></span>Meals</a></nav>
+    </div>
+  </div>
+
+  <!-- 3. Empty -->
+  <div class="f">
+    <p class="cap">{{th.label}} · Empty</p>
+    <div class="phone">
+      <header class="appbar"><h1 class="h-l grow">Gifts</h1></header>
+      <div class="body">
+        <div class="list">
+          <div class="empty"><span class="ms s32 warn" aria-hidden="true">park</span><p style="font-weight: 600">Add the first person you are buying for.</p><button class="btn b-pri"><span class="ms" aria-hidden="true">person_add</span>Add person</button></div>
+        </div>
+      </div>
+      <nav class="nav" aria-label="Main"><a href="#"><span class="pill"><span class="ms">home</span></span>Home</a><a class="cur" href="#" aria-current="page"><span class="pill"><span class="ms fill">featured_seasonal_and_gifts</span></span>Gifts</a><a href="#"><span class="pill"><span class="ms">restaurant</span></span>Meals</a></nav>
+    </div>
+  </div>
+
+  <!-- 4. Loading -->
+  <div class="f">
+    <p class="cap">{{th.label}} · Loading</p>
+    <div class="phone">
+      <header class="appbar"><h1 class="h-l grow">Gifts</h1></header>
+      <div class="body" aria-busy="true" aria-label="Loading the people">
+        <div class="sum"><span class="sk" style="width: 240px; height: 14px; margin: 3px 0"></span></div>
+        <div class="list" aria-hidden="true">
+          <div class="row"><span class="sk" style="width: 40px; height: 40px; border-radius: 20px"></span><div class="grow f" style="gap: 10px"><span class="sk" style="width: 30%; height: 14px"></span><span class="sk" style="width: 100%; height: 6px"></span><span class="sk" style="width: 55%; height: 12px"></span></div></div>
+          <div class="row"><span class="sk" style="width: 40px; height: 40px; border-radius: 20px"></span><div class="grow f" style="gap: 10px"><span class="sk" style="width: 22%; height: 14px"></span><span class="sk" style="width: 100%; height: 6px"></span><span class="sk" style="width: 48%; height: 12px"></span></div></div>
+          <div class="row"><span class="sk" style="width: 40px; height: 40px; border-radius: 20px"></span><div class="grow f" style="gap: 10px"><span class="sk" style="width: 26%; height: 14px"></span><span class="sk" style="width: 100%; height: 6px"></span><span class="sk" style="width: 52%; height: 12px"></span></div></div>
+          <div class="row"><span class="sk" style="width: 40px; height: 40px; border-radius: 20px"></span><div class="grow f" style="gap: 10px"><span class="sk" style="width: 34%; height: 14px"></span><span class="sk" style="width: 100%; height: 6px"></span><span class="sk" style="width: 44%; height: 12px"></span></div></div>
+        </div>
+      </div>
+      <nav class="nav" aria-label="Main"><a href="#"><span class="pill"><span class="ms">home</span></span>Home</a><a class="cur" href="#" aria-current="page"><span class="pill"><span class="ms fill">featured_seasonal_and_gifts</span></span>Gifts</a><a href="#"><span class="pill"><span class="ms">restaurant</span></span>Meals</a></nav>
+    </div>
+  </div>
+
+  <!-- 5. Error -->
+  <div class="f">
+    <p class="cap">{{th.label}} · Couldn't load</p>
+    <div class="phone">
+      <header class="appbar"><h1 class="h-l grow">Gifts</h1></header>
+      <div class="body">
+        <div class="list">
+          <div class="empty" role="alert"><span class="ms s32 over" aria-hidden="true">cloud_off</span><div class="f" style="gap: 4px"><p style="font-weight: 600">Couldn't load your people.</p><p class="sm muted">Check your connection, then try again.</p></div><button class="btn b-sec"><span class="ms" aria-hidden="true">refresh</span>Try again</button></div>
+        </div>
+      </div>
+      <nav class="nav" aria-label="Main"><a href="#"><span class="pill"><span class="ms">home</span></span>Home</a><a class="cur" href="#" aria-current="page"><span class="pill"><span class="ms fill">featured_seasonal_and_gifts</span></span>Gifts</a><a href="#"><span class="pill"><span class="ms">restaurant</span></span>Meals</a></nav>
+    </div>
+  </div>
+
+</section>
+</sc-for>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"themes":{"editor":"enum","options":["both","light","dark"],"default":"both"},"$preview":{"width":2190,"height":1904}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const t = this.props.themes ?? 'both';
+    const all = [{ id: 'light', label: 'Light' }, { id: 'dark', label: 'Dark' }];
+    return { themes: t === 'both' ? all : all.filter((x) => x.id === t) };
+  }
+}
+</script>
+</body>
+</html>

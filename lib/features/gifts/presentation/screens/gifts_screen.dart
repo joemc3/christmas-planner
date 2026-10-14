@@ -2,249 +2,200 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/layout/breakpoints.dart';
 import '../../../../core/theme/app_theme.dart';
-import '../../../../core/utils/date_utils.dart';
-import '../../../../shared/widgets/frosted_widgets.dart';
-import '../../data/models/gift_model.dart';
+import '../../../../core/theme/typography.dart';
+import '../../../../core/utils/format.dart';
+import '../../../../shared/widgets/states.dart';
+import '../../../auth/presentation/providers/auth_provider.dart';
+import '../../../home/presentation/providers/home_data.dart';
+import '../../../plan/presentation/providers/plan_providers.dart';
 import '../../data/models/recipient_model.dart';
 import '../providers/gift_providers.dart';
-import '../widgets/recipient_form_sheet.dart';
+import '../widgets/recipient_form.dart';
+import '../widgets/rows.dart';
+import 'recipient_screen.dart';
 
+/// Which person the expanded (list plus detail) layout shows on the right.
+final selectedRecipientIdProvider = NotifierProvider<_Selected, String?>(
+  _Selected.new,
+);
+
+class _Selected extends Notifier<String?> {
+  @override
+  String? build() => null;
+  void select(String? id) => state = id;
+}
+
+/// B2: the people.
 class GiftsScreen extends ConsumerWidget {
   const GiftsScreen({super.key});
 
-  Future<void> _addRecipient(BuildContext context, WidgetRef ref) async {
-    final created = await RecipientFormSheet.show(context);
-    if (created != null && context.mounted) {
-      await context.push('/gifts/recipient/${created.id}');
-    }
+  Future<void> _addPerson(BuildContext context, WidgetRef ref) async {
+    final plan = ref.read(selectedPlanProvider).asData?.value;
+    if (plan == null) return;
+    final currency =
+        ref.read(userProfileProvider).asData?.value?.currency ?? 'USD';
+    await showRecipientForm(context, planId: plan.id, currency: currency);
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final recipientsAsync = ref.watch(recipientsStreamProvider);
-    final giftsAsync = ref.watch(giftsStreamProvider);
-    final gifts = giftsAsync.value ?? const <GiftModel>[];
+    final recipients = ref.watch(recipientsProvider);
+    final readOnly = ref.watch(readOnlyProvider);
+    final expanded = WindowSize.of(context).isExpanded;
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Gifts')),
-      body: recipientsAsync.when(
-        data: (recipients) {
-          if (recipients.isEmpty) {
-            return EmptyState(
-              icon: Icons.card_giftcard,
-              title: 'Nobody on your list yet',
-              subtitle:
-                  'Add the people you are buying for, set a budget for each, '
-                  'then track gifts from idea to wrapped.',
-              actionText: 'Add first recipient',
-              onAction: () => _addRecipient(context, ref),
-            );
-          }
-
-          final giftsByRecipient = <String, List<GiftModel>>{};
-          for (final g in gifts) {
-            giftsByRecipient.putIfAbsent(g.recipientId, () => []).add(g);
-          }
-
-          return ListView(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
-            children: [
-              _GiftsSummaryCard(recipients: recipients, gifts: gifts),
-              const SizedBox(height: 16),
-              for (final recipient in recipients)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: _RecipientTile(
-                    recipient: recipient,
-                    gifts: giftsByRecipient[recipient.id] ?? const [],
-                    onTap: () =>
-                        context.push('/gifts/recipient/${recipient.id}'),
-                  ),
-                ),
-            ],
-          );
-        },
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, _) => EmptyState(
-          icon: Icons.cloud_off,
-          title: 'Could not load recipients',
-          subtitle: error.toString(),
-          actionText: 'Retry',
-          onAction: () => ref.invalidate(recipientsStreamProvider),
-        ),
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _addRecipient(context, ref),
-        icon: const Icon(Icons.person_add_alt_1),
-        label: const Text('Recipient'),
-      ),
-    );
-  }
-}
-
-class _GiftsSummaryCard extends StatelessWidget {
-  final List<RecipientModel> recipients;
-  final List<GiftModel> gifts;
-
-  const _GiftsSummaryCard({required this.recipients, required this.gifts});
-
-  @override
-  Widget build(BuildContext context) {
-    final budget = recipients.fold<double>(0, (s, r) => s + r.budgetLimit);
-    final planned = gifts.fold<double>(0, (s, g) => s + g.price);
-    final done = gifts.where((g) => g.status != GiftStatus.toBuy).length;
-
-    return FrostedCard(
-      child: Row(
-        children: [
-          Expanded(
-            child: _Stat(
-              label: 'Budget',
-              value: AppDateUtils.formatCurrency(budget),
+    final list = Scaffold(
+      appBar: AppBar(
+        title: const Text('Gifts'),
+        actions: [
+          if (expanded && !readOnly)
+            Padding(
+              padding: const EdgeInsets.only(right: Space.lg),
+              child: FilledButton.icon(
+                onPressed: () => _addPerson(context, ref),
+                icon: const Icon(Icons.person_add_rounded),
+                label: const Text('Add person'),
+              ),
             ),
-          ),
-          Expanded(
-            child: _Stat(
-              label: 'Planned',
-              value: AppDateUtils.formatCurrency(planned),
-              color: planned > budget && budget > 0
-                  ? FrostedHearthColors.error
-                  : null,
-            ),
-          ),
-          Expanded(
-            child: _Stat(label: 'Bought', value: '$done / ${gifts.length}'),
-          ),
         ],
       ),
+      floatingActionButton: expanded || readOnly
+          ? null
+          : FloatingActionButton.extended(
+              onPressed: () => _addPerson(context, ref),
+              icon: const Icon(Icons.person_add_rounded),
+              label: const Text('Add person'),
+            ),
+      body: asyncList(
+        recipients,
+        errorMessage: "Couldn't load your people.",
+        onRetry: () => ref.invalidate(ensuredPlanProvider),
+        data: (people) => people.isEmpty
+            ? Center(
+                child: EmptyState(
+                  message: 'Add the first person you are buying for.',
+                  actionLabel: readOnly ? null : 'Add person',
+                  actionIcon: Icons.person_add_rounded,
+                  onAction: readOnly ? null : () => _addPerson(context, ref),
+                ),
+              )
+            : _PeopleList(people: people, expanded: expanded),
+      ),
     );
-  }
-}
 
-class _Stat extends StatelessWidget {
-  final String label;
-  final String value;
-  final Color? color;
+    if (!expanded) return list;
 
-  const _Stat({required this.label, required this.value, this.color});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    final selectedId = ref.watch(selectedRecipientIdProvider);
+    return Row(
       children: [
-        Text(label, style: Theme.of(context).textTheme.bodySmall),
-        const SizedBox(height: 4),
-        Text(
-          value,
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.w700,
-            color: color,
-          ),
+        SizedBox(width: 420, child: list),
+        const VerticalDivider(),
+        Expanded(
+          child: selectedId == null
+              ? const Center(child: Text('Choose a person'))
+              : RecipientScreen(recipientId: selectedId, embedded: true),
         ),
       ],
     );
   }
 }
 
-class _RecipientTile extends StatelessWidget {
-  final RecipientModel recipient;
-  final List<GiftModel> gifts;
-  final VoidCallback onTap;
-
-  const _RecipientTile({
-    required this.recipient,
-    required this.gifts,
-    required this.onTap,
-  });
+class _PeopleList extends ConsumerWidget {
+  const _PeopleList({required this.people, required this.expanded});
+  final List<RecipientModel> people;
+  final bool expanded;
 
   @override
-  Widget build(BuildContext context) {
-    final planned = gifts.fold<double>(0, (s, g) => s + g.effectivePrice);
-    final hasBudget = recipient.budgetLimit > 0;
-    final ratio = hasBudget ? (planned / recipient.budgetLimit) : 0.0;
-    final over = hasBudget && planned > recipient.budgetLimit;
-    final wrapped = gifts
-        .where(
-          (g) =>
-              g.status == GiftStatus.wrapped ||
-              g.status == GiftStatus.delivered,
-        )
-        .length;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final currency =
+        ref.watch(userProfileProvider).asData?.value?.currency ?? 'USD';
+    final home = ref.watch(homeDataProvider).asData?.value;
+    final toOrder = home == null
+        ? const <String, int>{}
+        : needingOrderByRecipient(home);
+    final selectedId = ref.watch(selectedRecipientIdProvider);
 
-    return FrostedCard(
-      onTap: onTap,
-      padding: const EdgeInsets.all(16),
-      child: Row(
-        children: [
-          CircleAvatar(
-            radius: 24,
-            backgroundColor: FrostedHearthColors.spruce,
-            child: Text(
-              recipient.name.isEmpty ? '?' : recipient.name[0].toUpperCase(),
-              style: const TextStyle(
-                color: FrostedHearthColors.frostGold,
-                fontSize: 20,
+    final total = home?.giftMoney;
+    final needing = home?.needingOrder ?? const [];
+    final needingNames = {for (final n in needing) n.recipient.name}.join(', ');
+
+    return ListView(
+      padding: const EdgeInsets.only(bottom: 96),
+      children: [
+        if (total != null)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(Space.lg, 0, Space.lg, Space.sm),
+            child: RichText(
+              text: TextSpan(
+                style: tabular(theme.textTheme.bodyMedium),
+                children: [
+                  TextSpan(
+                    text: total.isOverBudget
+                        ? '${formatMoney(total.overBy, currency: currency)} over'
+                        : formatMoney(total.remaining, currency: currency),
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      color: total.isOverBudget
+                          ? theme.colorScheme.error
+                          : theme.colorScheme.onSurface,
+                    ),
+                  ),
+                  TextSpan(
+                    text:
+                        ' ${total.isOverBudget ? 'budget' : 'left of'} '
+                        '${formatMoney(total.budget, currency: currency)} · '
+                        '${total.purchasedCount} of ${total.plannedCount} bought',
+                    style: TextStyle(color: theme.colorScheme.onSurfaceVariant),
+                  ),
+                ],
               ),
             ),
           ),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+        if (needing.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(Space.lg, 0, Space.lg, Space.sm),
+            child: Row(
               children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        recipient.name,
-                        style: Theme.of(context).textTheme.titleMedium,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    Text(
-                      hasBudget
-                          ? '${AppDateUtils.formatCurrency(planned)} / '
-                                '${AppDateUtils.formatCurrency(recipient.budgetLimit)}'
-                          : AppDateUtils.formatCurrency(planned),
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: over ? FrostedHearthColors.error : null,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
+                Icon(
+                  Icons.schedule_rounded,
+                  size: 16,
+                  color: theme.colorScheme.error,
                 ),
-                const SizedBox(height: 6),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(4),
-                  child: LinearProgressIndicator(
-                    value: hasBudget ? ratio.clamp(0, 1) : 0,
-                    minHeight: 6,
-                    backgroundColor: FrostedHearthColors.parchmentWarm,
-                    color: over
-                        ? FrostedHearthColors.error
-                        : FrostedHearthColors.ember,
+                const SizedBox(width: Space.xs),
+                Expanded(
+                  child: Text(
+                    '${needing.length} ${needing.length == 1 ? 'gift needs' : 'gifts need'} '
+                    'ordering: $needingNames',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.error,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  [
-                    if (recipient.relationship != null) recipient.relationship!,
-                    gifts.isEmpty
-                        ? 'No gifts yet'
-                        : '${gifts.length} gift${gifts.length == 1 ? '' : 's'}'
-                              ', $wrapped wrapped',
-                  ].join(' · '),
-                  style: Theme.of(context).textTheme.bodySmall,
                 ),
               ],
             ),
           ),
-          const SizedBox(width: 8),
-          const Icon(Icons.chevron_right, color: FrostedHearthColors.inkLight),
+        const Divider(),
+        for (final r in people) ...[
+          RecipientRow(
+            recipient: r,
+            money: ref.watch(recipientMoneyProvider(r)),
+            currency: currency,
+            toOrder: toOrder[r.id] ?? 0,
+            selected: expanded && selectedId == r.id,
+            onTap: () {
+              if (expanded) {
+                ref.read(selectedRecipientIdProvider.notifier).select(r.id);
+              } else {
+                context.go('/gifts/${r.id}');
+              }
+            },
+          ),
+          const Divider(),
         ],
-      ),
+      ],
     );
   }
 }

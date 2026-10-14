@@ -1,129 +1,96 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../core/utils/logger.dart';
-import '../../data/models/meal_model.dart';
+import '../../../../core/domain/money.dart';
+import '../../../plan/presentation/providers/plan_providers.dart';
 import '../../data/models/meal_item_model.dart';
+import '../../data/models/meal_model.dart';
 import '../../data/repositories/meal_repository.dart';
 
-// Repository Provider
-final mealRepositoryProvider = Provider<MealRepository>((ref) {
-  return MealRepository();
+final mealRepositoryProvider = Provider<MealRepository>(
+  (ref) => MealRepository(),
+);
+
+/// The selected plan's two meals, Eve then Day. Live.
+final mealsProvider = Provider<AsyncValue<List<MealModel>>>((ref) {
+  final plan = ref.watch(selectedPlanProvider);
+  return plan.when(
+    data: (p) => ref.watch(_mealsOfPlanProvider(p.id)),
+    loading: () => const AsyncLoading(),
+    error: AsyncError.new,
+  );
 });
 
-// Meals Stream Provider
-final mealsStreamProvider = StreamProvider<List<MealModel>>((ref) {
-  final repo = ref.watch(mealRepositoryProvider);
-  return repo.watchMeals();
+final _mealsOfPlanProvider = StreamProvider.family<List<MealModel>, String>(
+  (ref, planId) => ref.watch(mealRepositoryProvider).watchMeals(planId),
+);
+
+final _allItemsProvider = StreamProvider<List<MealItemModel>>(
+  (ref) => ref.watch(mealRepositoryProvider).watchAllMealItems(),
+);
+
+/// Menu items of the selected plan's meals.
+final mealItemsProvider = Provider<AsyncValue<List<MealItemModel>>>((ref) {
+  final meals = ref.watch(mealsProvider);
+  final items = ref.watch(_allItemsProvider);
+  if (meals.hasError) return AsyncError(meals.error!, StackTrace.current);
+  if (items.hasError) return AsyncError(items.error!, StackTrace.current);
+  final m = meals.asData?.value;
+  final i = items.asData?.value;
+  if (m == null || i == null) return const AsyncLoading();
+  final ids = {for (final x in m) x.id};
+  return AsyncData([
+    for (final item in i)
+      if (ids.contains(item.mealId)) item,
+  ]);
 });
 
-// Meal by ID Provider
-final mealByIdProvider = FutureProvider.family<MealModel?, String>((
-  ref,
-  id,
-) async {
-  final repo = ref.watch(mealRepositoryProvider);
-  return await repo.getMealById(id);
+final itemsByMealProvider =
+    Provider.family<AsyncValue<List<MealItemModel>>, String>(
+      (ref, mealId) => ref
+          .watch(mealItemsProvider)
+          .whenData(
+            (all) => [
+              for (final i in all)
+                if (i.mealId == mealId) i,
+            ],
+          ),
+    );
+
+final mealByIdProvider = Provider.family<AsyncValue<MealModel?>, String>(
+  (ref, id) => ref.watch(mealsProvider).whenData((all) {
+    final found = all.where((m) => m.id == id);
+    return found.isEmpty ? null : found.first;
+  }),
+);
+
+final mealMoneyProvider = Provider.family<MoneyTriple, MealModel>((ref, meal) {
+  final items = ref.watch(itemsByMealProvider(meal.id)).asData?.value;
+  return mealMoney(items ?? const [], budget: meal.budgetLimit);
 });
 
-// Meal Items Stream Provider
-final mealItemsStreamProvider =
-    StreamProvider.family<List<MealItemModel>, String>((ref, mealId) {
-      final repo = ref.watch(mealRepositoryProvider);
-      return repo.watchMealItems(mealId);
-    });
-
-// Meal Budget Stats Provider
-final mealBudgetStatsProvider =
-    FutureProvider.family<Map<String, double>, String>((ref, mealId) async {
-      final repo = ref.watch(mealRepositoryProvider);
-      return await repo.calculateMealBudgetStats(mealId);
-    });
-
-// Meal Controller
-final mealControllerProvider = Provider<MealController>((ref) {
-  return MealController(ref.read(mealRepositoryProvider));
-});
+final mealControllerProvider = Provider<MealController>(
+  (ref) => MealController(ref),
+);
 
 class MealController {
-  final MealRepository _repository;
+  MealController(this._ref);
+  final Ref _ref;
+  MealRepository get _repo => _ref.read(mealRepositoryProvider);
 
-  MealController(this._repository);
+  Future<MealModel> updateMeal(MealModel m) => _repo.updateMeal(m);
 
-  Future<MealModel> createMeal(MealModel meal) async {
-    try {
-      return await _repository.createMeal(meal);
-    } catch (e, stackTrace) {
-      AppLogger.error(
-        'Failed to create meal',
-        error: e,
-        stackTrace: stackTrace,
-      );
-      rethrow;
-    }
+  Future<MealItemModel> createItem(MealItemModel i) => _repo.createMealItem(i);
+
+  Future<MealItemModel> updateItem(MealItemModel i) => _repo.updateMealItem(i);
+
+  Future<void> deleteItem(String id) => _repo.deleteMealItem(id);
+
+  /// Returns the item as it was, for Undo.
+  Future<MealItemModel> setStatus(MealItemModel item, MealItemStatus to) async {
+    await _repo.updateMealItem(item.copyWith(status: to));
+    return item;
   }
 
-  Future<MealModel> updateMeal(MealModel meal) async {
-    try {
-      return await _repository.updateMeal(meal);
-    } catch (e, stackTrace) {
-      AppLogger.error(
-        'Failed to update meal',
-        error: e,
-        stackTrace: stackTrace,
-      );
-      rethrow;
-    }
-  }
-
-  Future<void> deleteMeal(String id) async {
-    try {
-      await _repository.deleteMeal(id);
-    } catch (e, stackTrace) {
-      AppLogger.error(
-        'Failed to delete meal',
-        error: e,
-        stackTrace: stackTrace,
-      );
-      rethrow;
-    }
-  }
-
-  Future<MealItemModel> createMealItem(MealItemModel item) async {
-    try {
-      return await _repository.createMealItem(item);
-    } catch (e, stackTrace) {
-      AppLogger.error(
-        'Failed to create meal item',
-        error: e,
-        stackTrace: stackTrace,
-      );
-      rethrow;
-    }
-  }
-
-  Future<MealItemModel> updateMealItem(MealItemModel item) async {
-    try {
-      return await _repository.updateMealItem(item);
-    } catch (e, stackTrace) {
-      AppLogger.error(
-        'Failed to update meal item',
-        error: e,
-        stackTrace: stackTrace,
-      );
-      rethrow;
-    }
-  }
-
-  Future<void> deleteMealItem(String id) async {
-    try {
-      await _repository.deleteMealItem(id);
-    } catch (e, stackTrace) {
-      AppLogger.error(
-        'Failed to delete meal item',
-        error: e,
-        stackTrace: stackTrace,
-      );
-      rethrow;
-    }
-  }
+  Future<void> restore(MealItemModel previous) =>
+      _repo.updateMealItem(previous);
 }
