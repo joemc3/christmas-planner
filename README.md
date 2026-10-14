@@ -5,16 +5,20 @@ what you are cooking and what it costs, one budget that rolls it all up, and a
 calendar that works back from 25 December.
 
 Flutter web (mobile-capable) on a Supabase backend.
-Product spec and current feature status: [docs/SPEC.md](docs/SPEC.md).
+What it is and what it must do: [docs/PRD.md](docs/PRD.md). Technical design and
+plan: [docs/superpowers](docs/superpowers). Design brief for the design session:
+[docs/design](docs/design).
 
 ## Status
 
-- Compiles, analyzer clean, tests pass, builds for web (see CI).
+- Compiles, analyzer clean, tests pass, builds for web, runs locally end to
+  end (see CI and `make smoke`).
+- The current code is larger than the product. PRD version 1.1 returns to
+  the original brief; the restructure that brings the code down to it is
+  specified and planned in `docs/superpowers` and lands with the new design.
 - Working today: accounts, recipients and gifts with status tracking and
-  per-person budgets, meals with menus and costs, yearly budget overview,
-  calendar events, shopping lists.
-- Not built yet: last-order-date warnings, shopping list from a meal, manual
-  expenses, household sharing. Full list in the spec.
+  per-person budgets, meals with menus and costs, a yearly budget screen,
+  calendar events, shopping lists. The last three go in the restructure.
 
 ## Screenshots
 
@@ -128,7 +132,8 @@ lib/
                each with data/{models,repositories} and presentation/{providers,screens,widgets}
   shared/      models, services, widgets (FormSheet, Frosted* widgets, dialogs)
 supabase/      config.toml, migrations/
-docs/          SPEC.md
+docs/          PRD.md, original/ (PRD and TRD 1.0), superpowers/ (specs, plans),
+               design/ (brief, output, decisions), screenshots/
 ```
 
 ## License
