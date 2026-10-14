@@ -12,9 +12,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Same Flutter as the project pins with FVM (.fvmrc), so local and CI
+      # resolve identical packages. Bump with `fvm use <version>`.
       - uses: subosito/flutter-action@v2
         with:
-          channel: stable
+          flutter-version-file: .fvmrc
           cache: true
 
       - run: flutter --version
