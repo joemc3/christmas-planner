@@ -96,3 +96,9 @@ local.properties
 
 # Supabase
 supabase/.temp
+
+# Flutter SDK pinned by FVM (.fvmrc is committed)
+.fvm/
+
+# Local smoke test server
+.smoke-server.pid

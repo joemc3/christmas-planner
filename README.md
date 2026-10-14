@@ -34,19 +34,28 @@ calendar, shopping, settings.
 
 ## Run it locally
 
-Prerequisites: [Flutter](https://docs.flutter.dev/get-started/install)
-(stable), [Docker](https://docs.docker.com/get-docker/), and the
-[Supabase CLI](https://supabase.com/docs/guides/local-development).
+Prerequisites: [FVM](https://fvm.app) (Flutter Version Management),
+[Docker](https://docs.docker.com/get-docker/), the
+[Supabase CLI](https://supabase.com/docs/guides/local-development), and
+Node (for the browser smoke test only).
+
+The Flutter version is pinned per project in `.fvmrc`, so this repo can sit
+on the newest Flutter it supports without touching other projects on the
+same machine. CI reads the same file. All `make` targets call `fvm flutter`.
 
 ```bash
-# 1. Start the local Supabase stack (first run pulls ~3 GB of images)
-supabase start
-supabase status          # note "API URL" and "anon key"
+fvm install    # fetch the pinned Flutter SDK (once per version)
+make db        # start the local Supabase stack (first run pulls ~3 GB of images)
+make run       # fvm flutter run -d chrome against it
+```
 
-# 2. Run the app against it
-flutter pub get
-flutter run -d chrome \
-  --dart-define=SUPABASE_URL=http://127.0.0.1:54321 \
+The local stack uses ports 56321-56329 instead of the CLI defaults (543xx)
+so it can run beside other local Supabase projects. `make run` passes the
+matching `--dart-define`s; to do it by hand:
+
+```bash
+fvm flutter run -d chrome \
+  --dart-define=SUPABASE_URL=http://127.0.0.1:56321 \
   --dart-define=SUPABASE_ANON_KEY=<anon key from supabase status>
 ```
 
@@ -54,9 +63,20 @@ The migrations in `supabase/migrations/` are applied automatically by
 `supabase start`. Email confirmation is off in local config, so you can sign
 up with any address and sign in immediately.
 
-The values in `.env.example` are the standard local-development defaults and
-are also compiled in as fallbacks for debug builds, so for local work the two
+The values in `.env.example` are the local-development defaults and are
+also compiled in as fallbacks for debug builds, so for local work the two
 `--dart-define`s can be omitted.
+
+### Before you push
+
+```bash
+make check     # format, analyze, test, migrations lint: exactly what CI runs
+make smoke     # release web build + browser smoke test, refreshes docs/screenshots
+```
+
+`make check` needs the local stack running for the migrations lint. Both
+targets are expected to pass locally before a PR is opened; CI is a backstop,
+not the first place a failure should show up.
 
 ## Hosted Supabase
 
@@ -67,7 +87,7 @@ are also compiled in as fallbacks for debug builds, so for local work the two
 4. Build with your project's URL and anon (publishable) key:
 
 ```bash
-flutter build web --release \
+fvm flutter build web --release \
   --dart-define=SUPABASE_URL=https://<ref>.supabase.co \
   --dart-define=SUPABASE_ANON_KEY=<anon key>
 ```
@@ -81,22 +101,22 @@ docker compose up --build   # serves on http://localhost:8080
 
 ## Development
 
-```bash
-flutter analyze --fatal-infos
-flutter test
-dart format lib test
-```
+`make check` is the gate (see above); the individual targets are `make
+format`, `make analyze`, `make test`, `make lint-db`. Run `fvm dart format
+lib test` to fix formatting rather than just report it. To move the project
+to a newer Flutter: `fvm use <version>`, commit `.fvmrc` and `pubspec.lock`,
+and CI follows.
 
-CI (`.github/workflows/ci.yml`) runs format, analyze, tests, a release web
-build, and applies the SQL migrations to a fresh Postgres.
+CI (`.github/workflows/ci.yml`) runs the same format, analyze, tests, a
+release web build, and applies the SQL migrations to a fresh Postgres.
 
-Browser smoke test (needs `supabase start`, a web build and Node):
-`tool/e2e/smoke.mjs` signs up a fresh user, adds a recipient, gifts, a meal
-and menu items through the real UI and screenshots every screen. The header
-comment in the script has the exact commands.
+Browser smoke test (`make smoke`): `tool/e2e/smoke.mjs` signs up a fresh
+user, adds a recipient, gifts, a meal and menu items through the real UI and
+screenshots every screen into `docs/screenshots`. Point it elsewhere with
+`make smoke OUT_DIR=/some/dir`.
 
 Mobile: the project has no `android/` or `ios/` folders yet. Generate them
-with `flutter create --platforms android,ios .` when you want device builds;
+with `fvm flutter create --platforms android,ios .` when you want device builds;
 the Dart code is platform-neutral.
 
 ## Layout

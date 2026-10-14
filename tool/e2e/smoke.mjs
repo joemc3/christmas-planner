@@ -2,8 +2,8 @@
 // stack through Flutter's accessibility tree and screenshots each screen.
 //
 //   supabase start
-//   flutter build web --release --no-web-resources-cdn \
-//     --dart-define=SUPABASE_URL=http://127.0.0.1:54321 \
+//   fvm flutter build web --release --no-web-resources-cdn \
+//     --dart-define=SUPABASE_URL=http://127.0.0.1:56321 \
 //     --dart-define=SUPABASE_ANON_KEY=<anon key from supabase status>
 //   (cd build/web && python3 -m http.server 8099) &
 //   cd tool/e2e && npm install && OUT_DIR=../../docs/screenshots node smoke.mjs

@@ -12,7 +12,7 @@ class AppConstants {
   static const String supabaseUrl = kDebugMode
       ? String.fromEnvironment(
           'SUPABASE_URL',
-          defaultValue: 'http://localhost:54321',
+          defaultValue: 'http://localhost:56321',
         )
       : String.fromEnvironment('SUPABASE_URL');
 
