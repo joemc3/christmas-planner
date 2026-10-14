@@ -97,8 +97,12 @@ void main() {
 
   group('sumMoney', () {
     test('adds the two meals for the master meal view', () {
-      final eve = mealMoney([_Item(28.5, MealItemStatus.purchased)], budget: 120);
-      final day = mealMoney([_Item(82.5, MealItemStatus.purchased)], budget: 220);
+      final eve = mealMoney([
+        _Item(28.5, MealItemStatus.purchased),
+      ], budget: 120);
+      final day = mealMoney([
+        _Item(82.5, MealItemStatus.purchased),
+      ], budget: 220);
       final total = sumMoney([eve, day]);
       expect(total.budget, 340);
       expect(total.spent, 111);

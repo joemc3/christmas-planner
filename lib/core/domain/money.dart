@@ -46,7 +46,8 @@ class MoneyTriple {
 
   double get overBy => isOverBudget ? roundMoney(spent - budget) : 0;
 
-  double get plannedOverBy => planned > budget ? roundMoney(planned - budget) : 0;
+  double get plannedOverBy =>
+      planned > budget ? roundMoney(planned - budget) : 0;
 
   /// Share of the budget used, for the bar. 0 when there is no budget.
   double get fraction =>

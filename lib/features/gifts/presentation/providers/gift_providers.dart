@@ -1,188 +1,135 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../core/utils/logger.dart';
+import '../../../../core/domain/money.dart';
+import '../../../plan/presentation/providers/plan_providers.dart';
 import '../../data/models/gift_model.dart';
 import '../../data/models/recipient_model.dart';
 import '../../data/repositories/gift_repository.dart';
 import '../../data/repositories/recipient_repository.dart';
 
-// Repository Providers
-final recipientRepositoryProvider = Provider<RecipientRepository>((ref) {
-  return RecipientRepository();
-});
-
-final giftRepositoryProvider = Provider<GiftRepository>((ref) {
-  return GiftRepository();
-});
-
-// Recipients Stream Provider
-final recipientsStreamProvider = StreamProvider<List<RecipientModel>>((ref) {
-  final repo = ref.watch(recipientRepositoryProvider);
-  return repo.watchRecipients();
-});
-
-// Recipient by ID Provider
-final recipientByIdProvider = FutureProvider.family<RecipientModel?, String>((
-  ref,
-  id,
-) async {
-  final repo = ref.watch(recipientRepositoryProvider);
-  return await repo.getRecipientById(id);
-});
-
-// Gifts Stream Provider
-final giftsStreamProvider = StreamProvider<List<GiftModel>>((ref) {
-  final repo = ref.watch(giftRepositoryProvider);
-  return repo.watchAllGifts();
-});
-
-// Gifts by Recipient Provider
-final giftsByRecipientProvider = StreamProvider.family<List<GiftModel>, String>(
-  (ref, recipientId) {
-    final repo = ref.watch(giftRepositoryProvider);
-    return repo.watchGiftsByRecipient(recipientId);
-  },
+final recipientRepositoryProvider = Provider<RecipientRepository>(
+  (ref) => RecipientRepository(),
 );
 
-// Gift by ID Provider
-final giftByIdProvider = FutureProvider.family<GiftModel?, String>((
+final giftRepositoryProvider = Provider<GiftRepository>(
+  (ref) => GiftRepository(),
+);
+
+/// Recipients of the selected plan, by name. Live.
+final recipientsProvider = Provider<AsyncValue<List<RecipientModel>>>((ref) {
+  final plan = ref.watch(selectedPlanProvider);
+  return plan.when(
+    data: (p) => ref.watch(_recipientsOfPlanProvider(p.id)),
+    loading: () => const AsyncLoading(),
+    error: AsyncError.new,
+  );
+});
+
+final _recipientsOfPlanProvider =
+    StreamProvider.family<List<RecipientModel>, String>(
+      (ref, planId) =>
+          ref.watch(recipientRepositoryProvider).watchRecipients(planId),
+    );
+
+/// Every gift the user can see, across plans. Live.
+final _allGiftsProvider = StreamProvider<List<GiftModel>>(
+  (ref) => ref.watch(giftRepositoryProvider).watchAllGifts(),
+);
+
+/// The selected plan's gifts: all gifts whose recipient is in the plan.
+final giftsProvider = Provider<AsyncValue<List<GiftModel>>>((ref) {
+  final recipients = ref.watch(recipientsProvider);
+  final gifts = ref.watch(_allGiftsProvider);
+  if (recipients.hasError) {
+    return AsyncError(recipients.error!, StackTrace.current);
+  }
+  if (gifts.hasError) return AsyncError(gifts.error!, StackTrace.current);
+  final r = recipients.asData?.value;
+  final g = gifts.asData?.value;
+  if (r == null || g == null) return const AsyncLoading();
+  final ids = {for (final x in r) x.id};
+  return AsyncData([
+    for (final gift in g)
+      if (ids.contains(gift.recipientId)) gift,
+  ]);
+});
+
+final giftsByRecipientProvider =
+    Provider.family<AsyncValue<List<GiftModel>>, String>(
+      (ref, recipientId) => ref
+          .watch(giftsProvider)
+          .whenData(
+            (all) => [
+              for (final g in all)
+                if (g.recipientId == recipientId) g,
+            ],
+          ),
+    );
+
+final recipientByIdProvider =
+    Provider.family<AsyncValue<RecipientModel?>, String>(
+      (ref, id) => ref.watch(recipientsProvider).whenData((all) {
+        final found = all.where((r) => r.id == id);
+        return found.isEmpty ? null : found.first;
+      }),
+    );
+
+final giftByIdProvider = Provider.family<AsyncValue<GiftModel?>, String>(
+  (ref, id) => ref.watch(giftsProvider).whenData((all) {
+    final found = all.where((g) => g.id == id);
+    return found.isEmpty ? null : found.first;
+  }),
+);
+
+/// Money for one person: budget from the recipient, sums from their gifts.
+final recipientMoneyProvider = Provider.family<MoneyTriple, RecipientModel>((
   ref,
-  id,
-) async {
-  final repo = ref.watch(giftRepositoryProvider);
-  return await repo.getGiftById(id);
+  recipient,
+) {
+  final gifts = ref.watch(giftsByRecipientProvider(recipient.id)).asData?.value;
+  return giftMoney(gifts ?? const [], budget: recipient.budgetLimit);
 });
 
-// Gift Budget Stats Provider
-final giftBudgetStatsProvider = FutureProvider<Map<String, double>>((
-  ref,
-) async {
-  final repo = ref.watch(giftRepositoryProvider);
-  return await repo.calculateGiftBudgetStats();
-});
-
-// Recipient Controller
-final recipientControllerProvider = Provider<RecipientController>((ref) {
-  return RecipientController(ref.read(recipientRepositoryProvider));
-});
-
-class RecipientController {
-  final RecipientRepository _repository;
-
-  RecipientController(this._repository);
-
-  Future<RecipientModel> createRecipient(RecipientModel recipient) async {
-    try {
-      return await _repository.createRecipient(recipient);
-    } catch (e, stackTrace) {
-      AppLogger.error(
-        'Failed to create recipient',
-        error: e,
-        stackTrace: stackTrace,
-      );
-      rethrow;
-    }
-  }
-
-  Future<RecipientModel> updateRecipient(RecipientModel recipient) async {
-    try {
-      return await _repository.updateRecipient(recipient);
-    } catch (e, stackTrace) {
-      AppLogger.error(
-        'Failed to update recipient',
-        error: e,
-        stackTrace: stackTrace,
-      );
-      rethrow;
-    }
-  }
-
-  Future<void> deleteRecipient(String id) async {
-    try {
-      await _repository.deleteRecipient(id);
-    } catch (e, stackTrace) {
-      AppLogger.error(
-        'Failed to delete recipient',
-        error: e,
-        stackTrace: stackTrace,
-      );
-      rethrow;
-    }
-  }
-
-  Future<void> archiveRecipient(String id, bool archive) async {
-    try {
-      await _repository.archiveRecipient(id, archive);
-    } catch (e, stackTrace) {
-      AppLogger.error(
-        'Failed to archive recipient',
-        error: e,
-        stackTrace: stackTrace,
-      );
-      rethrow;
-    }
-  }
-}
-
-// Gift Controller
-final giftControllerProvider = Provider<GiftController>((ref) {
-  return GiftController(ref.read(giftRepositoryProvider));
-});
+final giftControllerProvider = Provider<GiftController>(
+  (ref) => GiftController(ref),
+);
 
 class GiftController {
-  final GiftRepository _repository;
+  GiftController(this._ref);
+  final Ref _ref;
 
-  GiftController(this._repository);
+  RecipientRepository get _recipients => _ref.read(recipientRepositoryProvider);
+  GiftRepository get _gifts => _ref.read(giftRepositoryProvider);
 
-  Future<GiftModel> createGift(GiftModel gift) async {
-    try {
-      return await _repository.createGift(gift);
-    } catch (e, stackTrace) {
-      AppLogger.error(
-        'Failed to create gift',
-        error: e,
-        stackTrace: stackTrace,
-      );
-      rethrow;
-    }
+  Future<RecipientModel> createRecipient({
+    required String planId,
+    required String name,
+    required double budgetLimit,
+  }) => _recipients.createRecipient(
+    planId: planId,
+    name: name,
+    budgetLimit: budgetLimit,
+  );
+
+  Future<RecipientModel> updateRecipient(RecipientModel r) =>
+      _recipients.updateRecipient(r);
+
+  Future<void> deleteRecipient(String id) => _recipients.deleteRecipient(id);
+
+  Future<GiftModel> createGift(GiftModel g) => _gifts.createGift(g);
+
+  Future<GiftModel> updateGift(GiftModel g) => _gifts.updateGift(g);
+
+  Future<void> deleteGift(String id) => _gifts.deleteGift(id);
+
+  /// Applies a status change with its date rules and returns the gift as it
+  /// was, for Undo.
+  Future<GiftModel> setStatus(GiftModel gift, GiftStatus to) async {
+    final today = _ref.read(todayProvider);
+    await _gifts.updateGift(gift.withStatus(to, today: today));
+    return gift;
   }
 
-  Future<GiftModel> updateGift(GiftModel gift) async {
-    try {
-      return await _repository.updateGift(gift);
-    } catch (e, stackTrace) {
-      AppLogger.error(
-        'Failed to update gift',
-        error: e,
-        stackTrace: stackTrace,
-      );
-      rethrow;
-    }
-  }
-
-  Future<void> deleteGift(String id) async {
-    try {
-      await _repository.deleteGift(id);
-    } catch (e, stackTrace) {
-      AppLogger.error(
-        'Failed to delete gift',
-        error: e,
-        stackTrace: stackTrace,
-      );
-      rethrow;
-    }
-  }
-
-  Future<void> updateGiftStatus(String id, GiftStatus status) async {
-    try {
-      await _repository.updateGiftStatus(id, status);
-    } catch (e, stackTrace) {
-      AppLogger.error(
-        'Failed to update gift status',
-        error: e,
-        stackTrace: stackTrace,
-      );
-      rethrow;
-    }
-  }
+  /// Restores a gift exactly (status and both dates).
+  Future<void> restore(GiftModel previous) => _gifts.updateGift(previous);
 }

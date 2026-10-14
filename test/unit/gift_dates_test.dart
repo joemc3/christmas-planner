@@ -17,15 +17,18 @@ void main() {
     expect(d.purchasedDate, isNull);
   });
 
-  test('Ordered to Purchased stamps the purchase date and keeps the order date', () {
-    final d = datesAfterStatusChange(
-      to: GiftStatus.purchased,
-      current: (orderDate: earlier, purchasedDate: null),
-      today: today,
-    );
-    expect(d.orderDate, earlier);
-    expect(d.purchasedDate, day);
-  });
+  test(
+    'Ordered to Purchased stamps the purchase date and keeps the order date',
+    () {
+      final d = datesAfterStatusChange(
+        to: GiftStatus.purchased,
+        current: (orderDate: earlier, purchasedDate: null),
+        today: today,
+      );
+      expect(d.orderDate, earlier);
+      expect(d.purchasedDate, day);
+    },
+  );
 
   test('skipping Ordered leaves the order date unset', () {
     final d = datesAfterStatusChange(

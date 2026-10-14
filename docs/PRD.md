@@ -38,7 +38,7 @@ Settled here, open to the product owner's override:
 
 ## 4. Requirements
 
-Status column: **Built** means it exists in the current code and survives the restructure; **Change** means it exists but is reduced or moved; **New** means it does not exist yet.
+Status column: **Built** means it exists in the current code. (Before PR #6 the column distinguished Built, Change and New; the restructure and the design landed together on 2026-10-14.)
 
 ### 4.1 Account
 
@@ -53,11 +53,11 @@ Status column: **Built** means it exists in the current code and survives the re
 
 | ID | Requirement | Status |
 |---|---|---|
-| GIFT-1 | Add, edit and delete recipients. A recipient has a name and a budget. | Change (fields reduced) |
-| GIFT-2 | Under a recipient, add, edit and delete gifts. A gift has a name, a price, an optional store or link, and a status: To Buy, Ordered, Purchased. | Change (fields and statuses reduced) |
+| GIFT-1 | Add, edit and delete recipients. A recipient has a name and a budget. | Built |
+| GIFT-2 | Under a recipient, add, edit and delete gifts. A gift has a name, a price, an optional store or link, and a status: To Buy, Ordered, Purchased. | Built |
 | GIFT-3 | For each recipient show: budget, planned (sum of all gift prices), spent (sum of Ordered and Purchased), remaining (budget minus spent), and gifts purchased out of gifts planned. | Built |
 | GIFT-4 | A master gift budget for the year, set by the user, with total, spent and remaining across all recipients. | Built |
-| GIFT-5 | Changing a gift to Ordered stamps the order date; to Purchased stamps the purchase date. Both visible on the gift. | Change (two dates instead of five) |
+| GIFT-5 | Changing a gift to Ordered stamps the order date; to Purchased stamps the purchase date. Both visible on the gift. | Built |
 
 ### 4.3 Ordering timeline
 
@@ -66,25 +66,25 @@ Status column: **Built** means it exists in the current code and survives the re
 | TIME-1 | Preparation target: 10 December of the plan year. Fixed. | Built |
 | TIME-2 | Start Ordering By = 10 December minus (7 buffer days plus the user's shipping days). With the default 7 shipping days this is 26 November. | Built |
 | TIME-3 | The home screen shows the Start Ordering By date and how many days remain until it, or how many days past it is. | Built |
-| TIME-4 | Every gift still To Buy shows the same date and, once the date has passed, is marked as needing to be ordered now. Recipient rows show how many of their gifts are in that state. | New |
+| TIME-4 | Every gift still To Buy shows the same date and, once the date has passed, is marked as needing to be ordered now. Recipient rows show how many of their gifts are in that state. | Built |
 
 ### 4.4 Meals
 
 | ID | Requirement | Status |
 |---|---|---|
-| MEAL-1 | Each plan year has exactly two meals: Christmas Eve and Christmas Day. They cannot be added or deleted, only edited. | Change (no "other" meals) |
+| MEAL-1 | Each plan year has exactly two meals: Christmas Eve and Christmas Day. They cannot be added or deleted, only edited. | Built |
 | MEAL-2 | A meal has a guest count and a budget. | Built |
-| MEAL-3 | Under a meal, add, edit and delete menu items. An item has a name, a cost and a status: To Buy, Purchased. | Change (fields and statuses reduced) |
+| MEAL-3 | Under a meal, add, edit and delete menu items. An item has a name, a cost and a status: To Buy, Purchased. | Built |
 | MEAL-4 | For each meal show: budget, planned (sum of item costs), spent (sum of Purchased), remaining, and items purchased out of items planned. | Built |
-| MEAL-5 | A master meal view: the two budgets added together, total spent, total remaining. | Change (moves to the home screen) |
+| MEAL-5 | A master meal view: the two budgets added together, total spent, total remaining. | Built |
 
 ### 4.5 Home
 
 | ID | Requirement | Status |
 |---|---|---|
-| HOME-1 | Opens on the current year's plan. Shows days to Christmas, the Start Ordering By date (TIME-3), the master gift budget (GIFT-4) and the master meal budget (MEAL-5). | Change (budget moves here, recent-gifts list goes) |
-| HOME-2 | Shows how many gifts across all recipients still need ordering now (TIME-4). | New |
-| HOME-3 | Previous years' plans can be opened read-only. | New |
+| HOME-1 | Opens on the current year's plan. Shows days to Christmas, the Start Ordering By date (TIME-3), the master gift budget (GIFT-4) and the master meal budget (MEAL-5). | Built |
+| HOME-2 | Shows how many gifts across all recipients still need ordering now (TIME-4). | Built |
+| HOME-3 | Previous years' plans can be opened read-only. | Built |
 
 ## 5. Business rules
 

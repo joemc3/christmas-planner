@@ -1,233 +1,81 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../../../core/errors/exceptions.dart';
-import '../../../../core/utils/logger.dart';
+import '../../../../core/errors/guard.dart';
 import '../../../../shared/models/user_profile.dart';
 
 class AuthRepository {
-  final SupabaseClient _supabase;
-
   AuthRepository({SupabaseClient? supabaseClient})
     : _supabase = supabaseClient ?? Supabase.instance.client;
+
+  final SupabaseClient _supabase;
 
   User? get currentUser => _supabase.auth.currentUser;
 
   Stream<AuthState> get authStateChanges => _supabase.auth.onAuthStateChange;
 
-  Future<User> signUp({
+  Future<void> signUp({
     required String email,
     required String password,
-    String? fullName,
-  }) async {
-    try {
-      final response = await _supabase.auth.signUp(
-        email: email,
-        password: password,
-        data: {'full_name': fullName},
-      );
+    required String fullName,
+  }) => guard('create account', () async {
+    await _supabase.auth.signUp(
+      email: email,
+      password: password,
+      data: {'full_name': fullName},
+    );
+  });
 
-      if (response.user == null) {
-        throw const AuthenticationException(
-          message: 'Sign up failed - no user returned',
+  Future<void> signIn({required String email, required String password}) =>
+      guard('sign in', () async {
+        await _supabase.auth.signInWithPassword(
+          email: email,
+          password: password,
         );
-      }
+      });
 
-      AppLogger.info('User signed up: ${response.user!.email}');
-      return response.user!;
-    } on AuthException catch (e) {
-      AppLogger.error('Sign up failed', error: e);
-      throw AuthenticationException(
-        message: e.message,
-        statusCode: e.statusCode != null ? int.tryParse(e.statusCode!) : null,
-        error: e,
-      );
-    } catch (e, stackTrace) {
-      AppLogger.error(
-        'Unexpected error during sign up',
-        error: e,
-        stackTrace: stackTrace,
-      );
-      throw AuthenticationException(message: 'Sign up failed', error: e);
-    }
-  }
+  Future<void> signOut() => guard('sign out', () => _supabase.auth.signOut());
 
-  Future<User> signIn({required String email, required String password}) async {
-    try {
-      final response = await _supabase.auth.signInWithPassword(
-        email: email,
-        password: password,
-      );
+  /// Sends the recovery email. The link opens the app at /reset.
+  Future<void> requestPasswordReset(
+    String email, {
+    required String redirectTo,
+  }) => guard('send the reset link', () async {
+    await _supabase.auth.resetPasswordForEmail(email, redirectTo: redirectTo);
+  });
 
-      if (response.user == null) {
-        throw const AuthenticationException(
-          message: 'Sign in failed - no user returned',
-        );
-      }
+  Future<void> updatePassword(String newPassword) =>
+      guard('save the new password', () async {
+        await _supabase.auth.updateUser(UserAttributes(password: newPassword));
+      });
 
-      AppLogger.info('User signed in: ${response.user!.email}');
-      return response.user!;
-    } on AuthException catch (e) {
-      AppLogger.error('Sign in failed', error: e);
-      throw AuthenticationException(
-        message: e.message,
-        statusCode: e.statusCode != null ? int.tryParse(e.statusCode!) : null,
-        error: e,
-      );
-    } catch (e, stackTrace) {
-      AppLogger.error(
-        'Unexpected error during sign in',
-        error: e,
-        stackTrace: stackTrace,
-      );
-      throw AuthenticationException(message: 'Sign in failed', error: e);
-    }
-  }
+  Future<UserProfile> getUserProfile() => guard('load your settings', () async {
+    final userId = requireUserId(_supabase);
+    final row = await _supabase
+        .from('user_profiles')
+        .select()
+        .eq('id', userId)
+        .single();
+    return UserProfile.fromJson(row);
+  });
 
-  Future<void> signOut() async {
-    try {
-      await _supabase.auth.signOut();
-      AppLogger.info('User signed out');
-    } on AuthException catch (e) {
-      AppLogger.error('Sign out failed', error: e);
-      throw AuthenticationException(message: e.message, error: e);
-    } catch (e, stackTrace) {
-      AppLogger.error(
-        'Unexpected error during sign out',
-        error: e,
-        stackTrace: stackTrace,
-      );
-      throw AuthenticationException(message: 'Sign out failed', error: e);
-    }
-  }
+  Future<UserProfile> updateUserProfile(UserProfile profile) =>
+      guard('save your settings', () async {
+        final userId = requireUserId(_supabase);
+        final row = await _supabase
+            .from('user_profiles')
+            .update(profile.toUpdateJson())
+            .eq('id', userId)
+            .select()
+            .single();
+        return UserProfile.fromJson(row);
+      });
 
-  Future<void> resetPassword(String email) async {
-    try {
-      await _supabase.auth.resetPasswordForEmail(email);
-      AppLogger.info('Password reset email sent to: $email');
-    } on AuthException catch (e) {
-      AppLogger.error('Password reset failed', error: e);
-      throw AuthenticationException(message: e.message, error: e);
-    } catch (e, stackTrace) {
-      AppLogger.error(
-        'Unexpected error during password reset',
-        error: e,
-        stackTrace: stackTrace,
-      );
-      throw AuthenticationException(message: 'Password reset failed', error: e);
-    }
-  }
-
-  Future<void> updatePassword(String newPassword) async {
-    try {
-      await _supabase.auth.updateUser(UserAttributes(password: newPassword));
-      AppLogger.info('Password updated successfully');
-    } on AuthException catch (e) {
-      AppLogger.error('Password update failed', error: e);
-      throw AuthenticationException(message: e.message, error: e);
-    } catch (e, stackTrace) {
-      AppLogger.error(
-        'Unexpected error during password update',
-        error: e,
-        stackTrace: stackTrace,
-      );
-      throw AuthenticationException(
-        message: 'Password update failed',
-        error: e,
-      );
-    }
-  }
-
-  Future<UserProfile> getUserProfile() async {
-    try {
-      final userId = currentUser?.id;
-      if (userId == null) {
-        throw const AuthenticationException(message: 'User not authenticated');
-      }
-
-      final response = await _supabase
-          .from('user_profiles')
-          .select()
-          .eq('id', userId)
-          .single();
-
-      final profile = UserProfile.fromJson(response);
-      AppLogger.info('Fetched user profile for: ${profile.email}');
-      return profile;
-    } on PostgrestException catch (e) {
-      AppLogger.error('Failed to fetch user profile', error: e);
-      throw DatabaseException(message: e.message, error: e);
-    } catch (e, stackTrace) {
-      AppLogger.error(
-        'Unexpected error fetching user profile',
-        error: e,
-        stackTrace: stackTrace,
-      );
-      throw DatabaseException(
-        message: 'Failed to fetch user profile',
-        error: e,
-      );
-    }
-  }
-
-  Future<UserProfile> updateUserProfile(UserProfile profile) async {
-    try {
-      final userId = currentUser?.id;
-      if (userId == null) {
-        throw const AuthenticationException(message: 'User not authenticated');
-      }
-
-      final response = await _supabase
-          .from('user_profiles')
-          .update({
-            'full_name': profile.fullName,
-            'avatar_url': profile.avatarUrl,
-            'timezone': profile.timezone,
-            'currency': profile.currency,
-            'default_shipping_days': profile.defaultShippingDays,
-            'notification_preferences': profile.notificationPreferences,
-          })
-          .eq('id', userId)
-          .select()
-          .single();
-
-      final updated = UserProfile.fromJson(response);
-      AppLogger.info('Updated user profile for: ${updated.email}');
-      return updated;
-    } on PostgrestException catch (e) {
-      AppLogger.error('Failed to update user profile', error: e);
-      throw DatabaseException(message: e.message, error: e);
-    } catch (e, stackTrace) {
-      AppLogger.error(
-        'Unexpected error updating user profile',
-        error: e,
-        stackTrace: stackTrace,
-      );
-      throw DatabaseException(
-        message: 'Failed to update user profile',
-        error: e,
-      );
-    }
-  }
-
-  Future<void> deleteAccount() async {
-    try {
-      final userId = currentUser?.id;
-      if (userId == null) {
-        throw const AuthenticationException(message: 'User not authenticated');
-      }
-
-      // Delete user profile (cascade will handle related data)
-      await _supabase.from('user_profiles').delete().eq('id', userId);
-
-      await signOut();
-      AppLogger.info('Account deleted successfully');
-    } catch (e, stackTrace) {
-      AppLogger.error(
-        'Failed to delete account',
-        error: e,
-        stackTrace: stackTrace,
-      );
-      throw DatabaseException(message: 'Failed to delete account', error: e);
-    }
-  }
+  /// Deletes the profile row; the database cascades to every plan, person,
+  /// gift and meal. The auth user is removed by the same cascade from
+  /// auth.users when the account is deleted server-side; locally we sign out.
+  Future<void> deleteAccount() => guard('delete your account', () async {
+    final userId = requireUserId(_supabase);
+    await _supabase.from('user_profiles').delete().eq('id', userId);
+    await _supabase.auth.signOut();
+  });
 }

@@ -38,7 +38,7 @@ Bring the code down to the product in `docs/PRD.md` and make it modular enough t
 
 - `plans` as the explicit year container (section 4).
 - `gifts.purchased_date`.
-- `ordering.dart`: the pure Start Ordering By logic and the per-gift state (section 5).
+- `ordering.dart`: the pure Start Ordering By logic and the per-gift state (section 5). The three enums live in `core/domain/statuses.dart` (re-exported by the models) so the domain has no Flutter or Supabase imports.
 - An `AppModule` contract so tabs are registered, not hardwired (section 6).
 - A read-only mode for previous years (section 7).
 

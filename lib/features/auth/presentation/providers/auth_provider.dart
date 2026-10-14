@@ -1,96 +1,88 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../../../core/utils/logger.dart';
 import '../../../../shared/models/user_profile.dart';
 import '../../data/repositories/auth_repository.dart';
 
-// Repository Provider
-final authRepositoryProvider = Provider<AuthRepository>((ref) {
-  return AuthRepository();
-});
+final authRepositoryProvider = Provider<AuthRepository>(
+  (ref) => AuthRepository(),
+);
 
-// Auth State Provider
+/// True from the moment the recovery link is opened until the new password
+/// is saved; the router sends the user to /reset meanwhile.
+final passwordRecoveryProvider = NotifierProvider<_RecoveryFlag, bool>(
+  _RecoveryFlag.new,
+);
+
+class _RecoveryFlag extends Notifier<bool> {
+  @override
+  bool build() => false;
+  void set(bool v) => state = v;
+}
+
+/// The signed-in user. Supabase emits its initial session during
+/// initialize(), before any widget subscribes, so start with the recovered
+/// user and then follow sign-in, sign-out and refresh events.
 final authStateProvider = StreamProvider<User?>((ref) {
-  final authRepo = ref.watch(authRepositoryProvider);
-  // Supabase emits its initialSession event during initialize(), before any
-  // widget subscribes, so start with the already-recovered user and then
-  // follow sign-in / sign-out / refresh events.
+  final repo = ref.watch(authRepositoryProvider);
   Stream<User?> states() async* {
-    yield authRepo.currentUser;
-    yield* authRepo.authStateChanges.map((event) => event.session?.user);
+    yield repo.currentUser;
+    await for (final event in repo.authStateChanges) {
+      if (event.event == AuthChangeEvent.passwordRecovery) {
+        ref.read(passwordRecoveryProvider.notifier).set(true);
+      }
+      yield event.session?.user;
+    }
   }
 
   return states();
 });
 
-// Current User Provider
-final currentUserProvider = Provider<User?>((ref) {
-  final authState = ref.watch(authStateProvider);
-  return authState.asData?.value;
-});
+final currentUserProvider = Provider<User?>(
+  (ref) => ref.watch(authStateProvider).asData?.value,
+);
 
-// User Profile Provider
 final userProfileProvider = FutureProvider<UserProfile?>((ref) async {
   final user = ref.watch(currentUserProvider);
   if (user == null) return null;
-
-  try {
-    final authRepo = ref.watch(authRepositoryProvider);
-    return await authRepo.getUserProfile();
-  } catch (e, stackTrace) {
-    AppLogger.error(
-      'Failed to load user profile',
-      error: e,
-      stackTrace: stackTrace,
-    );
-    return null;
-  }
+  return ref.watch(authRepositoryProvider).getUserProfile();
 });
 
-// Auth Controller
-final authControllerProvider = Provider<AuthController>((ref) {
-  return AuthController(ref.read(authRepositoryProvider));
-});
+final authControllerProvider = Provider<AuthController>(
+  (ref) => AuthController(ref),
+);
 
 class AuthController {
-  final AuthRepository _authRepository;
-
-  AuthController(this._authRepository);
+  AuthController(this._ref);
+  final Ref _ref;
+  AuthRepository get _repo => _ref.read(authRepositoryProvider);
 
   Future<void> signUp({
     required String email,
     required String password,
-    String? fullName,
-  }) async {
-    await _authRepository.signUp(
-      email: email,
-      password: password,
-      fullName: fullName,
-    );
-  }
+    required String fullName,
+  }) => _repo.signUp(email: email, password: password, fullName: fullName);
 
-  Future<void> signIn({required String email, required String password}) async {
-    await _authRepository.signIn(email: email, password: password);
-  }
+  Future<void> signIn({required String email, required String password}) =>
+      _repo.signIn(email: email, password: password);
 
-  Future<void> signOut() async {
-    await _authRepository.signOut();
-  }
+  Future<void> signOut() => _repo.signOut();
 
-  Future<void> resetPassword(String email) async {
-    await _authRepository.resetPassword(email);
-  }
+  Future<void> requestPasswordReset(
+    String email, {
+    required String redirectTo,
+  }) => _repo.requestPasswordReset(email, redirectTo: redirectTo);
 
   Future<void> updatePassword(String newPassword) async {
-    await _authRepository.updatePassword(newPassword);
+    await _repo.updatePassword(newPassword);
+    _ref.read(passwordRecoveryProvider.notifier).set(false);
   }
 
   Future<UserProfile> updateUserProfile(UserProfile profile) async {
-    return await _authRepository.updateUserProfile(profile);
+    final updated = await _repo.updateUserProfile(profile);
+    _ref.invalidate(userProfileProvider);
+    return updated;
   }
 
-  Future<void> deleteAccount() async {
-    await _authRepository.deleteAccount();
-  }
+  Future<void> deleteAccount() => _repo.deleteAccount();
 }

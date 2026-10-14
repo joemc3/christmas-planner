@@ -44,7 +44,8 @@ class RecipientModel extends Equatable {
       );
 
   /// The monogram shown on rows.
-  String get initial => name.trim().isEmpty ? '?' : name.trim()[0].toUpperCase();
+  String get initial =>
+      name.trim().isEmpty ? '?' : name.trim()[0].toUpperCase();
 
   @override
   List<Object?> get props => [

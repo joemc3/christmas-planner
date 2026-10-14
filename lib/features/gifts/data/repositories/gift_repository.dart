@@ -26,26 +26,28 @@ class GiftRepository {
     return row == null ? null : GiftModel.fromJson(row);
   });
 
-  Future<GiftModel> createGift(GiftModel gift) => guard('create gift', () async {
-    final row = await _supabase
-        .from('gifts')
-        .insert(gift.toInsertJson())
-        .select()
-        .single();
-    return GiftModel.fromJson(row);
-  });
+  Future<GiftModel> createGift(GiftModel gift) =>
+      guard('create gift', () async {
+        final row = await _supabase
+            .from('gifts')
+            .insert(gift.toInsertJson())
+            .select()
+            .single();
+        return GiftModel.fromJson(row);
+      });
 
   /// Writes every editable field, including the dates, so a status change
   /// prepared with [GiftModel.withStatus] lands in one update.
-  Future<GiftModel> updateGift(GiftModel gift) => guard('update gift', () async {
-    final row = await _supabase
-        .from('gifts')
-        .update(gift.toInsertJson())
-        .eq('id', gift.id)
-        .select()
-        .single();
-    return GiftModel.fromJson(row);
-  });
+  Future<GiftModel> updateGift(GiftModel gift) =>
+      guard('update gift', () async {
+        final row = await _supabase
+            .from('gifts')
+            .update(gift.toInsertJson())
+            .eq('id', gift.id)
+            .select()
+            .single();
+        return GiftModel.fromJson(row);
+      });
 
   Future<void> deleteGift(String id) => guard('delete gift', () async {
     await _supabase.from('gifts').delete().eq('id', id);

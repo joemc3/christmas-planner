@@ -31,15 +31,16 @@ class MealRepository {
   });
 
   /// Guests and budget are the only editable fields (PRD MEAL-1).
-  Future<MealModel> updateMeal(MealModel meal) => guard('update meal', () async {
-    final row = await _supabase
-        .from('meals')
-        .update(meal.toUpdateJson())
-        .eq('id', meal.id)
-        .select()
-        .single();
-    return MealModel.fromJson(row);
-  });
+  Future<MealModel> updateMeal(MealModel meal) =>
+      guard('update meal', () async {
+        final row = await _supabase
+            .from('meals')
+            .update(meal.toUpdateJson())
+            .eq('id', meal.id)
+            .select()
+            .single();
+        return MealModel.fromJson(row);
+      });
 
   /// Every menu item the user can see. Live; callers group by meal.
   Stream<List<MealItemModel>> watchAllMealItems() => _supabase

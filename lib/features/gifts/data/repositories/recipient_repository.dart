@@ -55,7 +55,8 @@ class RecipientRepository {
       });
 
   /// Deletes the person and, by cascade, their gifts.
-  Future<void> deleteRecipient(String id) => guard('delete recipient', () async {
-    await _supabase.from('recipients').delete().eq('id', id);
-  });
+  Future<void> deleteRecipient(String id) =>
+      guard('delete recipient', () async {
+        await _supabase.from('recipients').delete().eq('id', id);
+      });
 }

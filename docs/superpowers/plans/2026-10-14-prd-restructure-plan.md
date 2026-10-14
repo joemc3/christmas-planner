@@ -49,6 +49,8 @@ Each task: write the failing test first where one applies, make it pass, run `ma
 - Unit test of the view model with fixtures before and after the ordering date.
 
 ### B5. Screens on the old look, new structure
+
+*Executed as part of C3 instead (2026-10-14): with the design in hand before implementation started, rebuilding the old screens on the new models and then replacing them would have been throwaway work.*
 - Point the existing Frosted screens at the new models and providers so the app runs end to end on the new schema before the new design lands: Home (existing dashboard reduced), Gifts list, Recipient, Gift form (three-step stepper), Meals (two fixed rows), Meal, Item form, Settings. Remove the removed fields from every form.
 - Rewrite `tool/e2e/smoke.mjs` for three tabs and flows C1 to C5. `make smoke` green with screenshots into a scratch folder (not `docs/screenshots/` yet).
 

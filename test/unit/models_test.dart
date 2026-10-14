@@ -156,7 +156,12 @@ void main() {
         'updated_at': _ts,
       });
       expect(p.defaultShippingDays, 60);
-      expect(p.copyWith(defaultShippingDays: -1).toUpdateJson()['default_shipping_days'], 0);
+      expect(
+        p
+            .copyWith(defaultShippingDays: -1)
+            .toUpdateJson()['default_shipping_days'],
+        0,
+      );
     });
   });
 }

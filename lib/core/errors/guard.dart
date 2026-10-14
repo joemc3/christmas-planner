@@ -17,7 +17,11 @@ Future<T> guard<T>(String what, Future<T> Function() run) async {
     AppLogger.error('Failed to $what', error: e);
     throw AuthenticationException(message: e.message, error: e);
   } catch (e, stackTrace) {
-    AppLogger.error('Unexpected error: $what', error: e, stackTrace: stackTrace);
+    AppLogger.error(
+      'Unexpected error: $what',
+      error: e,
+      stackTrace: stackTrace,
+    );
     throw DatabaseException(message: 'Failed to $what', error: e);
   }
 }

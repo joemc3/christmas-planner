@@ -1,27 +1,50 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:christmas_planner/core/theme/app_theme.dart';
 import 'package:christmas_planner/features/auth/presentation/screens/login_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() {
-  testWidgets('LoginScreen displays correctly', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const ProviderScope(child: MaterialApp(home: LoginScreen())),
-    );
+  setUpAll(() => GoogleFonts.config.allowRuntimeFetching = false);
 
-    expect(find.text('Welcome Back!'), findsOneWidget);
+  Widget app() => ProviderScope(
+    child: MaterialApp(
+      theme: buildTheme(brightness: Brightness.light),
+      home: const LoginScreen(),
+    ),
+  );
+
+  testWidgets('shows the title, the one line and the two fields', (
+    tester,
+  ) async {
+    await tester.pumpWidget(app());
+    expect(find.text('Christmas Planner'), findsOneWidget);
+    expect(
+      find.text('Gifts and the two Christmas meals, inside the money.'),
+      findsOneWidget,
+    );
+    expect(find.text('Email'), findsOneWidget);
+    expect(find.text('Password'), findsOneWidget);
     expect(find.byType(TextFormField), findsNWidgets(2));
-    expect(find.text('Sign In'), findsOneWidget);
+    expect(find.widgetWithText(FilledButton, 'Sign in'), findsOneWidget);
   });
 
-  testWidgets('LoginScreen has email and password fields', (
-    WidgetTester tester,
+  testWidgets('offers reset and create account, never social sign-in', (
+    tester,
   ) async {
-    await tester.pumpWidget(
-      const ProviderScope(child: MaterialApp(home: LoginScreen())),
-    );
+    await tester.pumpWidget(app());
+    expect(find.text('Forgot your password?'), findsOneWidget);
+    expect(find.text('Create an account'), findsOneWidget);
+    expect(find.textContaining('Google'), findsNothing);
+    expect(find.textContaining('Apple'), findsNothing);
+  });
 
-    expect(find.widgetWithText(TextFormField, 'Email'), findsOneWidget);
-    expect(find.widgetWithText(TextFormField, 'Password'), findsOneWidget);
+  testWidgets('validates before submitting', (tester) async {
+    await tester.pumpWidget(app());
+    await tester.tap(find.widgetWithText(FilledButton, 'Sign in'));
+    await tester.pump();
+    expect(find.text('Enter your email'), findsOneWidget);
+    expect(find.text('Password is required'), findsOneWidget);
   });
 }

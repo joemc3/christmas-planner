@@ -31,11 +31,8 @@ enum MealItemStatus {
   const MealItemStatus(this.value);
   final String value;
 
-  static MealItemStatus fromString(String value) =>
-      MealItemStatus.values.firstWhere(
-        (s) => s.value == value,
-        orElse: () => MealItemStatus.toBuy,
-      );
+  static MealItemStatus fromString(String value) => MealItemStatus.values
+      .firstWhere((s) => s.value == value, orElse: () => MealItemStatus.toBuy);
 
   bool get countsAsSpent => this == MealItemStatus.purchased;
 }
