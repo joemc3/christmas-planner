@@ -1,3 +1,4 @@
+import 'package:christmas_planner/core/utils/format.dart';
 import 'package:christmas_planner/core/utils/validators.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -50,6 +51,13 @@ void main() {
       expect(Validators.validatePrice('100.50'), isNull);
       expect(Validators.validatePrice(r'$1,299.99'), isNull);
       expect(Validators.validatePrice('0'), isNull);
+    });
+    test('accepts a leading or trailing decimal point, like parseMoney', () {
+      expect(Validators.validatePrice('.50'), isNull);
+      expect(parseMoney('.50'), 0.5);
+      expect(Validators.validatePrice('1.'), isNull);
+      expect(parseMoney('1.'), 1.0);
+      expect(Validators.validatePrice('.'), isNotNull);
     });
     test('rejects junk, negatives and three decimals', () {
       expect(Validators.validatePrice('abc'), isNotNull);

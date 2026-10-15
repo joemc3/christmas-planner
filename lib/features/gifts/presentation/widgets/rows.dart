@@ -10,6 +10,61 @@ import '../../../../shared/widgets/tag.dart';
 import '../../data/models/gift_model.dart';
 import '../../data/models/recipient_model.dart';
 
+/// The line above the people: remaining of the master gift budget and the
+/// bought count. A budget of 0 means unset (spec section 11), so it reads
+/// "No gift budget yet" and is never over.
+class GiftsTotalLine extends StatelessWidget {
+  const GiftsTotalLine({
+    super.key,
+    required this.money,
+    required this.currency,
+  });
+
+  final MoneyTriple money;
+  final String currency;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    String m(double v) => formatMoney(v, currency: currency);
+    final count = '${money.purchasedCount} of ${money.plannedCount} bought';
+
+    final String lead;
+    final String rest;
+    final Color leadColor;
+    if (!money.hasBudget) {
+      lead = '${m(money.spent)} spent';
+      rest = ' · No gift budget yet · $count';
+      leadColor = scheme.onSurface;
+    } else if (money.isOverBudget) {
+      lead = '${m(money.overBy)} over';
+      rest = ' budget ${m(money.budget)} · $count';
+      leadColor = scheme.error;
+    } else {
+      lead = m(money.remaining);
+      rest = ' left of ${m(money.budget)} · $count';
+      leadColor = scheme.onSurface;
+    }
+
+    return RichText(
+      text: TextSpan(
+        style: tabular(theme.textTheme.bodyMedium),
+        children: [
+          TextSpan(
+            text: lead,
+            style: TextStyle(fontWeight: FontWeight.w600, color: leadColor),
+          ),
+          TextSpan(
+            text: rest,
+            style: TextStyle(color: scheme.onSurfaceVariant),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 /// Monogram, name, remaining first, thin bar, purchased of planned. Over
 /// budget changes the words and adds a tag; after the date a "to order" tag.
 class RecipientRow extends StatelessWidget {

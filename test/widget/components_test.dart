@@ -1,6 +1,7 @@
 import 'package:christmas_planner/core/domain/money.dart';
 import 'package:christmas_planner/core/domain/statuses.dart';
 import 'package:christmas_planner/core/theme/app_theme.dart';
+import 'package:christmas_planner/features/gifts/presentation/widgets/rows.dart';
 import 'package:christmas_planner/shared/widgets/money_triple_view.dart';
 import 'package:christmas_planner/shared/widgets/status_stepper.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +23,52 @@ class _G implements GiftLike {
 
 void main() {
   setUpAll(() => GoogleFonts.config.allowRuntimeFetching = false);
+
+  group('GiftsTotalLine', () {
+    testWidgets('no master budget reads as unset, never over', (tester) async {
+      final money = giftMoney([
+        _G(1.5, GiftStatus.purchased),
+        _G(500, GiftStatus.purchased),
+      ], budget: 0);
+      await tester.pumpWidget(
+        host(GiftsTotalLine(money: money, currency: 'USD')),
+      );
+      expect(
+        find.textContaining('No gift budget yet', findRichText: true),
+        findsOneWidget,
+      );
+      expect(
+        find.textContaining(r'$501.50 spent', findRichText: true),
+        findsOneWidget,
+      );
+      expect(
+        find.textContaining('2 of 2 bought', findRichText: true),
+        findsOneWidget,
+      );
+      expect(find.textContaining('over', findRichText: true), findsNothing);
+    });
+
+    testWidgets('with a budget reads remaining, and over when spent past it', (
+      tester,
+    ) async {
+      final under = giftMoney([_G(18, GiftStatus.purchased)], budget: 600);
+      await tester.pumpWidget(
+        host(GiftsTotalLine(money: under, currency: 'USD')),
+      );
+      expect(
+        find.textContaining(r'$582.00 left of $600.00', findRichText: true),
+        findsOneWidget,
+      );
+      final over = giftMoney([_G(650, GiftStatus.purchased)], budget: 600);
+      await tester.pumpWidget(
+        host(GiftsTotalLine(money: over, currency: 'USD')),
+      );
+      expect(
+        find.textContaining(r'$50.00 over budget $600.00', findRichText: true),
+        findsOneWidget,
+      );
+    });
+  });
 
   group('MoneyTripleView', () {
     testWidgets('large form leads with remaining', (tester) async {

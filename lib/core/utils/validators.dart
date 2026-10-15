@@ -49,7 +49,8 @@ class Validators {
     return null;
   }
 
-  /// Accepts "40", "12.5", "$1,299.99". Rejects negatives and junk.
+  /// Accepts "40", "12.5", ".50", "1.", "$1,299.99": whatever `parseMoney`
+  /// reads, to two decimals. Rejects negatives and junk.
   static String? validatePrice(String? value, {bool required = true}) {
     if (value == null || value.trim().isEmpty) {
       return required ? 'Enter an amount' : null;
@@ -58,7 +59,8 @@ class Validators {
     if (trimmed.startsWith('-')) return 'Cannot be negative';
     final cleaned = trimmed.replaceAll(RegExp(r'[^\d.]'), '');
     final amount = double.tryParse(cleaned);
-    if (amount == null || !RegExp(r'^\d+(\.\d{1,2})?$').hasMatch(cleaned)) {
+    final wellFormed = RegExp(r'^(\d+(\.\d{0,2})?|\.\d{1,2})$');
+    if (amount == null || !wellFormed.hasMatch(cleaned)) {
       return 'Enter a valid amount';
     }
     if (amount > maxAmount) return 'Too large';
