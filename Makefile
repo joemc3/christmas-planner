@@ -6,6 +6,7 @@
 #   make smoke     release web build + Playwright smoke test + screenshots
 #   make db-reset  wipe and re-apply migrations
 #   make db-stop   stop the local stack
+#   make tidy      end of session: purge throwaway accounts (local and VPS), stop the local stack
 #
 # Supabase ports are moved off the CLI defaults (543xx) so this stack can run
 # beside other local Supabase projects on the same machine.
@@ -22,7 +23,7 @@ DEFINES = --dart-define=SUPABASE_URL=$(SUPABASE_URL) --dart-define=SUPABASE_ANON
 SMOKE_PORT ?= 8099
 OUT_DIR ?= docs/screenshots
 
-.PHONY: check format analyze test lint-db build db db-stop db-reset run smoke
+.PHONY: check format analyze test lint-db build db db-stop db-reset run smoke tidy
 
 check: format analyze test lint-db
 	@echo "✓ local gate passed (flutter $$($(FLUTTER) --version 2>/dev/null | head -1 | awk '{print $$2}'))"
@@ -51,6 +52,15 @@ db-stop:
 
 db-reset:
 	supabase db reset
+
+# End of session (rule: ~/.claude/rules/session-cleanup.md). Deletes the
+# throwaway accounts the smoke test and repros leave behind, locally and on
+# the VPS, then stops the local stack so it stops taking resources and does
+# not come back with Docker. The VPS stack stays up.
+tidy:
+	-tool/purge_test_accounts.sh --delete
+	-tool/purge_test_accounts.sh --vps --delete
+	supabase stop
 
 run:
 	$(FLUTTER) run -d chrome $(DEFINES)
