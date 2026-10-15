@@ -12,6 +12,7 @@ Flutter web app on Supabase for planning a family Christmas inside a budget. Rea
 - The product is the PRD, built to production quality, structured so that the features listed in PRD section 8 can be added as modules later. Those additions are the product owner's call; do not build toward them speculatively. Do not describe the current scope as an MVP or a prototype.
 - Design happens in Claude Design, fed from `docs/design/brief/`. What comes back goes in `docs/design/output/`, is reconciled screen by screen in `docs/design/decisions.md`, and only then implemented. Never adopt a design blindly; never change a **verbatim** sentence in the brief.
 - Run `make check` before every push. It is exactly what CI runs. CI is a backstop, not where failures should first appear. `make smoke` drives the real app in a browser; run it for any change that touches a screen.
+- Run `make tidy` when wrapping up: it deletes the throwaway test accounts (local stack and VPS) and stops the local Supabase stack. The VPS stack stays up.
 
 ## Git
 
